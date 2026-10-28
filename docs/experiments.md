@@ -76,7 +76,7 @@ Test split hash (SHA-256), frozen 2026-10-28:
 - evals/h1/group.json: 7647decfed94c58acb2b023a57ee852add3b6ef7a4225037890c9adf83cf063d
 - evals/h1/commitments.json: 1c005fd7ffbbbb7385c409b28bbede6ead29de2ccdd09b3d25acabec7429d473
 H1 test ids (40): 003-006, 009-012, 015-018, 021-024, 027-030, 041-060. H2 test ids (20): 004-010, 014-020, 025-030. Re-hash if review changes any file before merge.
-Protocol commit: the merge commit of the H-05 branch, recorded after merge.
+Protocol commit: f3db3d6 (merge of PR 3, h-05/scenarios, 2026-10-28).
 
 ## Prior work this builds on (to cite in the README)
 
