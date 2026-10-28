@@ -25,6 +25,7 @@ Read this file at the start of every task. Keep it short.
 - Save substantive research responses verbatim under docs/research/ as dated notes. Research notes are testable data and feed evals. Sweep at the end of every task: re-read task responses and save notes before reporting. Anything with measured verdicts, timings, model behavior, or reusable analysis is research; a log record never exempts it.
 - Keep feature branches after merge for history. Do not delete them.
 - Open a pull request for every feature branch as the review point. Merge only after review.
+- Commit per part with a scoped summary line naming the area and parts covered. PR descriptions compound the commits: goal, contents by part, real checks with numbers, not checked, how to undo, open questions.
 
 ## Every task prompt starts with
 
