@@ -98,6 +98,7 @@ export interface ProposeEntryArgs {
   occurredOn: string;
   quotes: string[];
   sourceRef?: string;
+  note?: string;
 }
 
 export async function handleProposeEntry(
@@ -151,6 +152,7 @@ export async function handleProposeEntry(
       period: args.period,
       occurredOn: args.occurredOn,
       ...(args.sourceRef ? { sourceRef: args.sourceRef } : {}),
+      ...(args.note ? { note: args.note } : {}),
     },
     quotes: args.quotes,
   });

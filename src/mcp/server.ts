@@ -73,6 +73,7 @@ export function createMcpServer(deps: ToolDeps): McpServer {
         occurredOn: z.string(),
         quotes: z.array(z.string()),
         sourceRef: z.string().optional(),
+        note: z.string().optional(),
       },
     },
     async (args) => {
