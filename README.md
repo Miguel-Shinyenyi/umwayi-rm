@@ -75,7 +75,7 @@ All data is synthetic. No group has used it. Demand over notebooks and existing 
 
 ## Dependencies
 
-Runtime: express (MIT). Dev: typescript (Apache-2.0), vitest (MIT), tsx (MIT), @types/express, @types/node.
+Runtime: express (MIT), pg (MIT). Dev: typescript (Apache-2.0), vitest (MIT), tsx (MIT), @types/express, @types/node, @types/pg.
 
 ## Licence
 
