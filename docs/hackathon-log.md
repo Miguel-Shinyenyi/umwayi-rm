@@ -115,3 +115,21 @@ Context: queue.md D-9 and D-10.
 Evidence: Miguel reply 2026-10-28: TypeScript for D-9; MIT LICENSE already committed for D-10.
 Result: One TypeScript service (API plus MCP server in one process). Licence MIT.
 Next: H-06 scaffold follows the TypeScript choice.
+
+### 2026-10-28: H-04 Day 1 model checks on Baseten
+Type: verification
+Status: done with one caveat (primary terms unread, see below)
+Context: queue.md H-04. Model meta-models/muse-spark-open-1026 on https://inference.baseten.co/v1. Key from a local 600 file, piped, never printed. Temperature 0, seed 7. Four curl probe rounds ran 14:23 to 14:33 EAT.
+Evidence:
+- Tool calling PASS, 1.2s. tools=[get_member_balance], tool_choice auto. Returned tool_calls with name get_member_balance and arguments {"member": "Wanjiku"}.
+- Text PASS, 1.4s, with reasoning_effort low. Returned exactly "Sawa".
+- Image PASS for acceptance, 3.1s, with reasoning_effort low. Described a 1px PNG as tiny blurry pixelated image. Handwriting reading not tested here. Deferred to H-11 synthetic photos.
+- Audio FAIL. The model states it cannot hear or process audio, and prompt audio_tokens stayed 0. Direct audio intake is cut under the plan rule that a failed capability cuts its feature. Voice now depends on a Muse Voice Transcribe check, whose Meta key is not yet provisioned.
+- Swahili PASS, author-judged, 2.5s, with reasoning_effort low. Returned a fluent formal thanks draft for five hundred shillings. One reader judged it. Not a metric. Swahili drafts stay in stretch scope.
+- Latency is highly variable: 1.2 to 4.7s warm, 27s model list, 68s first call, 113s one image call, one 180s timeout. Verdict: usable with timeouts of 60s or more, retries, and low reasoning effort.
+- Adapter rule: reasoning_effort low is mandatory. Default effort burned 20, 400, and 2000 token budgets with finish length and empty content across three rounds.
+- Model id works exactly as the plan writes it. No short form needed.
+- Terms: primary license unread. The Hugging Face file returns 401 without an accepted license login. Ten secondary sources agree the display line is required, and the README already carries it provisionally. Followup: read the primary text with an accepted account.
+- Token spend across probes is about 4k tokens. Billing unchecked. Baseten key verified live. Modal key held but unused.
+Result: capabilities recorded with date and command. Voice design switches to transcribe first. Adapter defaults are low effort with generous timeouts.
+Next: H-05 scenarios written for transcribed voice, H-06 scaffold with the adapter defaults, terms followup.
