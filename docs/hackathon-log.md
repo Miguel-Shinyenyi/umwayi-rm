@@ -241,3 +241,15 @@ Context: queue.md H-08. PR 8, CI run 40757593802.
 Evidence: CI build success in 57s. Log lines show 5 files passed with 43 tests and zero skipped: health 3, memory conformance 11, pg 12 against real Postgres, fixtures 12, reconcile 5.
 Result: 12 fixtures pass with the same input giving the same order.
 Next: H-09 MCP server and first agent run.
+
+### 2026-10-28: H-10 voice intake and approval
+Type: build
+Status: done
+Context: queue.md H-10. Branch h-10/voice-approval. Voice goes transcribe first per the H-04 audio FAIL.
+Evidence:
+- Transcribe adapter src/adapters/transcribe.ts posts multipart to https://api.meta.ai/v1/asr/transcribe with model muse-voice-transcribe-1.0. Live curl probe on a 1s 16kHz tone returned HTTP 200 with an empty transcript and audioDurationMs 1040; the /v1/v1/ variant returns 404, settling the URL.
+- Routes: POST /groups/:id/intake/note takes {text} or {audio base64 WAV}, runs the loop over in-memory MCP with the pack and date injection, returns runId, modelId, transcript, outcome, proposals, turns. GET /groups/:id/proposals filters by status. POST /proposals/:id/approve is idempotent and returns {entry, already}. POST /proposals/:id/reject rejects. POST /groups/:id/entries records a treasurer-confirmed entry as the model-off manual fallback.
+- Tests: 3 transcribe plus 8 intake/proposals/entry tests, all pass. Approve-twice test creates exactly one entry with tier agent_proposed_approved. Full local suite: 54 pass, 12 pg skip for CI.
+- Node has no network in the dev sandbox, so the compiled adapter and a live speech-to-approval chain were not run here. The wire shape is proven by curl and the H-04 speech check; the wiring is proven by the maintained tests.
+Result: voice note becomes approved entries through the routes; duplicate approval changes nothing.
+Next: H-11 photo reading and reconciliation findings. Open: proposal edit and question answer routes are not built.
