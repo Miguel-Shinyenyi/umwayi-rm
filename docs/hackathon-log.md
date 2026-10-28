@@ -153,3 +153,11 @@ Context: transcribe plumbing verified earlier. Quality waited on speech.
 Evidence: user supplied a 9s WhatsApp voice note (Ogg Opus, kept outside the repo), converted with ffmpeg to 16kHz mono WAV, posted to /v1/asr/transcribe with muse-voice-transcribe-1.0. HTTP 200 in 3.9s. Transcript withheld: the sample is a personal recording and the repo carries synthetic data only. Verdict: a short English payment line transcribed sensibly end to end.
 Result: voice transcribe path verified for quality and plumbing. H-10 intake uses transcribe first.
 Next: H-05 scenarios, H-06 scaffold.
+
+### 2026-10-28: H-05 scenario sets written and frozen
+Type: experiment
+Status: done (hashes recorded; protocol commit pointer follows the merge)
+Context: queue.md H-05. Protocol in docs/experiments.md, H1 and H2.
+Evidence: evals/h1/scenarios.json (60: 20 dev, 40 test, stratified 2/4 per ambiguous subtype and 10/20 clear), evals/h1/group.json plus commitments.json (12 synthetic members including the Brian collision pair, 500 and 1000 contributions, one 2000 loan repayment), evals/h2/questions.json (30: 10 dev, 20 test; needle 3/7, stale 3/7, identity 4/6; every question carries needs for the H-15 history build). Validation: JSON parses, no duplicate ids, all member refs resolve, all labels complete. SHA-256 recorded in docs/experiments.md. Checked with a python3 validation snippet plus shasum, run 2026-10-28.
+Result: splits frozen. Dev work uses dev ids only. Test ids run once per condition per seed for counted results.
+Next: H-06 scaffold. If PR review changes any scenario file, re-hash before merge. The 12-month H2 history gets built for H-15 from the needs lists.
