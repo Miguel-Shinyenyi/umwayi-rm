@@ -49,6 +49,7 @@ Names, risk and effect are in `docs/agent-design.md`. Every tool call is recorde
 - Approving the same proposal twice creates one entry.
 - Entries cannot be edited or deleted; a correction is a new entry that references the old one.
 - A proposal whose quotes are not in the source is rejected before it reaches the inbox.
+- A proposal carries at most 3 quotes. Every refusal records its reason in the run trace.
 - `today` returns the same order for the same data.
 - Access to another group's records returns 403.
 - With the model off, intake falls back to manual entry and `today` still works.

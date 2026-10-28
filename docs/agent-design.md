@@ -38,8 +38,13 @@ Rules, each with cause and scope. Starting set, to be revised only from dev-spli
 | A mention of a loan is not a loan record; ask | confuse | intake |
 | One line paying for two people becomes two proposals or a question | guess | intake |
 | Reminders cite the entries behind them, use no judging words, never mention other members | tone | drafts |
+| After 3 refused proposals on one intake, stop retrying and file a question | loop | intake, photo |
 
 Rules live in `agent/pack/rules.md`. Each rule records the scenario ids that motivated it.
+
+Enforcement split. Checks the code can run live inside the proposal tool handlers, so the model cannot skip them: name collision against the member list, amount gap against the commitment. Checks that need judgement stay in the prompt and are audited in the trace: month inference, loan versus contribution confusion. A run with an open question proposal makes no model calls until the treasurer answers.
+
+Pack layout. `agent/pack/` holds `playbook.md` plus `rules.md`. The playbook uses four parts: How to work, Judgement, When stuck, Rules. It is sent as the system prompt every turn.
 
 ## Tools (MCP server), with risk ratings
 

@@ -65,6 +65,8 @@ Run only if H1 and H2 are done and the demo path is green.
 4. Null and negative results are reported with the same prominence as positive ones.
 5. The demo's chart reads from saved run files, not from typed numbers.
 6. No claim beyond the setup: synthetic, local, one model, small n.
+7. Refusal feedback given to the agent never quotes the expected labels. The agent sees what kind of answer is missing, never the answer.
+8. An offline fake model harness ships with the scaffold. All deterministic tests run through it with no live API calls.
 
 ## Frozen
 
