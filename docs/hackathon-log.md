@@ -198,3 +198,11 @@ Evidence:
 - Access: one treasurer token per group, resolved on every call, cross-group denied 403.
 Result: core complete except the live pg proof.
 Next: open PR, let CI run the pg suite against real Postgres, then mark H-07 done.
+
+### 2026-10-28: H-07 done, CI proves both suites
+Type: verification
+Status: done
+Context: queue.md H-07. PR 7, CI run 40754353825.
+Evidence: CI build success in 59s. Log lines show tests/health.test.ts 3 passed, tests/ledger.memory.test.ts 8 passed, tests/ledger.pg.test.ts 9 passed. Zero skipped. The pg run covers the conformance suite on Postgres plus the trigger test.
+Result: create, idempotency, append-only, and access denial pass on both stores.
+Next: H-08 Today, reconciliation, fixtures.

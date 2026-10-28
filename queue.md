@@ -23,7 +23,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-04 | Day 1 model check: tool calling, audio input, image input on handwriting, latency, Swahili; read the model terms for the display requirement | done 2026-10-28 | Each result recorded with date and command | log |
 | H-05 | Write and commit the synthetic scenario sets (60 notes, 30 archive questions); freeze the test split hashes | done 2026-10-28 | Hashes in `docs/experiments.md`; split committed | experiments |
 | H-06 | Scaffold repo, Docker Compose, empty API, CI | done 2026-10-28 | `docker compose up` serves `/health` | log |
-| H-07 | Ledger core and tests | now | Create, idempotency, append-only, access denial tests pass | log |
+| H-07 | Ledger core and tests | done 2026-10-28 | Create, idempotency, append-only, access denial tests pass | log |
 | H-08 | Today, reconciliation, fixtures | later | 12 fixtures pass; same input same order | log |
 | H-09 | MCP server and the first agent run with the pack | later | Agent proposes and asks through tools; trace stored | log |
 | H-10 | Proposals, approval, voice intake | later | Voice note becomes approved entries; duplicate approval changes nothing | log |
