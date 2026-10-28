@@ -1,6 +1,7 @@
 export interface ChatMessage {
-  role: "system" | "user" | "assistant";
+  role: "system" | "user" | "assistant" | "tool";
   content: string;
+  tool_call_id?: string;
 }
 
 export interface ModelOptions {
@@ -16,15 +17,28 @@ export interface ModelUsage {
   completionTokens: number;
 }
 
+export interface ToolSpec {
+  name: string;
+  description: string;
+  parameters: Record<string, unknown>;
+}
+
+export interface ToolCall {
+  id: string;
+  name: string;
+  arguments: Record<string, unknown>;
+}
+
 export interface ModelResult {
-  content: string;
+  content: string | null;
   modelId: string;
+  toolCalls?: ToolCall[];
   usage?: ModelUsage;
 }
 
 export interface ModelAdapter {
   readonly modelId: string;
-  chat(messages: ChatMessage[], options: ModelOptions): Promise<ModelResult>;
+  chat(messages: ChatMessage[], options: ModelOptions, tools?: ToolSpec[]): Promise<ModelResult>;
 }
 
 export const DEFAULT_MODEL_OPTIONS: ModelOptions = {

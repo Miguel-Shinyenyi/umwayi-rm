@@ -25,7 +25,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-06 | Scaffold repo, Docker Compose, empty API, CI | done 2026-10-28 | `docker compose up` serves `/health` | log |
 | H-07 | Ledger core and tests | done 2026-10-28 | Create, idempotency, append-only, access denial tests pass | log |
 | H-08 | Today, reconciliation, fixtures | done 2026-10-28 | 12 fixtures pass; same input same order | log |
-| H-09 | MCP server and the first agent run with the pack | later | Agent proposes and asks through tools; trace stored | log |
+| H-09 | MCP server and the first agent run with the pack | done 2026-10-28 | Agent proposes and asks through tools; trace stored | log |
 | H-10 | Proposals, approval, voice intake | later | Voice note becomes approved entries; duplicate approval changes nothing | log |
 | H-11 | Photo reading and reconciliation findings | later | Page becomes proposed rows; findings listed | log |
 | H-12 | H1 run on the frozen test split; fallback mode | later | Run saved with date, model id, prompt version, seed; model-off passes the demo path | `docs/evals/` |

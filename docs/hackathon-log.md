@@ -221,6 +221,19 @@ Evidence:
 Result: Today core complete except the live pg proof.
 Next: open PR, let CI run the pg suite, then mark H-08 done.
 
+### 2026-10-28: H-09 MCP server and first dev runs
+Type: experiment
+Status: done
+Context: queue.md H-09. Pack v0, seed 7, model meta-models/muse-spark-open-1026 on Baseten, reasoning low. Harness scripts/run-h1-dev.ts. Dev split only; no test ids touched.
+Evidence:
+- MCP server with 5 tools over stdio plus in-memory transport for runs. Checks live in the handlers: quotes inside the intake with a 3 cap, member resolution with collision refusal, refusal budget forcing a question after 3, feedback free of expected labels. Transcribe and photo tools wait for H-10 and H-11.
+- Loop: turn budget 8, tool budget 12, one successful proposal ends the run, traces saved per scenario.
+- Run 1 docs/evals/dev-h1-2026-10-28-seed7.json: 18/20. Run 2 seed7-rerun.json: 17/20. Both runs show zero propose/ask confusions. Every failure is an empty completion (no content, no tool call) on different scenarios per run.
+- No systematic rule failure occurred, so the conditional rule revision did not trigger. Pack stays v0.
+- Two fixes during the runs: the harness creates its output dir, and the system prompt injects today's date after the model dated October to 2025.
+Result: annotated dev runs exist. Agent follows the pack on every completed run.
+Next: H-10 voice intake via transcribe. Followups for H-12: retry on empty completion, usage capture in the harness, date injection in the production loop path.
+
 ### 2026-10-28: H-08 done, CI proves all suites
 Type: verification
 Status: done
