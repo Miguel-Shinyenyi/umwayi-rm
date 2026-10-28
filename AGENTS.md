@@ -24,6 +24,7 @@ Read this file at the start of every task. Keep it short.
 - Do not push unless the task says so.
 - Save substantive research responses verbatim under docs/research/ as dated notes. Research notes are testable data and feed evals.
 - Keep feature branches after merge for history. Do not delete them.
+- Open a pull request for every feature branch as the review point. Merge only after review.
 
 ## Every task prompt starts with
 
