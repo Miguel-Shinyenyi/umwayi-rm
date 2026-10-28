@@ -29,4 +29,4 @@ Read this file at the start of every task. Keep it short.
 
 ## Every task prompt starts with
 
-Goal in one sentence. Acceptance checks. Files to read. Stages with a gate after each if the task has more than three parts. A report-back section: what changed, how it was checked, what is not verified. Ground rules: build only what was asked, touch only named files, and report changed files, checks run, and limits.
+Goal in one sentence. Decisions already made, so they are not reopened. Acceptance checks. Files to read. Stages with a gate after each if the task has more than three parts; later stages named in one line each and described when reached. Safety rules, each with the test that proves it. A report-back section: what changed, how it was checked, what is not verified. Ground rules: build only what was asked, touch only named files, and report changed files, checks run, and limits.
