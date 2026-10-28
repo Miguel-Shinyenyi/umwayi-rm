@@ -1,6 +1,6 @@
 # docs/api-contract.md: HTTP and MCP contract (plan v3, draft)
 
-Draft. Changes need a line in `docs/design-decisions.md`. All records are synthetic and labelled demo.
+Draft. Changes need a line in `docs/design-decisions.md`. All records are synthetic and labelled demo. Changelog 2026-10-28: entries gain proposal_id (unique, null for direct entries) so idempotent approval finds the entry it created. Logged under H-07; design-decisions.md is stale v2 and untouched pending its rewrite task.
 
 Conventions: JSON, UTC timestamps, ids are opaque strings, money is integer KES (no decimals in the demo), errors are `{ "error": { "code", "message" } }`. Writes that matter take an `Idempotency-Key` header.
 
@@ -11,7 +11,7 @@ Conventions: JSON, UTC timestamps, ids are opaque strings, money is integer KES 
 | group | id, name, currency, demo (bool), constitution_ref |
 | member | id, group_id, display_name, aliases[] |
 | commitment | id, group_id, member_id, kind (`contribution` or `loan_repayment`), amount, due_rule (monthly day or one date) |
-| entry | id, group_id, member_id, kind, amount, period (`YYYY-MM`), occurred_on, evidence_tier, source_ref, approved_by, created_at. Append only. Corrections are new entries that reference the old one |
+| entry | id, group_id, member_id, kind, amount, period (`YYYY-MM`), occurred_on, evidence_tier, source_ref, proposal_id, approved_by, created_at. Append only. Corrections are new entries that reference the old one |
 | evidence_tier | `statement_confirmed`, `treasurer_confirmed`, `agent_proposed_approved`, `self_reported` |
 | proposal | id, group_id, run_id, type (`entry`, `question`, `draft_reminder`), payload, quotes[], status (`pending`, `approved`, `rejected`, `expired`), decided_by, decided_at |
 | run | id, group_id, intake_ref, model_id, prompt_version, steps[], started_at, ended_at, status |

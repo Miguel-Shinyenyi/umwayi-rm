@@ -184,3 +184,25 @@ Context: queue.md H-06. PR 6, CI run 40750952926.
 Evidence: CI build job success in 50s. Every step green: npm ci, typecheck, tests, build, docker compose up -d --wait, curl -fsS /health, teardown. The curl step is the acceptance proof.
 Result: `docker compose up` serves /health.
 Next: H-07 ledger core.
+
+### 2026-10-28: H-07 ledger core built, pg proof pending CI
+Type: verification
+Status: in progress (memory suite green locally; pg suite needs the CI database)
+Context: queue.md H-07. Service layer only, no HTTP yet. Proposal and approval routes come with H-09 and H-10.
+Evidence:
+- Migration 001: groups, members, commitments, entries, proposals, treasurer tokens, plus a trigger that rejects any UPDATE or DELETE on entries.
+- LedgerStore interface with Postgres and memory implementations. One 8-case conformance suite runs on both: create round trip, double approval yields one entry, reject lifecycle, non-entry approve refused, cross-group 403 on five paths, validation rejects, list filters.
+- Local: typecheck clean, build emits, 11 tests pass. The 9 pg tests skip without DATABASE_URL (stated skip, not a green result).
+- Contract refined: entries gain proposal_id (unique, null for direct entries) for idempotent approval. Logged here; design-decisions.md untouched as stale v2 with a rewrite task proposed.
+- Idempotency is transactional: approval locks the proposal row, reuses the existing entry on repeat, and refuses double decisions with 409.
+- Access: one treasurer token per group, resolved on every call, cross-group denied 403.
+Result: core complete except the live pg proof.
+Next: open PR, let CI run the pg suite against real Postgres, then mark H-07 done.
+
+### 2026-10-28: H-07 done, CI proves both suites
+Type: verification
+Status: done
+Context: queue.md H-07. PR 7, CI run 40754353825.
+Evidence: CI build success in 59s. Log lines show tests/health.test.ts 3 passed, tests/ledger.memory.test.ts 8 passed, tests/ledger.pg.test.ts 9 passed. Zero skipped. The pg run covers the conformance suite on Postgres plus the trigger test.
+Result: create, idempotency, append-only, and access denial pass on both stores.
+Next: H-08 Today, reconciliation, fixtures.
