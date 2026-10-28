@@ -22,7 +22,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-03 | Ask on Discord #questions about "basic RAG", "image analyzer" and the "Built with Muse Spark Open" wording | next | Answer recorded | log |
 | H-04 | Day 1 model check: tool calling, audio input, image input on handwriting, latency, Swahili; read the model terms for the display requirement | done 2026-10-28 | Each result recorded with date and command | log |
 | H-05 | Write and commit the synthetic scenario sets (60 notes, 30 archive questions); freeze the test split hashes | done 2026-10-28 | Hashes in `docs/experiments.md`; split committed | experiments |
-| H-06 | Scaffold repo, Docker Compose, empty API, CI | now | `docker compose up` serves `/health` | log |
+| H-06 | Scaffold repo, Docker Compose, empty API, CI | done 2026-10-28 | `docker compose up` serves `/health` | log |
 | H-07 | Ledger core and tests | later | Create, idempotency, append-only, access denial tests pass | log |
 | H-08 | Today, reconciliation, fixtures | later | 12 fixtures pass; same input same order | log |
 | H-09 | MCP server and the first agent run with the pack | later | Agent proposes and asks through tools; trace stored | log |

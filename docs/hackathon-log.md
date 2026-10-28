@@ -176,3 +176,11 @@ Evidence:
 - Postgres runs idle with no schema. Migrations start in H-07.
 Result: scaffold complete except the live compose proof.
 Next: open PR, let CI prove `docker compose up` serves /health, then mark H-06 done.
+
+### 2026-10-28: H-06 done, CI proves compose health
+Type: verification
+Status: done
+Context: queue.md H-06. PR 6, CI run 40750952926.
+Evidence: CI build job success in 50s. Every step green: npm ci, typecheck, tests, build, docker compose up -d --wait, curl -fsS /health, teardown. The curl step is the acceptance proof.
+Result: `docker compose up` serves /health.
+Next: H-07 ledger core.
