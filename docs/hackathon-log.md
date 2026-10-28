@@ -99,3 +99,19 @@ None run yet. Day 1 list (v3):
 - Data protection posture is not assessed.
 - Model outputs are checked only against a small local eval set.
 - Swahili support is unverified until the Day 1 check.
+
+### 2026-10-28: H-02 done, public repo live with docs only
+Type: verification
+Status: done
+Context: queue.md H-02.
+Evidence: `gh repo view` returns public repo Miguel-Shinyenyi/umwayi-rm, default branch main, 16 commits, docs only plus MIT LICENSE. Commit dates of Oct 27 morning match actual writing time of the docs.
+Result: Repo public. No code. README lists prior work. H-01 still open: API keys are held locally, request confirmations are not yet saved.
+Next: H-04 Day 1 model checks.
+
+### 2026-10-28: Stack and licence decided (D-9, D-10)
+Type: decision
+Status: accepted (Miguel chose both)
+Context: queue.md D-9 and D-10.
+Evidence: Miguel reply 2026-10-28: TypeScript for D-9; MIT LICENSE already committed for D-10.
+Result: One TypeScript service (API plus MCP server in one process). Licence MIT.
+Next: H-06 scaffold follows the TypeScript choice.

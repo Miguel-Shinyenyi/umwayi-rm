@@ -22,6 +22,7 @@ Read this file at the start of every task. Keep it short.
 - Do not build features outside `HACKATHON.md` section 7.
 - No em dashes in anything written here.
 - Do not push unless the task says so.
+- Save substantive research responses verbatim under docs/research/ as dated notes. Research notes are testable data and feed evals.
 
 ## Every task prompt starts with
 

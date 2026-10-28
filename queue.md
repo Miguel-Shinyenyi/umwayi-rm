@@ -6,8 +6,8 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 
 | ID | Decision | Status | Recommendation |
 |---|---|---|---|
-| D-9 | Stack: TypeScript service, or Java and Spring Boot with a separate MCP process | waiting | TypeScript: one language for API, MCP and schemas |
-| D-10 | Licence | waiting | MIT |
+| D-9 | Stack: TypeScript service, or Java and Spring Boot with a separate MCP process | answered 2026-10-28: TypeScript service | none |
+| D-10 | Licence | answered 2026-10-28: MIT | none |
 | D-11 | Is the problem first-hand? Which treasurer or group member can you interview this week? | waiting | Two interviews by Nov 1 |
 | D-12 | Daily hours you can give Nov 1 to Nov 4 | waiting | State a number so the plan can move days |
 | D-13 | Photo of a paper ledger as a second intake | answered by D-14: included | Voice first; photo after the ledger and approval work |
@@ -18,7 +18,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | ID | Task | Status | Acceptance checks | Result goes in |
 |---|---|---|---|---|
 | H-01 | Request Baseten $100 credit; submit Meta $150 form; check Billing | now (Miguel, own accounts) | Confirmation emails or screens saved (no card data) | `docs/hackathon-log.md` |
-| H-02 | Create public repo `umwayi-rm` with the docs only and a LICENSE | now | Repo public when logged out; no code; README lists prior work | log |
+| H-02 | Create public repo `umwayi-rm` with the docs only and a LICENSE | done 2026-10-28 | Repo public when logged out; no code; README lists prior work | log |
 | H-03 | Ask on Discord #questions about "basic RAG", "image analyzer" and the "Built with Muse Spark Open" wording | next | Answer recorded | log |
 | H-04 | Day 1 model check: tool calling, audio input, image input on handwriting, latency, Swahili; read the model terms for the display requirement | next | Each result recorded with date and command | log |
 | H-05 | Write and commit the synthetic scenario sets (60 notes, 30 archive questions); freeze the test split hashes | next | Hashes in `docs/experiments.md`; split committed | experiments |
