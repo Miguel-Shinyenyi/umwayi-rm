@@ -270,5 +270,77 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
         await close();
       }
     });
+
+    it("saves, lists, and resolves findings", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const finding = await store.saveFinding(token, {
+          groupId: group.id,
+          kind: "only_on_paper",
+          refs: { memberText: "Brian", amount: 500 },
+        });
+        expect(finding.status).toBe("open");
+        const open = await store.listFindings(token, group.id, "open");
+        expect(open.map((f) => f.id)).toEqual([finding.id]);
+        const resolved = await store.resolveFinding(token, finding.id);
+        expect(resolved.status).toBe("resolved");
+        expect(await store.listFindings(token, group.id, "open")).toHaveLength(0);
+        await expectLedgerError(store.resolveFinding(token, finding.id), 409);
+      } finally {
+        await close();
+      }
+    });
+
+    it("lists proposals with an optional status filter", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const member = await store.createMember(token, {
+          groupId: group.id,
+          displayName: "Chebet Lagat",
+        });
+        const entryProposal = await store.createProposal(token, {
+          groupId: group.id,
+          type: "entry",
+          payload: {
+            memberId: member.id,
+            kind: "contribution",
+            amount: 500,
+            period: "2026-10",
+            occurredOn: "2026-10-05",
+          },
+        });
+        await store.createProposal(token, {
+          groupId: group.id,
+          type: "question",
+          payload: { text: "Which month?" },
+        });
+        await store.approveProposal(token, entryProposal.id);
+        const pending = await store.listProposals(token, group.id, "pending");
+        expect(pending.map((p) => p.type)).toEqual(["question"]);
+        const all = await store.listProposals(token, group.id);
+        expect(all).toHaveLength(2);
+      } finally {
+        await close();
+      }
+    });
+
+    it("lists members and commitments, and denies cross-group reads", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const a = await store.createGroup("Group A");
+        const b = await store.createGroup("Group B");
+        await store.createMember(a.token, { groupId: a.group.id, displayName: "Omondi Juma" });
+        expect(await store.listMembers(a.token, a.group.id)).toHaveLength(1);
+        expect(await store.listCommitments(a.token, a.group.id)).toHaveLength(0);
+        await expectLedgerError(store.listMembers(a.token, b.group.id), 403);
+        await expectLedgerError(store.listCommitments(a.token, b.group.id), 403);
+        await expectLedgerError(store.listProposals(a.token, b.group.id), 403);
+        await expectLedgerError(store.listFindings(a.token, b.group.id), 403);
+      } finally {
+        await close();
+      }
+    });
   });
 }

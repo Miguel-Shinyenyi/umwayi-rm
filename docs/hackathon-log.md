@@ -206,3 +206,25 @@ Context: queue.md H-07. PR 7, CI run 40754353825.
 Evidence: CI build success in 59s. Log lines show tests/health.test.ts 3 passed, tests/ledger.memory.test.ts 8 passed, tests/ledger.pg.test.ts 9 passed. Zero skipped. The pg run covers the conformance suite on Postgres plus the trigger test.
 Result: create, idempotency, append-only, and access denial pass on both stores.
 Next: H-08 Today, reconciliation, fixtures.
+
+### 2026-10-28: H-08 Today core built, pg proof pending CI
+Type: verification
+Status: in progress (31 pass locally; 12 pg tests need the CI database)
+Context: queue.md H-08. Service layer only, no HTTP yet. Routes come with H-09 and H-10.
+Evidence:
+- Migration 002: findings table. Store gains listMembers, listCommitments, listProposals, saveFinding, listFindings, resolveFinding on both implementations. Conformance suite grows to 11 cases.
+- src/ledger/balances.ts: paid sums, per-period balances, overdue scan. Monthly rules evaluate per period. One-date rules emit once with all-time paid for that kind. Overdue means past the due date with an outstanding balance; the due date itself is not overdue.
+- src/ledger/today.ts: buildToday assembles overdue, open findings, and pending questions. Order is category rank, then due date plus display name, finding kind, question creation time. asOf and periods are explicit inputs, never the clock.
+- src/ledger/reconcile.ts: comparePaper matches paper rows to entries by normalized name or alias plus period, exact amount first, then amount differs, leftovers split only on paper versus only in ledger. Rows sort before matching so input order cannot change the result.
+- 12 fixtures under tests/fixtures/today cover clear, overdue, partial, order, loan, questions, findings, mixed, resolved exclusion, alias display, and the due-date boundary. The runner asserts exact sequences, rebuilds twice for equality, and rebuilds reverse-seeded for set equality.
+- Local: typecheck clean, build emits, 31 pass. The 12 pg tests skip without DATABASE_URL (stated skip, not a green result).
+Result: Today core complete except the live pg proof.
+Next: open PR, let CI run the pg suite, then mark H-08 done.
+
+### 2026-10-28: H-08 done, CI proves all suites
+Type: verification
+Status: done
+Context: queue.md H-08. PR 8, CI run 40757593802.
+Evidence: CI build success in 57s. Log lines show 5 files passed with 43 tests and zero skipped: health 3, memory conformance 11, pg 12 against real Postgres, fixtures 12, reconcile 5.
+Result: 12 fixtures pass with the same input giving the same order.
+Next: H-09 MCP server and first agent run.

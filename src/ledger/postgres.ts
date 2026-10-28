@@ -15,6 +15,7 @@ import {
   invalidInput,
   type Commitment,
   type Entry,
+  type Finding,
   type Group,
   type Member,
   type Proposal,
@@ -89,6 +90,50 @@ export class PostgresLedgerStore implements LedgerStore {
     if (rows.length === 0) {
       throw invalidInput(`unknown member in group: ${memberId}`);
     }
+  }
+
+  async listMembers(token: string, groupId: string): Promise<Member[]> {
+    await this.mustOwn(this.pool, token, groupId);
+    const { rows } = await this.pool.query(
+      "SELECT id, group_id, display_name, aliases, created_at FROM members WHERE group_id = $1 ORDER BY id ASC",
+      [groupId],
+    );
+    return (rows as { id: string; group_id: string; display_name: string; aliases: unknown; created_at: unknown }[]).map(
+      (row) => ({
+        id: row.id,
+        groupId: row.group_id,
+        displayName: row.display_name,
+        aliases: Array.isArray(row.aliases) ? (row.aliases as string[]) : [],
+        createdAt: iso(row.created_at),
+      }),
+    );
+  }
+
+  async listCommitments(token: string, groupId: string): Promise<Commitment[]> {
+    await this.mustOwn(this.pool, token, groupId);
+    const { rows } = await this.pool.query(
+      "SELECT id, group_id, member_id, kind, amount, due_rule, created_at FROM commitments WHERE group_id = $1 ORDER BY id ASC",
+      [groupId],
+    );
+    return (
+      rows as {
+        id: string;
+        group_id: string;
+        member_id: string;
+        kind: Commitment["kind"];
+        amount: number;
+        due_rule: string;
+        created_at: unknown;
+      }[]
+    ).map((row) => ({
+      id: row.id,
+      groupId: row.group_id,
+      memberId: row.member_id,
+      kind: row.kind,
+      amount: row.amount,
+      dueRule: row.due_rule,
+      createdAt: iso(row.created_at),
+    }));
   }
 
   async createMember(token: string, input: CreateMemberInput): Promise<Member> {
@@ -394,5 +439,92 @@ export class PostgresLedgerStore implements LedgerStore {
       params,
     );
     return (rows as Record<string, unknown>[]).map((r) => this.toEntry(r));
+  }
+
+  async listProposals(
+    token: string,
+    groupId: string,
+    status?: Proposal["status"],
+  ): Promise<Proposal[]> {
+    await this.mustOwn(this.pool, token, groupId);
+    const params: string[] = [groupId];
+    let sql = `SELECT id, group_id, run_id, type, payload, quotes, status, decided_by, decided_at, created_at
+       FROM proposals WHERE group_id = $1`;
+    if (status) {
+      params.push(status);
+      sql += ` AND status = $${params.length}`;
+    }
+    sql += " ORDER BY created_at ASC, id ASC";
+    const { rows } = await this.pool.query(sql, params);
+    return (rows as Record<string, unknown>[]).map((r) => this.toProposal(r));
+  }
+
+  async saveFinding(
+    token: string,
+    input: { groupId: string; kind: Finding["kind"]; refs?: Record<string, unknown> },
+  ): Promise<Finding> {
+    await this.mustOwn(this.pool, token, input.groupId);
+    if (input.kind !== "only_on_paper" && input.kind !== "only_in_ledger" && input.kind !== "amount_differs") {
+      throw invalidInput(`unknown finding kind: ${String(input.kind)}`);
+    }
+    try {
+      const { rows } = await this.pool.query(
+        `INSERT INTO findings (id, group_id, kind, refs)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id, group_id, kind, refs, status, created_at`,
+        [randomUUID(), input.groupId, input.kind, JSON.stringify(input.refs ?? {})],
+      );
+      return this.toFinding(rows[0] as Record<string, unknown>);
+    } catch (err) {
+      throw this.asLedgerError(err, `unknown group: ${input.groupId}`);
+    }
+  }
+
+  async listFindings(
+    token: string,
+    groupId: string,
+    status?: Finding["status"],
+  ): Promise<Finding[]> {
+    await this.mustOwn(this.pool, token, groupId);
+    const params: string[] = [groupId];
+    let sql = "SELECT id, group_id, kind, refs, status, created_at FROM findings WHERE group_id = $1";
+    if (status) {
+      params.push(status);
+      sql += ` AND status = $${params.length}`;
+    }
+    sql += " ORDER BY created_at ASC, id ASC";
+    const { rows } = await this.pool.query(sql, params);
+    return (rows as Record<string, unknown>[]).map((r) => this.toFinding(r));
+  }
+
+  async resolveFinding(token: string, findingId: string): Promise<Finding> {
+    const { rows } = await this.pool.query("SELECT id, group_id, status FROM findings WHERE id = $1", [
+      findingId,
+    ]);
+    const finding = rows[0] as { id: string; group_id: string; status: string } | undefined;
+    if (!finding) {
+      throw invalidInput(`unknown finding: ${findingId}`);
+    }
+    await this.mustOwn(this.pool, token, finding.group_id);
+    if (finding.status === "resolved") {
+      throw conflict(`finding already resolved: ${finding.id}`);
+    }
+    const updated = await this.pool.query(
+      `UPDATE findings SET status = 'resolved' WHERE id = $1
+       RETURNING id, group_id, kind, refs, status, created_at`,
+      [finding.id],
+    );
+    return this.toFinding(updated.rows[0] as Record<string, unknown>);
+  }
+
+  private toFinding(row: Record<string, unknown>): Finding {
+    return {
+      id: row.id as string,
+      groupId: row.group_id as string,
+      kind: row.kind as Finding["kind"],
+      refs: (row.refs as Record<string, unknown>) ?? {},
+      status: row.status as Finding["status"],
+      createdAt: iso(row.created_at),
+    };
   }
 }

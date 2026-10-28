@@ -70,6 +70,18 @@ export interface Proposal {
   createdAt: string;
 }
 
+export type FindingKind = "only_on_paper" | "only_in_ledger" | "amount_differs";
+export type FindingStatus = "open" | "resolved";
+
+export interface Finding {
+  id: string;
+  groupId: string;
+  kind: FindingKind;
+  refs: Record<string, unknown>;
+  status: FindingStatus;
+  createdAt: string;
+}
+
 export class LedgerError extends Error {
   constructor(
     message: string,

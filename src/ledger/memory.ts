@@ -16,6 +16,7 @@ import {
   type CommitmentKind,
   type Entry,
   type EvidenceTier,
+  type Finding,
   type Group,
   type Member,
   type Proposal,
@@ -66,6 +67,7 @@ export class MemoryLedgerStore implements LedgerStore {
   private entries = new Map<string, Entry>();
   private entriesByProposal = new Map<string, Entry>();
   private proposals = new Map<string, Proposal>();
+  private findings = new Map<string, Finding>();
   private tokens = new Map<string, { id: string; groupId: string }>();
 
   async createGroup(name: string): Promise<{ group: Group; token: string }> {
@@ -99,6 +101,20 @@ export class MemoryLedgerStore implements LedgerStore {
       throw invalidInput(`unknown member in group: ${memberId}`);
     }
     return member;
+  }
+
+  async listMembers(token: string, groupId: string): Promise<Member[]> {
+    this.mustOwn(token, groupId);
+    return [...this.members.values()]
+      .filter((m) => m.groupId === groupId)
+      .sort((a, b) => a.id.localeCompare(b.id));
+  }
+
+  async listCommitments(token: string, groupId: string): Promise<Commitment[]> {
+    this.mustOwn(token, groupId);
+    return [...this.commitments.values()]
+      .filter((c) => c.groupId === groupId)
+      .sort((a, b) => a.id.localeCompare(b.id));
   }
 
   async createMember(token: string, input: CreateMemberInput): Promise<Member> {
@@ -271,5 +287,65 @@ export class MemoryLedgerStore implements LedgerStore {
       .filter((e) => !filter.memberId || e.memberId === filter.memberId)
       .filter((e) => !filter.period || e.period === filter.period)
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  }
+
+  async listProposals(
+    token: string,
+    groupId: string,
+    status?: Proposal["status"],
+  ): Promise<Proposal[]> {
+    this.mustOwn(token, groupId);
+    return [...this.proposals.values()]
+      .filter((p) => p.groupId === groupId)
+      .filter((p) => !status || p.status === status)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+  }
+
+  async saveFinding(
+    token: string,
+    input: { groupId: string; kind: Finding["kind"]; refs?: Record<string, unknown> },
+  ): Promise<Finding> {
+    this.mustOwn(token, input.groupId);
+    if (!this.groups.has(input.groupId)) {
+      throw invalidInput(`unknown group: ${input.groupId}`);
+    }
+    if (input.kind !== "only_on_paper" && input.kind !== "only_in_ledger" && input.kind !== "amount_differs") {
+      throw invalidInput(`unknown finding kind: ${String(input.kind)}`);
+    }
+    const finding: Finding = {
+      id: randomUUID(),
+      groupId: input.groupId,
+      kind: input.kind,
+      refs: input.refs ?? {},
+      status: "open",
+      createdAt: now(),
+    };
+    this.findings.set(finding.id, finding);
+    return finding;
+  }
+
+  async listFindings(
+    token: string,
+    groupId: string,
+    status?: Finding["status"],
+  ): Promise<Finding[]> {
+    this.mustOwn(token, groupId);
+    return [...this.findings.values()]
+      .filter((f) => f.groupId === groupId)
+      .filter((f) => !status || f.status === status)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+  }
+
+  async resolveFinding(token: string, findingId: string): Promise<Finding> {
+    const finding = this.findings.get(findingId);
+    if (!finding) {
+      throw invalidInput(`unknown finding: ${findingId}`);
+    }
+    this.mustOwn(token, finding.groupId);
+    if (finding.status === "resolved") {
+      throw conflict(`finding already resolved: ${finding.id}`);
+    }
+    finding.status = "resolved";
+    return finding;
   }
 }
