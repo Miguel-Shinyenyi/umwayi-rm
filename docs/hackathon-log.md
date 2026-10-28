@@ -220,3 +220,11 @@ Evidence:
 - Local: typecheck clean, build emits, 31 pass. The 12 pg tests skip without DATABASE_URL (stated skip, not a green result).
 Result: Today core complete except the live pg proof.
 Next: open PR, let CI run the pg suite, then mark H-08 done.
+
+### 2026-10-28: H-08 done, CI proves all suites
+Type: verification
+Status: done
+Context: queue.md H-08. PR 8, CI run 40757593802.
+Evidence: CI build success in 57s. Log lines show 5 files passed with 43 tests and zero skipped: health 3, memory conformance 11, pg 12 against real Postgres, fixtures 12, reconcile 5.
+Result: 12 fixtures pass with the same input giving the same order.
+Next: H-09 MCP server and first agent run.
