@@ -73,6 +73,10 @@ Not available yet. This section is filled in on Day 7 and tested on a fresh clon
 
 All data is synthetic. No group has used it. Demand over notebooks and existing apps is a hypothesis. Authentication is minimal. Data protection is not assessed. Model outputs are checked only on a small local set.
 
+## Dependencies
+
+Runtime: express (MIT). Dev: typescript (Apache-2.0), vitest (MIT), tsx (MIT), @types/express, @types/node.
+
 ## Licence
 
-MIT, pending confirmation (decision D-10 in `queue.md`).
+MIT.

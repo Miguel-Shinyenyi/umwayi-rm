@@ -161,3 +161,26 @@ Context: queue.md H-05. Protocol in docs/experiments.md, H1 and H2.
 Evidence: evals/h1/scenarios.json (60: 20 dev, 40 test, stratified 2/4 per ambiguous subtype and 10/20 clear), evals/h1/group.json plus commitments.json (12 synthetic members including the Brian collision pair, 500 and 1000 contributions, one 2000 loan repayment), evals/h2/questions.json (30: 10 dev, 20 test; needle 3/7, stale 3/7, identity 4/6; every question carries needs for the H-15 history build). Validation: JSON parses, no duplicate ids, all member refs resolve, all labels complete. SHA-256 recorded in docs/experiments.md. Checked with a python3 validation snippet plus shasum, run 2026-10-28.
 Result: splits frozen. Dev work uses dev ids only. Test ids run once per condition per seed for counted results.
 Next: H-06 scaffold. If PR review changes any scenario file, re-hash before merge. The 12-month H2 history gets built for H-15 from the needs lists.
+
+### 2026-10-28: H-06 scaffold built, compose proof pending CI
+Type: verification
+Status: in progress (unit and build green; compose acceptance unproven locally)
+Context: queue.md H-06. TypeScript plus express, vitest, Docker Compose with api plus postgres:16, GitHub Actions CI.
+Evidence:
+- npm run typecheck clean. npm test 3 passed. npm run build emits dist. Lockfile committed.
+- Unit tests avoid sockets: the sandbox blocks all listen calls, so the health handler is pure and tested directly. The wired route is proven by the compose healthcheck plus a CI curl.
+- docker compose config validates. Local up is blocked: buildx cannot write its cache under the sandbox, and host port 3000 is held by the live routine-machine stack (left untouched). Host port is API_PORT with default 3000; local runs on this machine need API_PORT=3002 (3001 is grafana).
+- The adapter interface carries H-04 defaults in types: reasoningEffort is the literal "low", timeoutMs 60000, seed 7. FakeModelAdapter ships per experiments rule 8. The live Baseten adapter waits for H-09.
+- npm needed --cache /tmp/npm-cache (home npm cache not writable in sandbox). Project unaffected. CI uses a fresh cache.
+- Deps named in README per the rules: express MIT; typescript Apache-2.0; vitest, tsx MIT. README licence line corrected to MIT (D-10 decided).
+- Postgres runs idle with no schema. Migrations start in H-07.
+Result: scaffold complete except the live compose proof.
+Next: open PR, let CI prove `docker compose up` serves /health, then mark H-06 done.
+
+### 2026-10-28: H-06 done, CI proves compose health
+Type: verification
+Status: done
+Context: queue.md H-06. PR 6, CI run 40750952926.
+Evidence: CI build job success in 50s. Every step green: npm ci, typecheck, tests, build, docker compose up -d --wait, curl -fsS /health, teardown. The curl step is the acceptance proof.
+Result: `docker compose up` serves /health.
+Next: H-07 ledger core.
