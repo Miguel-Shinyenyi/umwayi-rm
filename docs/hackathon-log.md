@@ -115,3 +115,41 @@ Context: queue.md D-9 and D-10.
 Evidence: Miguel reply 2026-10-28: TypeScript for D-9; MIT LICENSE already committed for D-10.
 Result: One TypeScript service (API plus MCP server in one process). Licence MIT.
 Next: H-06 scaffold follows the TypeScript choice.
+
+### 2026-10-28: H-04 Day 1 model checks on Baseten
+Type: verification
+Status: done with one caveat (primary terms unread, see below)
+Context: queue.md H-04. Model meta-models/muse-spark-open-1026 on https://inference.baseten.co/v1. Key from a local 600 file, piped, never printed. Temperature 0, seed 7. Four curl probe rounds ran 14:23 to 14:33 EAT.
+Evidence:
+- Tool calling PASS, 1.2s. tools=[get_member_balance], tool_choice auto. Returned tool_calls with name get_member_balance and arguments {"member": "Wanjiku"}.
+- Text PASS, 1.4s, with reasoning_effort low. Returned exactly "Sawa".
+- Image PASS for acceptance, 3.1s, with reasoning_effort low. Described a 1px PNG as tiny blurry pixelated image. Handwriting reading not tested here. Deferred to H-11 synthetic photos.
+- Audio FAIL. The model states it cannot hear or process audio, and prompt audio_tokens stayed 0. Direct audio intake is cut under the plan rule that a failed capability cuts its feature. Voice now depends on a Muse Voice Transcribe check, whose Meta key is not yet provisioned.
+- Swahili PASS, author-judged, 2.5s, with reasoning_effort low. Returned a fluent formal thanks draft for five hundred shillings. One reader judged it. Not a metric. Swahili drafts stay in stretch scope.
+- Latency is highly variable: 1.2 to 4.7s warm, 27s model list, 68s first call, 113s one image call, one 180s timeout. Verdict: usable with timeouts of 60s or more, retries, and low reasoning effort.
+- Adapter rule: reasoning_effort low is mandatory. Default effort burned 20, 400, and 2000 token budgets with finish length and empty content across three rounds.
+- Model id works exactly as the plan writes it. No short form needed.
+- Terms: primary license unread. The Hugging Face file returns 401 without an accepted license login. Ten secondary sources agree the display line is required, and the README already carries it provisionally. Followup: read the primary text with an accepted account.
+- Token spend across probes is about 4k tokens. Billing unchecked. Baseten key verified live. Modal key held but unused.
+Result: capabilities recorded with date and command. Voice design switches to transcribe first. Adapter defaults are low effort with generous timeouts.
+Next: H-05 scenarios written for transcribed voice, H-06 scaffold with the adapter defaults, terms followup.
+
+### 2026-10-28: H-04 followup, Voice Transcribe plumbing works
+Type: verification
+Status: partial (plumbing verified, speech quality open)
+Context: H-04 audio FAIL on Baseten moved voice to Muse Voice Transcribe on the Meta Model API.
+Evidence:
+- GET /models on https://api.meta.ai/v1 lists 9 models including muse-voice-transcribe-1.0. No muse-spark-open there, so the chat fallback cannot be the same model. Fallback is muse-spark-1.3 for chat plus transcribe for voice.
+- POST /v1/asr/transcribe is not OpenAI style. /audio/transcriptions returns 404. Working shape: multipart request JSON {"model", "audioEncoding": "WAV"} plus an audio part, mono s16le WAV at 16 or 24 kHz. Found by probing server errors plus a provider doc.
+- A 1s 16kHz tone returned HTTP 200 in 5.5s with an empty transcript. Plumbing verified end to end.
+- Speech quality unverified. macOS say cannot write files in this sandbox, so no synthetic speech sample exists yet.
+Result: the transcribe path is viable. The quality check waits on a real speech sample.
+Next: transcribe a user recorded reading of a synthetic script, then H-10 intake uses transcribe first.
+
+### 2026-10-28: H-04 followup, Voice Transcribe speech quality verified
+Type: verification
+Status: done
+Context: transcribe plumbing verified earlier. Quality waited on speech.
+Evidence: user supplied a 9s WhatsApp voice note (Ogg Opus, kept outside the repo), converted with ffmpeg to 16kHz mono WAV, posted to /v1/asr/transcribe with muse-voice-transcribe-1.0. HTTP 200 in 3.9s. Transcript withheld: the sample is a personal recording and the repo carries synthetic data only. Verdict: a short English payment line transcribed sensibly end to end.
+Result: voice transcribe path verified for quality and plumbing. H-10 intake uses transcribe first.
+Next: H-05 scenarios, H-06 scaffold.
