@@ -145,3 +145,11 @@ Evidence:
 - Speech quality unverified. macOS say cannot write files in this sandbox, so no synthetic speech sample exists yet.
 Result: the transcribe path is viable. The quality check waits on a real speech sample.
 Next: transcribe a user recorded reading of a synthetic script, then H-10 intake uses transcribe first.
+
+### 2026-10-28: H-04 followup, Voice Transcribe speech quality verified
+Type: verification
+Status: done
+Context: transcribe plumbing verified earlier. Quality waited on speech.
+Evidence: user supplied a 9s WhatsApp voice note (Ogg Opus, kept outside the repo), converted with ffmpeg to 16kHz mono WAV, posted to /v1/asr/transcribe with muse-voice-transcribe-1.0. HTTP 200 in 3.9s. Transcript withheld: the sample is a personal recording and the repo carries synthetic data only. Verdict: a short English payment line transcribed sensibly end to end.
+Result: voice transcribe path verified for quality and plumbing. H-10 intake uses transcribe first.
+Next: H-05 scenarios, H-06 scaffold.
