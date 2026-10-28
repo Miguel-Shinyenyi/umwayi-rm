@@ -133,3 +133,15 @@ Evidence:
 - Token spend across probes is about 4k tokens. Billing unchecked. Baseten key verified live. Modal key held but unused.
 Result: capabilities recorded with date and command. Voice design switches to transcribe first. Adapter defaults are low effort with generous timeouts.
 Next: H-05 scenarios written for transcribed voice, H-06 scaffold with the adapter defaults, terms followup.
+
+### 2026-10-28: H-04 followup, Voice Transcribe plumbing works
+Type: verification
+Status: partial (plumbing verified, speech quality open)
+Context: H-04 audio FAIL on Baseten moved voice to Muse Voice Transcribe on the Meta Model API.
+Evidence:
+- GET /models on https://api.meta.ai/v1 lists 9 models including muse-voice-transcribe-1.0. No muse-spark-open there, so the chat fallback cannot be the same model. Fallback is muse-spark-1.3 for chat plus transcribe for voice.
+- POST /v1/asr/transcribe is not OpenAI style. /audio/transcriptions returns 404. Working shape: multipart request JSON {"model", "audioEncoding": "WAV"} plus an audio part, mono s16le WAV at 16 or 24 kHz. Found by probing server errors plus a provider doc.
+- A 1s 16kHz tone returned HTTP 200 in 5.5s with an empty transcript. Plumbing verified end to end.
+- Speech quality unverified. macOS say cannot write files in this sandbox, so no synthetic speech sample exists yet.
+Result: the transcribe path is viable. The quality check waits on a real speech sample.
+Next: transcribe a user recorded reading of a synthetic script, then H-10 intake uses transcribe first.
