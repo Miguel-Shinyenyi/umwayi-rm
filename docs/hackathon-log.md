@@ -332,3 +332,15 @@ Evidence:
 - Submission text filled from saved files: H1 0/48 vs 0/48 with the 67/72 vs 24/72 control, H2 19/20 vs 20/20 vs 13/20 vs 20/20, Meta transcription credit, 0 interviews marked for update.
 Result: everything except the recording is ready; the video link is the only missing acceptance item.
 Next: Miguel records and links the video, then H-17 submit by Nov 4 16:00 EAT.
+
+### 2026-10-29: H-18 workshop alignment and verification hardening
+Type: build
+Status: done
+Context: queue.md H-18. Branch h-18/workshop-alignment. Four gated parts: run the workshop, gap analysis, implementation, tests.
+Evidence:
+- Workshop run in its own folder (no code copied): setup green, session 1 answered in 21 turns, verification tests 58 OK, first memo failed 5 claim findings, checklist 67%, branched run refused twice then filed a passing memo, attorney approved, run done.
+- Adopted G1 to G5: approval-time re-verification with a stored trail (migration 004); claim-vs-quote model check at approve time, skipped without a model; persisted runs with traces linked from proposals plus GET /runs/:id and a console trace view; line coverage on run read; reminder rejection when text names another member. Member resolver shared with the stores.
+- Tests: 2 new conformance cases (both backends in CI), 12 verify tests, console trace markers. Full local suite: 103 pass, 16 pg skip for CI.
+- Not adopted with reasons recorded: ground-truth scoring, cross-turn resume, a separate attorney role, read-everything checks.
+Result: every adopted workshop mechanic is implemented with tests; the inbox now shows check trails and traces.
+Next: H-16 video and H-17 submit need Miguel. H-03, H-14, D-11, D-12 still open.
