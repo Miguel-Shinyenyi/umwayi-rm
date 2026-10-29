@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type {
   ApproveResult,
   CreateCommitmentInput,
@@ -12,6 +12,9 @@ import {
   accessDenied,
   conflict,
   invalidInput,
+  type ArchiveGist,
+  type ArchiveItem,
+  type ArchiveKind,
   type Commitment,
   type CommitmentKind,
   type Entry,
@@ -31,6 +34,7 @@ const TIERS: EvidenceTier[] = [
   "self_reported",
 ];
 const PROPOSAL_TYPES: ProposalType[] = ["entry", "question", "draft_reminder"];
+const ARCHIVE_KINDS: ArchiveKind[] = ["meeting", "ledger_month", "constitution"];
 
 function now(): string {
   return new Date().toISOString();
@@ -68,6 +72,7 @@ export class MemoryLedgerStore implements LedgerStore {
   private entriesByProposal = new Map<string, Entry>();
   private proposals = new Map<string, Proposal>();
   private findings = new Map<string, Finding>();
+  private archive = new Map<string, ArchiveItem>();
   private tokens = new Map<string, { id: string; groupId: string }>();
 
   async resetDemo(): Promise<void> {
@@ -78,6 +83,7 @@ export class MemoryLedgerStore implements LedgerStore {
     this.entriesByProposal.clear();
     this.proposals.clear();
     this.findings.clear();
+    this.archive.clear();
     this.tokens.clear();
   }
 
@@ -367,5 +373,46 @@ export class MemoryLedgerStore implements LedgerStore {
     }
     finding.status = "resolved";
     return finding;
+  }
+
+  async saveArchiveItem(
+    token: string,
+    input: { groupId: string; kind: ArchiveKind; verbatim: string; gist: string },
+  ): Promise<ArchiveItem> {
+    this.mustOwn(token, input.groupId);
+    if (!ARCHIVE_KINDS.includes(input.kind)) {
+      throw invalidInput(`unknown archive kind: ${String(input.kind)}`);
+    }
+    if (!input.verbatim || !input.gist) {
+      throw invalidInput("verbatim and gist are required");
+    }
+    const item: ArchiveItem = {
+      id: randomUUID(),
+      groupId: input.groupId,
+      kind: input.kind,
+      verbatim: input.verbatim,
+      sha256: createHash("sha256").update(input.verbatim, "utf8").digest("hex"),
+      gist: input.gist,
+      createdAt: now(),
+    };
+    this.archive.set(item.id, item);
+    return item;
+  }
+
+  async getArchiveItem(token: string, groupId: string, id: string): Promise<ArchiveItem> {
+    this.mustOwn(token, groupId);
+    const item = this.archive.get(id);
+    if (!item || item.groupId !== groupId) {
+      throw invalidInput(`unknown archive item: ${id}`);
+    }
+    return item;
+  }
+
+  async listArchiveItems(token: string, groupId: string): Promise<ArchiveGist[]> {
+    this.mustOwn(token, groupId);
+    return [...this.archive.values()]
+      .filter((a) => a.groupId === groupId)
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((a) => ({ id: a.id, kind: a.kind, gist: a.gist, sha256: a.sha256 }));
   }
 }

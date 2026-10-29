@@ -1,4 +1,7 @@
 import type {
+  ArchiveGist,
+  ArchiveItem,
+  ArchiveKind,
   Commitment,
   CommitmentKind,
   Entry,
@@ -76,4 +79,10 @@ export interface LedgerStore {
   listFindings(token: string, groupId: string, status?: FindingStatus): Promise<Finding[]>;
   resolveFinding(token: string, findingId: string): Promise<Finding>;
   resetDemo(): Promise<void>;
+  saveArchiveItem(
+    token: string,
+    input: { groupId: string; kind: ArchiveKind; verbatim: string; gist: string },
+  ): Promise<ArchiveItem>;
+  getArchiveItem(token: string, groupId: string, id: string): Promise<ArchiveItem>;
+  listArchiveItems(token: string, groupId: string): Promise<ArchiveGist[]>;
 }

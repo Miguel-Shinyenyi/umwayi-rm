@@ -72,6 +72,24 @@ export interface Proposal {
 
 export type FindingKind = "only_on_paper" | "only_in_ledger" | "amount_differs";
 export type FindingStatus = "open" | "resolved";
+export type ArchiveKind = "meeting" | "ledger_month" | "constitution";
+
+export interface ArchiveItem {
+  id: string;
+  groupId: string;
+  kind: ArchiveKind;
+  verbatim: string;
+  sha256: string;
+  gist: string;
+  createdAt: string;
+}
+
+export interface ArchiveGist {
+  id: string;
+  kind: ArchiveKind;
+  gist: string;
+  sha256: string;
+}
 
 export interface Finding {
   id: string;

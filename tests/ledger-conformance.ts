@@ -345,6 +345,29 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
       }
     });
 
+    it("saves and recalls archive items with checksums", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const item = await store.saveArchiveItem(token, {
+          groupId: group.id,
+          kind: "meeting",
+          verbatim: "Met on Sunday. All paid.",
+          gist: "Sunday meeting, all paid",
+        });
+        expect(item.sha256).toMatch(/^[0-9a-f]{64}$/);
+        const fetched = await store.getArchiveItem(token, group.id, item.id);
+        expect(fetched.verbatim).toBe("Met on Sunday. All paid.");
+        const gists = await store.listArchiveItems(token, group.id);
+        expect(gists).toHaveLength(1);
+        expect(gists[0]).not.toHaveProperty("verbatim");
+        expect(gists[0]?.sha256).toBe(item.sha256);
+        await expectLedgerError(store.getArchiveItem(token, group.id, "missing"), 422);
+      } finally {
+        await close();
+      }
+    });
+
     it("resets demo state and invalidates old tokens", async () => {
       const { store, close } = await makeStore();
       try {
