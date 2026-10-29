@@ -13,6 +13,9 @@ import type {
   Proposal,
   ProposalStatus,
   ProposalType,
+  ProposalVerification,
+  Run,
+  RunStep,
 } from "./types.js";
 
 export interface CreateMemberInput {
@@ -68,8 +71,23 @@ export interface LedgerStore {
   createCommitment(token: string, input: CreateCommitmentInput): Promise<Commitment>;
   createEntry(token: string, input: CreateEntryInput): Promise<Entry>;
   createProposal(token: string, input: CreateProposalInput): Promise<Proposal>;
+  getProposal(token: string, proposalId: string): Promise<Proposal>;
+  recordVerification(token: string, proposalId: string, verification: ProposalVerification): Promise<Proposal>;
   approveProposal(token: string, proposalId: string): Promise<ApproveResult>;
   rejectProposal(token: string, proposalId: string): Promise<Proposal>;
+  saveRun(
+    token: string,
+    input: {
+      id: string;
+      groupId: string;
+      intakeRef: string;
+      modelId: string;
+      promptVersion: string;
+      steps: RunStep[];
+      status: string;
+    },
+  ): Promise<Run>;
+  getRun(token: string, runId: string): Promise<Run>;
   listEntries(token: string, filter: ListEntriesFilter): Promise<Entry[]>;
   listProposals(token: string, groupId: string, status?: ProposalStatus): Promise<Proposal[]>;
   saveFinding(

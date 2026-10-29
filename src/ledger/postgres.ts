@@ -22,7 +22,11 @@ import {
   type Group,
   type Member,
   type Proposal,
+  type ProposalVerification,
+  type Run,
+  type RunStep,
 } from "./types.js";
+import { resolveMembers } from "./resolve.js";
 
 function iso(value: unknown): string {
   if (value instanceof Date) {
@@ -112,6 +116,93 @@ export class PostgresLedgerStore implements LedgerStore {
       name: row.name,
       currency: row.currency,
       demo: row.demo,
+      createdAt: iso(row.created_at),
+    };
+  }
+
+  async getProposal(token: string, proposalId: string): Promise<Proposal> {
+    const { rows } = await this.pool.query(
+      `SELECT id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at
+       FROM proposals WHERE id = $1`,
+      [proposalId],
+    );
+    const row = rows[0] as Record<string, unknown> | undefined;
+    if (!row) {
+      throw invalidInput(`unknown proposal: ${proposalId}`);
+    }
+    await this.mustOwn(this.pool, token, row.group_id as string);
+    return this.toProposal(row);
+  }
+
+  async recordVerification(
+    token: string,
+    proposalId: string,
+    verification: ProposalVerification,
+  ): Promise<Proposal> {
+    const proposal = await this.getProposal(token, proposalId);
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    const merged: ProposalVerification = {
+      checks: [...(proposal.verification?.checks ?? []), ...verification.checks],
+      at: verification.at,
+    };
+    const { rows } = await this.pool.query(
+      `UPDATE proposals SET verification = $1 WHERE id = $2
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
+      [JSON.stringify(merged), proposal.id],
+    );
+    return this.toProposal(rows[0] as Record<string, unknown>);
+  }
+
+  async saveRun(
+    token: string,
+    input: {
+      id: string;
+      groupId: string;
+      intakeRef: string;
+      modelId: string;
+      promptVersion: string;
+      steps: RunStep[];
+      status: string;
+    },
+  ): Promise<Run> {
+    await this.mustOwn(this.pool, token, input.groupId);
+    try {
+      const { rows } = await this.pool.query(
+        `INSERT INTO runs (id, group_id, intake_ref, model_id, prompt_version, steps, status)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING id, group_id, intake_ref, model_id, prompt_version, steps, status, created_at`,
+        [input.id, input.groupId, input.intakeRef, input.modelId, input.promptVersion, JSON.stringify(input.steps), input.status],
+      );
+      return this.toRun(rows[0] as Record<string, unknown>);
+    } catch (err) {
+      throw this.asLedgerError(err, `unknown group: ${input.groupId}`);
+    }
+  }
+
+  async getRun(token: string, runId: string): Promise<Run> {
+    const { rows } = await this.pool.query(
+      "SELECT id, group_id, intake_ref, model_id, prompt_version, steps, status, created_at FROM runs WHERE id = $1",
+      [runId],
+    );
+    const row = rows[0] as Record<string, unknown> | undefined;
+    if (!row) {
+      throw invalidInput(`unknown run: ${runId}`);
+    }
+    await this.mustOwn(this.pool, token, row.group_id as string);
+    return this.toRun(row);
+  }
+
+  private toRun(row: Record<string, unknown>): Run {
+    return {
+      id: row.id as string,
+      groupId: row.group_id as string,
+      intakeRef: row.intake_ref as string,
+      modelId: row.model_id as string,
+      promptVersion: row.prompt_version as string,
+      steps: (row.steps as RunStep[]) ?? [],
+      status: row.status as string,
       createdAt: iso(row.created_at),
     };
   }
@@ -294,6 +385,7 @@ export class PostgresLedgerStore implements LedgerStore {
       payload: (row.payload as Record<string, unknown>) ?? {},
       quotes: Array.isArray(row.quotes) ? (row.quotes as string[]) : [],
       status: row.status as Proposal["status"],
+      verification: (row.verification as Proposal["verification"]) ?? null,
       decidedBy: (row.decided_by as string | null) ?? null,
       decidedAt: row.decided_at == null ? null : iso(row.decided_at),
       createdAt: iso(row.created_at),
@@ -322,7 +414,7 @@ export class PostgresLedgerStore implements LedgerStore {
       const { rows } = await this.pool.query(
         `INSERT INTO proposals (id, group_id, run_id, type, payload, quotes)
          VALUES ($1, $2, $3, $4, $5, $6)
-         RETURNING id, group_id, run_id, type, payload, quotes, status, decided_by, decided_at, created_at`,
+         RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
         [
           randomUUID(),
           input.groupId,
@@ -343,11 +435,19 @@ export class PostgresLedgerStore implements LedgerStore {
     try {
       await client.query("BEGIN");
       const found = await client.query(
-        "SELECT id, group_id, type, payload, status FROM proposals WHERE id = $1 FOR UPDATE",
+        "SELECT id, group_id, type, payload, quotes, status, verification FROM proposals WHERE id = $1 FOR UPDATE",
         [proposalId],
       );
       const proposal = found.rows[0] as
-        | { id: string; group_id: string; type: string; payload: Record<string, unknown>; status: string }
+        | {
+            id: string;
+            group_id: string;
+            type: string;
+            payload: Record<string, unknown>;
+            quotes: unknown;
+            status: string;
+            verification: ProposalVerification | null;
+          }
         | undefined;
       if (!proposal) {
         throw invalidInput(`unknown proposal: ${proposalId}`);
@@ -394,6 +494,35 @@ export class PostgresLedgerStore implements LedgerStore {
       if (typeof payload.occurredOn !== "string") {
         throw invalidInput("entry proposal payload needs occurredOn");
       }
+      const memberRows = await client.query(
+        "SELECT id, group_id, display_name, aliases, created_at FROM members WHERE group_id = $1",
+        [proposal.group_id],
+      );
+      const groupMembers = (memberRows.rows as { id: string; group_id: string; display_name: string; aliases: unknown; created_at: unknown }[]).map(
+        (row) => ({
+          id: row.id,
+          groupId: row.group_id,
+          displayName: row.display_name,
+          aliases: Array.isArray(row.aliases) ? (row.aliases as string[]) : [],
+          createdAt: iso(row.created_at),
+        }),
+      );
+      const member = groupMembers.find((m) => m.id === payload.memberId);
+      const matches = member ? resolveMembers(groupMembers, member.displayName) : [];
+      const unique = matches.length === 1 && matches[0]?.id === payload.memberId;
+      if (!unique) {
+        throw conflict(`member no longer resolves uniquely for proposal: ${proposal.id}`);
+      }
+      const quoteCount = Array.isArray(proposal.quotes) ? (proposal.quotes as unknown[]).length : 0;
+      const trail: ProposalVerification = {
+        checks: [
+          ...(proposal.verification?.checks ?? []),
+          { name: "schema_valid", passed: true },
+          { name: "member_unique", passed: true },
+          { name: "quotes_attached", passed: quoteCount > 0, detail: `${quoteCount} quote(s) attached` },
+        ],
+        at: new Date().toISOString(),
+      };
       const inserted = await client.query(
         `INSERT INTO entries (id, group_id, member_id, kind, amount, period, occurred_on, evidence_tier, source_ref, proposal_id, approved_by)
          VALUES ($1, $2, $3, $4, $5, $6, $7, 'agent_proposed_approved', $8, $9, $10)
@@ -411,10 +540,10 @@ export class PostgresLedgerStore implements LedgerStore {
           approverId,
         ],
       );
-      await client.query("UPDATE proposals SET status = 'approved', decided_by = $1, decided_at = now() WHERE id = $2", [
-        approverId,
-        proposal.id,
-      ]);
+      await client.query(
+        "UPDATE proposals SET status = 'approved', decided_by = $1, decided_at = now(), verification = $2 WHERE id = $3",
+        [approverId, JSON.stringify(trail), proposal.id],
+      );
       await client.query("COMMIT");
       return { entry: this.toEntry(inserted.rows[0] as Record<string, unknown>), already: false };
     } catch (err) {
@@ -439,7 +568,7 @@ export class PostgresLedgerStore implements LedgerStore {
     }
     const updated = await this.pool.query(
       `UPDATE proposals SET status = 'rejected', decided_by = $1, decided_at = now() WHERE id = $2
-       RETURNING id, group_id, run_id, type, payload, quotes, status, decided_by, decided_at, created_at`,
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
       [approverId, proposal.id],
     );
     return this.toProposal(updated.rows[0] as Record<string, unknown>);
@@ -472,7 +601,7 @@ export class PostgresLedgerStore implements LedgerStore {
   ): Promise<Proposal[]> {
     await this.mustOwn(this.pool, token, groupId);
     const params: string[] = [groupId];
-    let sql = `SELECT id, group_id, run_id, type, payload, quotes, status, decided_by, decided_at, created_at
+    let sql = `SELECT id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at
        FROM proposals WHERE group_id = $1`;
     if (status) {
       params.push(status);
@@ -543,7 +672,7 @@ export class PostgresLedgerStore implements LedgerStore {
 
   async resetDemo(): Promise<void> {
     await this.pool.query(
-      "TRUNCATE groups, members, commitments, entries, proposals, treasurer_tokens, findings, archive_items RESTART IDENTITY CASCADE",
+      "TRUNCATE groups, members, commitments, entries, proposals, treasurer_tokens, findings, archive_items, runs RESTART IDENTITY CASCADE",
     );
   }
 
