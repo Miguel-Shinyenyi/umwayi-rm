@@ -32,5 +32,5 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-13 | Console, Lab, seed and reset | done 2026-10-29 | Fresh clone runs from the README | log |
 | H-14 | Interviews with two treasurers or members | next | `docs/research/interviews.md` has real rows, or says none | interviews |
 | H-15 | H2 run (stretch) | done 2026-10-29 | Only after H-13 is green | `docs/evals/` |
-| H-16 | Freeze, record the video, write submission text | later | Video link public; repo public; text matches saved results | log |
+| H-16 | Freeze, record the video, write submission text | now (Miguel: record video; text ready) | Video link public; repo public; text matches saved results | log |
 | H-17 | Submit | later | Portal receipt saved before Nov 4, 16:00 EAT | log |
