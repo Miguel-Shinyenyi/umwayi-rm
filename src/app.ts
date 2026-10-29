@@ -13,6 +13,7 @@ import { createIntakeHandler, type Transcriber } from "./routes/intake.js";
 import { createLabHandler } from "./routes/lab.js";
 import { createPageHandler } from "./routes/page.js";
 import { createProposalHandlers } from "./routes/proposals.js";
+import { createQuestionHandlers } from "./routes/questions.js";
 import { createRunHandler } from "./routes/runs.js";
 
 export interface AppDeps {
@@ -56,9 +57,11 @@ export function createApp(deps?: AppDeps): express.Express {
     app.get("/groups/:id/entries", groups.listEntries);
     app.get("/lab/runs", createLabHandler({ evalsDir: "docs/evals" }));
     app.get("/runs/:id", createRunHandler(deps));
+    app.post("/groups/:id/questions/:qid/answer", createQuestionHandlers({ ...deps, loadPack }).answerQuestion);
     const proposals = createProposalHandlers(deps);
     app.get("/groups/:id/proposals", proposals.listProposals);
     app.post("/proposals/:id/approve", proposals.approveProposal);
+    app.post("/proposals/:id/edit", proposals.editProposal);
     app.post("/proposals/:id/reject", proposals.rejectProposal);
   }
 
