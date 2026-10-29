@@ -29,7 +29,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-10 | Proposals, approval, voice intake | done 2026-10-28 | Voice note becomes approved entries; duplicate approval changes nothing | log |
 | H-11 | Photo reading and reconciliation findings | done 2026-10-28 | Page becomes proposed rows; findings listed | log |
 | H-12 | H1 run on the frozen test split; fallback mode | done 2026-10-29 | Run saved with date, model id, prompt version, seed; model-off passes the demo path | `docs/evals/` |
-| H-13 | Console, Lab, seed and reset | later | Fresh clone runs from the README | log |
+| H-13 | Console, Lab, seed and reset | done 2026-10-29 | Fresh clone runs from the README | log |
 | H-14 | Interviews with two treasurers or members | next | `docs/research/interviews.md` has real rows, or says none | interviews |
 | H-15 | H2 run (stretch) | later | Only after H-13 is green | `docs/evals/` |
 | H-16 | Freeze, record the video, write submission text | later | Video link public; repo public; text matches saved results | log |
