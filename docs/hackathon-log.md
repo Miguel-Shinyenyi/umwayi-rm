@@ -321,3 +321,14 @@ Evidence:
 - Full local suite: 91 pass, 14 pg skip for CI.
 Result: H2 complete with a null on seed 7; plain retrieval matches full context at the lowest cost.
 Next: H-16 freeze, video, and submission text. H-03, H-14, D-11, D-12 still need Miguel.
+
+### 2026-10-29: H-16 freeze audit and submission text (video open)
+Type: build
+Status: partial, Miguel records the video
+Context: queue.md H-16. Branch h-16/freeze.
+Evidence:
+- Freeze audit: repo public with main default; first code commit Oct 28; demo path runs from README; traces carry the model id; approval idempotent; model-off fallback tested; H1 3-seed and H2 runs saved; no secrets or non-doc files in the tree; .env.example holds placeholders only; display line provisional in README, console, and Lab.
+- Demo script fixed to reality: two Brians not Marys; approve or reject (no edit route); inbox drafts instead of a copy button; restart-without-keys instead of a model switch; Lab pass-rate chart with the null stated on screen.
+- Submission text filled from saved files: H1 0/48 vs 0/48 with the 67/72 vs 24/72 control, H2 19/20 vs 20/20 vs 13/20 vs 20/20, Meta transcription credit, 0 interviews marked for update.
+Result: everything except the recording is ready; the video link is the only missing acceptance item.
+Next: Miguel records and links the video, then H-17 submit by Nov 4 16:00 EAT.
