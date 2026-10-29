@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-29T16:42:42.539Z",
+  "scorerFixes": [
+    "comma numbers (18,400 = 18400)",
+    "negation forms (not/never = no)"
+  ],
+  "conditions": {
+    "t": {
+      "raw": "13/20",
+      "rescored": "13/20",
+      "byKind": {
+        "needle": {
+          "pass": 3,
+          "total": 7
+        },
+        "stale": {
+          "pass": 4,
+          "total": 7
+        },
+        "identity": {
+          "pass": 6,
+          "total": 6
+        }
+      },
+      "tokens": {
+        "prompt": 17727,
+        "completion": 5230
+      },
+      "recalls": 0,
+      "flipped": []
+    },
+    "r": {
+      "raw": "19/20",
+      "rescored": "20/20",
+      "byKind": {
+        "needle": {
+          "pass": 7,
+          "total": 7
+        },
+        "stale": {
+          "pass": 7,
+          "total": 7
+        },
+        "identity": {
+          "pass": 6,
+          "total": 6
+        }
+      },
+      "tokens": {
+        "prompt": 15361,
+        "completion": 6162
+      },
+      "recalls": 0,
+      "flipped": [
+        "h2-008"
+      ]
+    },
+    "a": {
+      "raw": "17/20",
+      "rescored": "19/20",
+      "byKind": {
+        "needle": {
+          "pass": 7,
+          "total": 7
+        },
+        "stale": {
+          "pass": 7,
+          "total": 7
+        },
+        "identity": {
+          "pass": 5,
+          "total": 6
+        }
+      },
+      "tokens": {
+        "prompt": 94764,
+        "completion": 7522
+      },
+      "recalls": 23,
+      "flipped": [
+        "h2-008",
+        "h2-026"
+      ]
+    },
+    "f": {
+      "raw": "19/20",
+      "rescored": "20/20",
+      "byKind": {
+        "needle": {
+          "pass": 7,
+          "total": 7
+        },
+        "stale": {
+          "pass": 7,
+          "total": 7
+        },
+        "identity": {
+          "pass": 6,
+          "total": 6
+        }
+      },
+      "tokens": {
+        "prompt": 57867,
+        "completion": 5714
+      },
+      "recalls": 0,
+      "flipped": [
+        "h2-008"
+      ]
+    }
+  }
+}
