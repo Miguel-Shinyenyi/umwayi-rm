@@ -122,7 +122,7 @@ export class PostgresLedgerStore implements LedgerStore {
 
   async getProposal(token: string, proposalId: string): Promise<Proposal> {
     const { rows } = await this.pool.query(
-      `SELECT id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at
+      `SELECT id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at
        FROM proposals WHERE id = $1`,
       [proposalId],
     );
@@ -149,8 +149,69 @@ export class PostgresLedgerStore implements LedgerStore {
     };
     const { rows } = await this.pool.query(
       `UPDATE proposals SET verification = $1 WHERE id = $2
-       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at`,
       [JSON.stringify(merged), proposal.id],
+    );
+    return this.toProposal(rows[0] as Record<string, unknown>);
+  }
+
+  async editProposal(token: string, proposalId: string, payload: Record<string, unknown>): Promise<Proposal> {
+    const proposal = await this.getProposal(token, proposalId);
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    if (proposal.type !== "entry") {
+      throw invalidInput(`only entry proposals can be edited, got: ${proposal.type}`);
+    }
+    const next = payload as {
+      memberId?: unknown;
+      kind?: unknown;
+      amount?: unknown;
+      period?: unknown;
+      occurredOn?: unknown;
+    };
+    if (typeof next.memberId !== "string") {
+      throw invalidInput("entry proposal payload needs memberId");
+    }
+    await this.mustMember(this.pool, proposal.groupId, next.memberId);
+    if (next.kind !== "contribution" && next.kind !== "loan_repayment") {
+      throw invalidInput(`unknown kind: ${String(next.kind)}`);
+    }
+    if (typeof next.amount !== "number" || !Number.isInteger(next.amount) || next.amount <= 0) {
+      throw invalidInput(`amount must be a positive integer, got: ${String(next.amount)}`);
+    }
+    if (typeof next.period !== "string" || !/^\d{4}-\d{2}$/.test(next.period)) {
+      throw invalidInput(`period must be YYYY-MM, got: ${String(next.period)}`);
+    }
+    if (typeof next.occurredOn !== "string") {
+      throw invalidInput("entry proposal payload needs occurredOn");
+    }
+    const audit = [{ payload: proposal.payload, at: new Date().toISOString() }];
+    const { rows } = await this.pool.query(
+      `UPDATE proposals SET payload = $1, edits = edits || $2::jsonb, verification = NULL WHERE id = $3
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at`,
+      [JSON.stringify(payload), JSON.stringify(audit), proposal.id],
+    );
+    return this.toProposal(rows[0] as Record<string, unknown>);
+  }
+
+  async markQuestionAnswered(token: string, questionId: string, answer: string): Promise<Proposal> {
+    const proposal = await this.getProposal(token, questionId);
+    if (proposal.type !== "question") {
+      throw invalidInput(`only questions can be answered, got: ${proposal.type}`);
+    }
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    const approverId = await this.mustOwn(this.pool, token, proposal.groupId);
+    const merged: ProposalVerification = {
+      checks: [...(proposal.verification?.checks ?? []), { name: "answered", passed: true, detail: answer }],
+      at: new Date().toISOString(),
+    };
+    const { rows } = await this.pool.query(
+      `UPDATE proposals SET status = 'answered', decided_by = $1, decided_at = now(), verification = $2 WHERE id = $3
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at`,
+      [approverId, JSON.stringify(merged), proposal.id],
     );
     return this.toProposal(rows[0] as Record<string, unknown>);
   }
@@ -386,6 +447,7 @@ export class PostgresLedgerStore implements LedgerStore {
       quotes: Array.isArray(row.quotes) ? (row.quotes as string[]) : [],
       status: row.status as Proposal["status"],
       verification: (row.verification as Proposal["verification"]) ?? null,
+      edits: (row.edits as Proposal["edits"]) ?? [],
       decidedBy: (row.decided_by as string | null) ?? null,
       decidedAt: row.decided_at == null ? null : iso(row.decided_at),
       createdAt: iso(row.created_at),
@@ -414,7 +476,7 @@ export class PostgresLedgerStore implements LedgerStore {
       const { rows } = await this.pool.query(
         `INSERT INTO proposals (id, group_id, run_id, type, payload, quotes)
          VALUES ($1, $2, $3, $4, $5, $6)
-         RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
+         RETURNING id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at`,
         [
           randomUUID(),
           input.groupId,
@@ -568,7 +630,7 @@ export class PostgresLedgerStore implements LedgerStore {
     }
     const updated = await this.pool.query(
       `UPDATE proposals SET status = 'rejected', decided_by = $1, decided_at = now() WHERE id = $2
-       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at`,
+       RETURNING id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at`,
       [approverId, proposal.id],
     );
     return this.toProposal(updated.rows[0] as Record<string, unknown>);
@@ -601,7 +663,7 @@ export class PostgresLedgerStore implements LedgerStore {
   ): Promise<Proposal[]> {
     await this.mustOwn(this.pool, token, groupId);
     const params: string[] = [groupId];
-    let sql = `SELECT id, group_id, run_id, type, payload, quotes, status, verification, decided_by, decided_at, created_at
+    let sql = `SELECT id, group_id, run_id, type, payload, quotes, status, verification, edits, decided_by, decided_at, created_at
        FROM proposals WHERE group_id = $1`;
     if (status) {
       params.push(status);

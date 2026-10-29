@@ -5,7 +5,7 @@ export type EvidenceTier =
   | "agent_proposed_approved"
   | "self_reported";
 export type ProposalType = "entry" | "question" | "draft_reminder";
-export type ProposalStatus = "pending" | "approved" | "rejected";
+export type ProposalStatus = "pending" | "approved" | "rejected" | "answered";
 
 export interface Group {
   id: string;
@@ -68,6 +68,11 @@ export interface ProposalVerification {
   at: string;
 }
 
+export interface ProposalEdit {
+  payload: Record<string, unknown>;
+  at: string;
+}
+
 export interface Proposal {
   id: string;
   groupId: string;
@@ -77,6 +82,7 @@ export interface Proposal {
   quotes: string[];
   status: ProposalStatus;
   verification: ProposalVerification | null;
+  edits: ProposalEdit[];
   decidedBy: string | null;
   decidedAt: string | null;
   createdAt: string;
