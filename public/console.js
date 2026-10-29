@@ -94,9 +94,12 @@ async function refreshProposals() {
           <span class="draft-label">AI draft, not applied</span>
           ${proposalBody(p)}
           ${(p.quotes || []).map((q) => `<blockquote>${escapeHtml(q)}</blockquote>`).join("")}
+          ${verificationHtml(p)}
+          <div class="trace" hidden></div>
           <div class="actions">
             <button type="button" class="primary" data-act="approve">Approve</button>
             <button type="button" data-act="reject">Reject</button>
+            ${p.runId ? `<button type="button" data-run="${escapeHtml(p.runId)}">Trace</button>` : ""}
           </div>
         </article>`,
       )
@@ -104,8 +107,37 @@ async function refreshProposals() {
     box.querySelectorAll("button[data-act]").forEach((btn) => {
       btn.addEventListener("click", () => decideProposal(btn.closest(".proposal").dataset.id, btn.dataset.act, btn));
     });
+    box.querySelectorAll("button[data-run]").forEach((btn) => {
+      btn.addEventListener("click", () => showTrace(btn.closest(".proposal"), btn.dataset.run, btn));
+    });
   } catch (err) {
     box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
+  }
+}
+
+function verificationHtml(p) {
+  if (!p.verification || !p.verification.checks) {
+    return "";
+  }
+  const items = p.verification.checks
+    .map((c) => `<li>${c.passed ? "pass" : "FAIL"} ${escapeHtml(c.name)}${c.detail ? ` (${escapeHtml(c.detail)})` : ""}</li>`)
+    .join("");
+  return `<div class="muted">Checks:<ul>${items}</ul></div>`;
+}
+
+async function showTrace(article, runId, btn) {
+  const box = article.querySelector(".trace");
+  btn.disabled = true;
+  try {
+    const data = await api(`/runs/${encodeURIComponent(runId)}`);
+    const steps = data.run.steps
+      .map((s) => `<div class="queue-item"><span class="title">Turn ${escapeHtml(s.index)}</span><div class="muted">${escapeHtml((s.calls || []).join(", ") || "no tool call")}</div></div>`)
+      .join("");
+    box.innerHTML = `<div class="muted">Model ${escapeHtml(data.run.modelId)}, ${escapeHtml(data.run.promptVersion)}, status ${escapeHtml(data.run.status)}. Coverage ${escapeHtml(data.coverage.covered)}/${escapeHtml(data.coverage.lines)} lines.</div>${steps}`;
+    box.hidden = false;
+  } catch (err) {
+    box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
+    box.hidden = false;
   }
 }
 

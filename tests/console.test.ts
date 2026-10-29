@@ -21,9 +21,16 @@ describe("console page", () => {
   });
 
   it("calls the real API routes", () => {
-    for (const path of ["/today", "/intake/note", "/intake/page", "/proposals", "/entries", "/findings", "/demo/reset"]) {
+    for (const path of ["/today", "/intake/note", "/intake/page", "/proposals", "/entries", "/findings", "/demo/reset", "/runs/"]) {
       expect(js).toContain(path);
     }
+  });
+
+  it("renders verification trails and run traces", () => {
+    expect(js).toContain("verificationHtml");
+    expect(js).toContain("showTrace");
+    expect(js).toContain("Trace</button>");
+    expect(js).toContain("Coverage");
   });
 
   it("uses the token palette with no alarm red", () => {
