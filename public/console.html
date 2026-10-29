@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tumaini console</title>
+  <link rel="stylesheet" href="/console.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Tumaini console</h1>
+    <nav aria-label="Console sections">
+      <a href="/console.html" aria-current="page">Console</a>
+      <a href="/lab.html">Lab</a>
+    </nav>
+    <span class="demo-pill">Demo data</span>
+  </header>
+  <main>
+    <section class="card" aria-labelledby="connection-h">
+      <h2 id="connection-h">Connection</h2>
+      <div class="row">
+        <div style="flex: 2; min-width: 220px;">
+          <label for="group-id">Group id</label>
+          <input type="text" id="group-id" autocomplete="off" placeholder="group id from reset">
+        </div>
+        <div style="flex: 3; min-width: 220px;">
+          <label for="token">Treasurer token</label>
+          <input type="text" id="token" autocomplete="off" placeholder="paste the token">
+        </div>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="reset-btn" type="button">Reset demo data</button>
+        <button id="connect-btn" type="button" class="primary">Connect</button>
+        <span id="connection-status" class="muted" role="status"></span>
+      </div>
+      <p class="muted">Reset only works with demo mode on. The token stays in this browser only.</p>
+    </section>
+
+    <section class="card" aria-labelledby="today-h">
+      <h2 id="today-h">Today</h2>
+      <div id="today-list"><p class="empty">Connect to load the list.</p></div>
+    </section>
+
+    <section class="card" aria-labelledby="intake-h">
+      <h2 id="intake-h">New note</h2>
+      <label for="note-text">Typed note</label>
+      <textarea id="note-text" placeholder="Wanjiku paid 500 for October."></textarea>
+      <div class="row" style="margin-top: 10px;">
+        <button id="send-note-btn" type="button" class="primary">Send note</button>
+      </div>
+      <label for="audio-file">Or a voice note (WAV)</label>
+      <input type="file" id="audio-file" accept="audio/wav,audio/x-wav">
+      <div class="row" style="margin-top: 10px;">
+        <button id="send-audio-btn" type="button">Send voice note</button>
+      </div>
+      <p id="intake-status" class="muted" role="status"></p>
+    </section>
+
+    <section class="card" aria-labelledby="page-h">
+      <h2 id="page-h">Ledger page photo</h2>
+      <label for="page-file">Photo of a paper page (PNG or JPEG)</label>
+      <input type="file" id="page-file" accept="image/png,image/jpeg">
+      <div class="row" style="margin-top: 10px;">
+        <button id="send-page-btn" type="button" class="primary">Read page</button>
+      </div>
+      <p id="page-status" class="muted" role="status"></p>
+      <div id="findings-list"></div>
+    </section>
+
+    <section class="card" aria-labelledby="proposals-h">
+      <h2 id="proposals-h">Proposals inbox</h2>
+      <div class="row" style="margin-bottom: 8px;">
+        <button id="refresh-proposals-btn" type="button">Refresh</button>
+      </div>
+      <div id="proposals-list"><p class="empty">Connect to load proposals.</p></div>
+    </section>
+
+    <section class="card" aria-labelledby="entries-h">
+      <h2 id="entries-h">Ledger entries</h2>
+      <div class="row" style="margin-bottom: 8px;">
+        <button id="refresh-entries-btn" type="button">Refresh</button>
+      </div>
+      <div id="entries-list"><p class="empty">Connect to load entries.</p></div>
+    </section>
+  </main>
+  <footer>
+    <span>Tumaini Savings Group, synthetic demo records only.</span>
+    <span>Built with Muse Spark Open</span>
+  </footer>
+  <script src="/console.js"></script>
+</body>
+</html>
