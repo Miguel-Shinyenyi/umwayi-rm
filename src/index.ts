@@ -2,11 +2,13 @@ import { BasetenAdapter } from "./adapters/baseten.js";
 import { FakeModelAdapter } from "./adapters/fake.js";
 import type { ModelAdapter } from "./adapters/model.js";
 import { MetaTranscribe } from "./adapters/transcribe.js";
+import { BasetenPhotoReader, type PhotoReader } from "./adapters/vision.js";
 import { createApp } from "./app.js";
 import { getPool } from "./db/pool.js";
 import { MemoryLedgerStore } from "./ledger/memory.js";
 import { PostgresLedgerStore } from "./ledger/postgres.js";
 import type { LedgerStore } from "./ledger/store.js";
+import { LedgerError } from "./ledger/types.js";
 
 const port = Number(process.env.PORT ?? 3000);
 
@@ -15,8 +17,15 @@ const store: LedgerStore = process.env.DATABASE_URL
   : new MemoryLedgerStore();
 const model: ModelAdapter = process.env.BASENTEN_API_KEY ? new BasetenAdapter() : new FakeModelAdapter();
 const transcribe = new MetaTranscribe({ apiKey: process.env.META_API_KEY ?? "unset" });
+const reader: PhotoReader = process.env.BASENTEN_API_KEY
+  ? new BasetenPhotoReader()
+  : {
+      readPage: async () => {
+        throw new LedgerError("model is off", 503);
+      },
+    };
 
-const app = createApp({ store, model, transcribe });
+const app = createApp({ store, model, transcribe, reader });
 
 app.listen(port, () => {
   console.log(`umwayi-rm listening on :${port}`);
