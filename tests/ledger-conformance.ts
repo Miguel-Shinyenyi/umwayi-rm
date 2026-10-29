@@ -27,6 +27,8 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
         expect(group.id.length).toBeGreaterThan(0);
         expect(group.currency).toBe("KES");
         expect(token.length).toBeGreaterThan(16);
+        const fetched = await store.getGroup(token, group.id);
+        expect(fetched.name).toBe("Tumaini");
       } finally {
         await close();
       }
@@ -338,6 +340,20 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
         await expectLedgerError(store.listCommitments(a.token, b.group.id), 403);
         await expectLedgerError(store.listProposals(a.token, b.group.id), 403);
         await expectLedgerError(store.listFindings(a.token, b.group.id), 403);
+      } finally {
+        await close();
+      }
+    });
+
+    it("resets demo state and invalidates old tokens", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        await store.createMember(token, { groupId: group.id, displayName: "Omondi Juma" });
+        await store.resetDemo();
+        await expectLedgerError(store.listMembers(token, group.id), 403);
+        const fresh = await store.createGroup("Tumaini");
+        expect(await store.listMembers(fresh.token, fresh.group.id)).toHaveLength(0);
       } finally {
         await close();
       }

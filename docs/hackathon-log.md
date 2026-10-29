@@ -282,3 +282,17 @@ Evidence:
 - Fallback: tests/demo-fallback.test.ts walks the treasurer path with the model off (unfinished intake, manual entry, idempotent approval) and asserts photo intake answers 503 model_off. Full local suite: 65 pass, 12 pg skip for CI.
 Result: counted runs saved with date, model id, prompt version, and seed; model-off passes the demo path.
 Next: seeds 2 and 3 per the protocol, then H-13 console. Seed 7 must not be rerun on the test split.
+
+### 2026-10-29: H-13 console, Lab, seed and reset
+Type: build
+Status: done
+Context: queue.md H-13. Branch h-13/console-lab. Four gated stages.
+Evidence:
+- Stage 1: src/seed.ts seeds Tumaini (12 members, monthly 500 commitments, 3 paid October entries). resetDemo on both stores, covered by a conformance case. POST /demo/reset answers 403 unless DEMO_MODE is true, else clears and reseeds.
+- Stage 2: getGroup on both stores. GET group detail, GET today with asOf and periods defaults, GET entries with member and period filters, GET /lab/runs summarizing saved run files. Token auth and 403 denial kept.
+- Stage 3: vanilla console (connection, Today, typed and voice intake, page photo, proposals inbox, entries) under public/, served statically with root redirect. Token palette, Demo data pill, model display line in the footer.
+- Stage 4: Lab page charting H1 per-condition pass from /lab/runs with a runs table. Dockerfile ships public, the pack, run files, and migrations; index boots migrations against pg. Compose gains DEMO_MODE and key passthrough. README quick start rewritten with port override and key notes.
+- Live compose proof on port 3200 (3000 and 3100 taken by other work, left untouched): reset returned Tumaini plus token; console and lab pages served; /lab/runs listed 6 files; today returned 21 items starting with overdue; group read 12 members and 12 commitments. Three fixes during proof: dockerignore re-included docs/evals JSON, empty-string env fallback changed from ?? to ||, and a dropped proposals route restored in stage 1 wiring.
+- Full local suite: 80 pass, 13 pg skip for CI. No chromium on this machine, so browser rendering is unverified; HTTP reachability is the check.
+Result: a fresh clone runs from the README through compose, reset, console, and Lab.
+Next: H1 seeds 2 and 3, H-03 Discord, H-14 interviews. D-11 and D-12 still need Miguel.

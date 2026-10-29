@@ -70,6 +70,17 @@ export class MemoryLedgerStore implements LedgerStore {
   private findings = new Map<string, Finding>();
   private tokens = new Map<string, { id: string; groupId: string }>();
 
+  async resetDemo(): Promise<void> {
+    this.groups.clear();
+    this.members.clear();
+    this.commitments.clear();
+    this.entries.clear();
+    this.entriesByProposal.clear();
+    this.proposals.clear();
+    this.findings.clear();
+    this.tokens.clear();
+  }
+
   async createGroup(name: string): Promise<{ group: Group; token: string }> {
     if (!name || name.trim().length === 0) {
       throw invalidInput("group name is required");
@@ -85,6 +96,15 @@ export class MemoryLedgerStore implements LedgerStore {
     this.groups.set(group.id, group);
     this.tokens.set(token, { id: randomUUID(), groupId: group.id });
     return { group, token };
+  }
+
+  async getGroup(token: string, groupId: string): Promise<Group> {
+    this.mustOwn(token, groupId);
+    const group = this.groups.get(groupId);
+    if (!group) {
+      throw invalidInput(`unknown group: ${groupId}`);
+    }
+    return group;
   }
 
   private mustOwn(token: string, groupId: string): string {

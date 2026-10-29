@@ -58,6 +58,7 @@ export interface ListEntriesFilter {
 
 export interface LedgerStore {
   createGroup(name: string): Promise<{ group: Group; token: string }>;
+  getGroup(token: string, groupId: string): Promise<Group>;
   listMembers(token: string, groupId: string): Promise<Member[]>;
   listCommitments(token: string, groupId: string): Promise<Commitment[]>;
   createMember(token: string, input: CreateMemberInput): Promise<Member>;
@@ -74,4 +75,5 @@ export interface LedgerStore {
   ): Promise<Finding>;
   listFindings(token: string, groupId: string, status?: FindingStatus): Promise<Finding[]>;
   resolveFinding(token: string, findingId: string): Promise<Finding>;
+  resetDemo(): Promise<void>;
 }

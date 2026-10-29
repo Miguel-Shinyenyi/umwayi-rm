@@ -92,6 +92,27 @@ export class PostgresLedgerStore implements LedgerStore {
     }
   }
 
+  async getGroup(token: string, groupId: string): Promise<Group> {
+    await this.mustOwn(this.pool, token, groupId);
+    const { rows } = await this.pool.query(
+      "SELECT id, name, currency, demo, created_at FROM groups WHERE id = $1",
+      [groupId],
+    );
+    const row = rows[0] as
+      | { id: string; name: string; currency: string; demo: boolean; created_at: unknown }
+      | undefined;
+    if (!row) {
+      throw invalidInput(`unknown group: ${groupId}`);
+    }
+    return {
+      id: row.id,
+      name: row.name,
+      currency: row.currency,
+      demo: row.demo,
+      createdAt: iso(row.created_at),
+    };
+  }
+
   async listMembers(token: string, groupId: string): Promise<Member[]> {
     await this.mustOwn(this.pool, token, groupId);
     const { rows } = await this.pool.query(
@@ -515,6 +536,12 @@ export class PostgresLedgerStore implements LedgerStore {
       [finding.id],
     );
     return this.toFinding(updated.rows[0] as Record<string, unknown>);
+  }
+
+  async resetDemo(): Promise<void> {
+    await this.pool.query(
+      "TRUNCATE groups, members, commitments, entries, proposals, treasurer_tokens, findings RESTART IDENTITY CASCADE",
+    );
   }
 
   private toFinding(row: Record<string, unknown>): Finding {
