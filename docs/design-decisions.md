@@ -575,3 +575,6 @@ No screen sorts members by amount owed, lateness or any score. "Today" orders by
 
 ### DD-068: Reminder wording
 Drafts cite the entries behind them, use no judging words and never mention other members. The Lab shows the rule text used.
+
+### DD-069: Proposal edits keep an audit list; answers become runs (2026-10-29)
+Editing a pending entry proposal replaces the payload, appends the previous payload to an edits audit list, and clears the verification trail since it judged the old payload. Answering a question runs the agent over the original note plus the answer in a new saved run and flips the question to a new `answered` status. The `expired` status was listed in the contract but never built, so it is removed.
