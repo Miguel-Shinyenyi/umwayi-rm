@@ -1,4 +1,5 @@
 import { BasetenAdapter } from "./adapters/baseten.js";
+import { verifyClaim } from "./adapters/claims.js";
 import { FakeModelAdapter } from "./adapters/fake.js";
 import type { ModelAdapter } from "./adapters/model.js";
 import { MetaTranscribe } from "./adapters/transcribe.js";
@@ -39,6 +40,9 @@ async function main(): Promise<void> {
     transcribe,
     reader,
     demoMode: process.env.DEMO_MODE === "true",
+    ...(process.env.BASENTEN_API_KEY
+      ? { claimCheck: (input: Parameters<typeof verifyClaim>[1]) => verifyClaim(model, input) }
+      : {}),
   });
   app.listen(port, () => {
     console.log(`umwayi-rm listening on :${port}`);
