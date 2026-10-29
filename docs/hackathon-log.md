@@ -265,3 +265,20 @@ Evidence:
 - Tests: 5 vision plus 4 page route tests pass. Full local suite: 63 pass, 12 pg skip for CI.
 Result: a page becomes proposed rows and listed findings.
 Next: H-12 H1 run on the frozen test split plus fallback mode. Open: proposal edit and question answer routes still not built; handwriting reading still untested.
+
+### 2026-10-29: H-12 H1 counted run on the frozen test split
+Type: experiment
+Status: done
+Context: queue.md H-12. Branch h-12/h1-run. Freeze hashes verified before the run; test split run once per condition at seed 7 only. Model meta-models/muse-spark-open-1026, reasoning low, retries 2.
+Evidence:
+- Harness scripts/run-h1.ts replaces run-h1-dev.ts: --condition c0/c1/c2/c3, retry on empty completion and model error with fresh state per attempt, per-scenario and total token usage. Conditions C1 and C2 are exactly 1839 chars each, matching the C3 pack body; the placebo carries zero rule-priming words.
+- Seed 7 test results (40 scenarios: 16 ambiguous, 24 clear), saved under docs/evals/h1-test-2026-10-29-seed7-{c0,c1,c2,c3}.json:
+  - C0 bare: 21/40. Wrong-propose on ambiguous 3/16 (18.8%). Clear pass 8/24 with 15 over-ask.
+  - C1 placebo: 36/40. Wrong-propose 0/16. Clear pass 20/24.
+  - C2 generic: 22/40. Wrong-propose 0/16. Clear pass 8/24 with 11 over-ask.
+  - C3 curated: 38/40. Wrong-propose 0/16. Clear pass 23/24.
+- Primary metric C3 versus C2 on wrong proposals: 0.0% versus 0.0%, a 0-point gap. The protocol decision rule needs 15 points with the interval excluding zero, so H1 is not supported on seed 7: a null result with a floor effect. Both of C3's misses are persistent empty completions after 3 attempts, not rule failures.
+- Secondary finding: the neutral placebo nearly matches the curated pack, while the generic ask-when-unsure prompt collapses on clear scenarios. Length alone does not explain C2; its content drives over-asking.
+- Fallback: tests/demo-fallback.test.ts walks the treasurer path with the model off (unfinished intake, manual entry, idempotent approval) and asserts photo intake answers 503 model_off. Full local suite: 65 pass, 12 pg skip for CI.
+Result: counted runs saved with date, model id, prompt version, and seed; model-off passes the demo path.
+Next: seeds 2 and 3 per the protocol, then H-13 console. Seed 7 must not be rerun on the test split.

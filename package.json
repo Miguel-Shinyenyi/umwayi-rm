@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "eval:h1-dev": "tsx scripts/run-h1-dev.ts"
+    "eval:h1": "tsx scripts/run-h1.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
