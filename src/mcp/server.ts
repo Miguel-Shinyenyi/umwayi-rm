@@ -7,6 +7,7 @@ import {
   handleProposeDraftReminder,
   handleProposeEntry,
   handleProposeQuestion,
+  handleRecall,
   type ProposeEntryArgs,
   type ToolDeps,
 } from "./tools.js";
@@ -106,6 +107,21 @@ export function createMcpServer(deps: ToolDeps): McpServer {
     async (args) => {
       try {
         return ok(await handleProposeDraftReminder(deps, args));
+      } catch (err) {
+        return failed(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "recall",
+    {
+      description: "Read one archive item verbatim by pointer. Every recall is logged in the trace.",
+      inputSchema: { pointer: z.string() },
+    },
+    async (args) => {
+      try {
+        return ok(await handleRecall(deps, args));
       } catch (err) {
         return failed(err);
       }

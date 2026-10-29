@@ -159,6 +159,21 @@ export async function handleProposeEntry(
   return { proposalId: proposal.id, status: proposal.status };
 }
 
+export async function handleRecall(
+  deps: ToolDeps,
+  args: { pointer: string },
+): Promise<{ verbatim: string; sha256: string; gist: string } | Refusal> {
+  if (typeof args.pointer !== "string" || args.pointer.trim() === "") {
+    return { refused: true, reason: "pointer is required" };
+  }
+  try {
+    const item = await deps.store.getArchiveItem(deps.token, deps.groupId, args.pointer.trim());
+    return { verbatim: item.verbatim, sha256: item.sha256, gist: item.gist };
+  } catch {
+    return { refused: true, reason: `no archive item at pointer "${args.pointer.trim()}"` };
+  }
+}
+
 export async function handleProposeQuestion(
   deps: ToolDeps,
   args: { text: string },
