@@ -43,7 +43,7 @@ describe("recall tool", () => {
       verbatim: "Met on Sunday. All paid.",
       gist: "Sunday meeting, all paid",
     });
-    return { deps: { store, token, groupId: group.id, run: { intakeText: "", refusals: 0 } }, itemId: item.id };
+    return { deps: { store, token, groupId: group.id, runId: null, run: { intakeText: "", refusals: 0 } }, itemId: item.id };
   }
 
   it("returns verbatim text with its checksum", async () => {

@@ -16,6 +16,8 @@ import {
   type ArchiveItem,
   type ArchiveKind,
   type Commitment,
+  type ProposalCheck,
+  type ProposalVerification,
   type CommitmentKind,
   type Entry,
   type EvidenceTier,
@@ -24,7 +26,10 @@ import {
   type Member,
   type Proposal,
   type ProposalType,
+  type Run,
+  type RunStep,
 } from "./types.js";
+import { resolveMembers } from "./resolve.js";
 
 const KINDS: CommitmentKind[] = ["contribution", "loan_repayment"];
 const TIERS: EvidenceTier[] = [
@@ -73,6 +78,7 @@ export class MemoryLedgerStore implements LedgerStore {
   private proposals = new Map<string, Proposal>();
   private findings = new Map<string, Finding>();
   private archive = new Map<string, ArchiveItem>();
+  private runs = new Map<string, Run>();
   private tokens = new Map<string, { id: string; groupId: string }>();
 
   async resetDemo(): Promise<void> {
@@ -84,6 +90,7 @@ export class MemoryLedgerStore implements LedgerStore {
     this.proposals.clear();
     this.findings.clear();
     this.archive.clear();
+    this.runs.clear();
     this.tokens.clear();
   }
 
@@ -224,11 +231,37 @@ export class MemoryLedgerStore implements LedgerStore {
       payload: input.payload,
       quotes: input.quotes ?? [],
       status: "pending",
+      verification: null,
       decidedBy: null,
       decidedAt: null,
       createdAt: now(),
     };
     this.proposals.set(proposal.id, proposal);
+    return proposal;
+  }
+
+  async getProposal(token: string, proposalId: string): Promise<Proposal> {
+    const proposal = this.proposals.get(proposalId);
+    if (!proposal) {
+      throw invalidInput(`unknown proposal: ${proposalId}`);
+    }
+    this.mustOwn(token, proposal.groupId);
+    return proposal;
+  }
+
+  async recordVerification(
+    token: string,
+    proposalId: string,
+    verification: ProposalVerification,
+  ): Promise<Proposal> {
+    const proposal = await this.getProposal(token, proposalId);
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    proposal.verification = {
+      checks: [...(proposal.verification?.checks ?? []), ...verification.checks],
+      at: verification.at,
+    };
     return proposal;
   }
 
@@ -262,13 +295,31 @@ export class MemoryLedgerStore implements LedgerStore {
     if (typeof payload.memberId !== "string") {
       throw invalidInput("entry proposal payload needs memberId");
     }
-    this.mustMember(proposal.groupId, payload.memberId);
+    const member = this.mustMember(proposal.groupId, payload.memberId);
     checkKind(payload.kind);
     checkAmount(payload.amount);
     checkPeriod(payload.period);
     if (typeof payload.occurredOn !== "string") {
       throw invalidInput("entry proposal payload needs occurredOn");
     }
+    const checks: ProposalCheck[] = [{ name: "schema_valid", passed: true }];
+    const groupMembers = [...this.members.values()].filter((m) => m.groupId === proposal.groupId);
+    const matches = resolveMembers(groupMembers, member.displayName);
+    const unique = matches.length === 1 && matches[0]?.id === member.id;
+    checks.push({
+      name: "member_unique",
+      passed: unique,
+      ...(unique ? {} : { detail: "member name no longer resolves uniquely" }),
+    });
+    if (!unique) {
+      throw conflict(`member no longer resolves uniquely for proposal: ${proposal.id}`);
+    }
+    checks.push({
+      name: "quotes_attached",
+      passed: proposal.quotes.length > 0,
+      detail: `${proposal.quotes.length} quote(s) attached`,
+    });
+    proposal.verification = { checks: [...(proposal.verification?.checks ?? []), ...checks], at: now() };
     const entry: Entry = {
       id: randomUUID(),
       groupId: proposal.groupId,
@@ -414,5 +465,35 @@ export class MemoryLedgerStore implements LedgerStore {
       .filter((a) => a.groupId === groupId)
       .sort((a, b) => a.id.localeCompare(b.id))
       .map((a) => ({ id: a.id, kind: a.kind, gist: a.gist, sha256: a.sha256 }));
+  }
+
+  async saveRun(
+    token: string,
+    input: {
+      id: string;
+      groupId: string;
+      intakeRef: string;
+      modelId: string;
+      promptVersion: string;
+      steps: RunStep[];
+      status: string;
+    },
+  ): Promise<Run> {
+    this.mustOwn(token, input.groupId);
+    if (!this.groups.has(input.groupId)) {
+      throw invalidInput(`unknown group: ${input.groupId}`);
+    }
+    const run: Run = { ...input, createdAt: now() };
+    this.runs.set(run.id, run);
+    return run;
+  }
+
+  async getRun(token: string, runId: string): Promise<Run> {
+    const run = this.runs.get(runId);
+    if (!run) {
+      throw invalidInput(`unknown run: ${runId}`);
+    }
+    this.mustOwn(token, run.groupId);
+    return run;
   }
 }

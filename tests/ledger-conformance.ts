@@ -368,6 +368,69 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
       }
     });
 
+    it("reads proposals and records verification trails", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const member = await store.createMember(token, { groupId: group.id, displayName: "Omondi Juma" });
+        const proposal = await store.createProposal(token, {
+          groupId: group.id,
+          type: "entry",
+          payload: { memberId: member.id, kind: "contribution", amount: 500, period: "2026-10", occurredOn: "2026-10-05" },
+          quotes: ["Omondi paid 500"],
+        });
+        expect(proposal.verification).toBeNull();
+        const fetched = await store.getProposal(token, proposal.id);
+        expect(fetched.id).toBe(proposal.id);
+        await expectLedgerError(store.getProposal(token, "missing"), 422);
+        const recorded = await store.recordVerification(token, proposal.id, {
+          checks: [{ name: "claim_supported", passed: true }],
+          at: "2026-10-29T00:00:00.000Z",
+        });
+        expect(recorded.verification?.checks.map((c) => c.name)).toEqual(["claim_supported"]);
+        const result = await store.approveProposal(token, proposal.id);
+        expect(result.already).toBe(false);
+        const decided = await store.getProposal(token, proposal.id);
+        expect(decided.verification?.checks.map((c) => c.name)).toEqual([
+          "claim_supported",
+          "schema_valid",
+          "member_unique",
+          "quotes_attached",
+        ]);
+        expect(decided.verification?.checks.every((c) => c.passed)).toBe(true);
+        await expectLedgerError(
+          store.recordVerification(token, proposal.id, { checks: [], at: "2026-10-29T00:00:00.000Z" }),
+          409,
+        );
+      } finally {
+        await close();
+      }
+    });
+
+    it("saves and reads runs", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const run = await store.saveRun(token, {
+          id: "run-1",
+          groupId: group.id,
+          intakeRef: "Omondi paid 500.",
+          modelId: "test/model",
+          promptVersion: "pack-v0",
+          steps: [{ index: 1, content: null, calls: ["propose_entry"] }],
+          status: "proposed",
+        });
+        expect(run.id).toBe("run-1");
+        const fetched = await store.getRun(token, "run-1");
+        expect(fetched.steps).toHaveLength(1);
+        await expectLedgerError(store.getRun(token, "missing"), 422);
+        const other = await store.createGroup("Other");
+        await expectLedgerError(store.getRun(other.token, "run-1"), 403);
+      } finally {
+        await close();
+      }
+    });
+
     it("resets demo state and invalidates old tokens", async () => {
       const { store, close } = await makeStore();
       try {

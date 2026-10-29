@@ -18,7 +18,10 @@ export interface IntakeDeps {
   model: ModelAdapter;
   transcribe: Transcriber;
   loadPack: () => Promise<{ playbook: string; rules: string }>;
+  promptVersion?: string;
 }
+
+const DEFAULT_PROMPT_VERSION = "pack-v0";
 
 type IntakeBody = { text?: unknown; audio?: unknown };
 
@@ -55,10 +58,12 @@ export function createIntakeHandler(deps: IntakeDeps) {
       const pack = await deps.loadPack();
       const todayLine = `Today is ${new Date().toISOString().slice(0, 10)} (Africa/Nairobi). Resolve month names against this date.`;
       const systemPrompt = `${todayLine}\n\n${pack.playbook}\n\n${pack.rules}`;
+      const runId = randomUUID();
       const server = createMcpServer({
         store: deps.store,
         token,
         groupId,
+        runId,
         run: { intakeText: text, refusals: 0 },
       });
       const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
@@ -67,8 +72,21 @@ export function createIntakeHandler(deps: IntakeDeps) {
         await Promise.all([client.connect(clientTransport), server.connect(serverTransport)]);
         const trace = await runLoop(deps.model, client, systemPrompt, text, DEFAULT_MODEL_OPTIONS);
         const proposals = await deps.store.listProposals(token, groupId);
+        await deps.store.saveRun(token, {
+          id: runId,
+          groupId,
+          intakeRef: text,
+          modelId: deps.model.modelId,
+          promptVersion: deps.promptVersion ?? DEFAULT_PROMPT_VERSION,
+          steps: trace.turns.map((t) => ({
+            index: t.index,
+            content: typeof t.content === "string" ? t.content.slice(0, 500) : null,
+            calls: t.toolCalls.map((c) => c.name),
+          })),
+          status: trace.outcome.kind,
+        });
         res.status(200).json({
-          runId: randomUUID(),
+          runId,
           modelId: deps.model.modelId,
           transcript,
           outcome: trace.outcome,

@@ -14,6 +14,7 @@ const server = createMcpServer({
   store: new PostgresLedgerStore(getPool()),
   token,
   groupId,
+  runId: null,
   run: { intakeText: process.env.INTAKE_TEXT ?? "", refusals: 0 },
 });
 

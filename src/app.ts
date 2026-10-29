@@ -1,5 +1,6 @@
 import express from "express";
 import { readFile } from "node:fs/promises";
+import type { ClaimInput, ClaimVerdict } from "./adapters/claims.js";
 import type { ModelAdapter } from "./adapters/model.js";
 import type { PhotoReader } from "./adapters/vision.js";
 import type { LedgerStore } from "./ledger/store.js";
@@ -12,6 +13,7 @@ import { createIntakeHandler, type Transcriber } from "./routes/intake.js";
 import { createLabHandler } from "./routes/lab.js";
 import { createPageHandler } from "./routes/page.js";
 import { createProposalHandlers } from "./routes/proposals.js";
+import { createRunHandler } from "./routes/runs.js";
 
 export interface AppDeps {
   store: LedgerStore;
@@ -19,6 +21,7 @@ export interface AppDeps {
   transcribe: Transcriber;
   reader: PhotoReader;
   demoMode: boolean;
+  claimCheck?: (input: ClaimInput) => Promise<ClaimVerdict>;
   loadPack?: () => Promise<{ playbook: string; rules: string }>;
 }
 
@@ -52,6 +55,7 @@ export function createApp(deps?: AppDeps): express.Express {
     app.get("/groups/:id/today", groups.getToday);
     app.get("/groups/:id/entries", groups.listEntries);
     app.get("/lab/runs", createLabHandler({ evalsDir: "docs/evals" }));
+    app.get("/runs/:id", createRunHandler(deps));
     const proposals = createProposalHandlers(deps);
     app.get("/groups/:id/proposals", proposals.listProposals);
     app.post("/proposals/:id/approve", proposals.approveProposal);

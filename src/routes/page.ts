@@ -3,7 +3,7 @@ import type { PhotoReader } from "../adapters/vision.js";
 import { comparePaper, type PaperRow } from "../ledger/reconcile.js";
 import type { LedgerStore } from "../ledger/store.js";
 import { invalidInput, type Member } from "../ledger/types.js";
-import { resolveMembers } from "../mcp/tools.js";
+import { resolveMembers } from "../ledger/resolve.js";
 import { requireToken, sendError } from "./auth.js";
 
 export interface PageDeps {

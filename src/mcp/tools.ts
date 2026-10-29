@@ -1,5 +1,8 @@
+import { normalize, resolveMembers } from "../ledger/resolve.js";
 import type { LedgerStore } from "../ledger/store.js";
 import type { Member } from "../ledger/types.js";
+
+export { resolveMembers };
 
 export interface RunContext {
   intakeText: string;
@@ -10,6 +13,7 @@ export interface ToolDeps {
   store: LedgerStore;
   token: string;
   groupId: string;
+  runId: string | null;
   run: RunContext;
 }
 
@@ -27,23 +31,6 @@ function refuse(deps: ToolDeps, reason: string, count = true): Refusal {
     deps.run.refusals += 1;
   }
   return { refused: true as const, reason };
-}
-
-function normalize(text: string): string {
-  return text.trim().toLowerCase();
-}
-
-export function resolveMembers(members: Member[], text: string): Member[] {
-  const want = normalize(text);
-  return members.filter((m) => {
-    if (normalize(m.displayName) === want) {
-      return true;
-    }
-    if (m.aliases.some((a) => normalize(a) === want)) {
-      return true;
-    }
-    return normalize(m.displayName).split(/\s+/)[0] === want;
-  });
 }
 
 export async function handleGetMemberList(
@@ -144,6 +131,7 @@ export async function handleProposeEntry(
   }
   const proposal = await deps.store.createProposal(deps.token, {
     groupId: deps.groupId,
+    ...(deps.runId ? { runId: deps.runId } : {}),
     type: "entry",
     payload: {
       memberId: member.id,
@@ -183,6 +171,7 @@ export async function handleProposeQuestion(
   }
   const proposal = await deps.store.createProposal(deps.token, {
     groupId: deps.groupId,
+    ...(deps.runId ? { runId: deps.runId } : {}),
     type: "question",
     payload: { text: args.text.trim() },
   });
@@ -204,8 +193,20 @@ export async function handleProposeDraftReminder(
   if (typeof args.text !== "string" || !args.text.trim()) {
     return { refused: true, reason: "reminder text is required" };
   }
+  const target = matches[0] as Member;
+  const textNorm = normalize(args.text);
+  for (const other of members) {
+    if (other.id === target.id) {
+      continue;
+    }
+    const names = [other.displayName, other.displayName.split(/\s+/)[0] as string, ...other.aliases];
+    if (names.some((name) => name && textNorm.includes(normalize(name)))) {
+      return { refused: true, reason: "reminder names another member" };
+    }
+  }
   const proposal = await deps.store.createProposal(deps.token, {
     groupId: deps.groupId,
+    ...(deps.runId ? { runId: deps.runId } : {}),
     type: "draft_reminder",
     payload: {
       memberId: (matches[0] as Member).id,

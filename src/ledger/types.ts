@@ -57,6 +57,17 @@ export interface EntryProposalPayload {
   sourceRef?: string;
 }
 
+export interface ProposalCheck {
+  name: string;
+  passed: boolean;
+  detail?: string;
+}
+
+export interface ProposalVerification {
+  checks: ProposalCheck[];
+  at: string;
+}
+
 export interface Proposal {
   id: string;
   groupId: string;
@@ -65,8 +76,26 @@ export interface Proposal {
   payload: Record<string, unknown>;
   quotes: string[];
   status: ProposalStatus;
+  verification: ProposalVerification | null;
   decidedBy: string | null;
   decidedAt: string | null;
+  createdAt: string;
+}
+
+export interface RunStep {
+  index: number;
+  content: string | null;
+  calls: string[];
+}
+
+export interface Run {
+  id: string;
+  groupId: string;
+  intakeRef: string;
+  modelId: string;
+  promptVersion: string;
+  steps: RunStep[];
+  status: string;
   createdAt: string;
 }
 
