@@ -18,6 +18,7 @@ async function setup() {
     store,
     token,
     groupId: group.id,
+    runId: null,
     run: { intakeText: INTAKE, refusals: 0 },
   });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();

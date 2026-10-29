@@ -39,7 +39,7 @@ async function setup(intakeText: string): Promise<ToolDeps & { close: () => Prom
     occurredOn: "2026-09-05",
     evidenceTier: "treasurer_confirmed",
   });
-  return { store, token, groupId: group.id, run: { intakeText, refusals: 0 }, close: async () => undefined };
+  return { store, token, groupId: group.id, runId: null, run: { intakeText, refusals: 0 }, close: async () => undefined };
 }
 
 describe("mcp tools", () => {
