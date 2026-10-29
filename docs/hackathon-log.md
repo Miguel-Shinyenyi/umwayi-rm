@@ -253,3 +253,15 @@ Evidence:
 - Node has no network in the dev sandbox, so the compiled adapter and a live speech-to-approval chain were not run here. The wire shape is proven by curl and the H-04 speech check; the wiring is proven by the maintained tests.
 Result: voice note becomes approved entries through the routes; duplicate approval changes nothing.
 Next: H-11 photo reading and reconciliation findings. Open: proposal edit and question answer routes are not built.
+
+### 2026-10-28: H-11 photo reading and reconciliation findings
+Type: build
+Status: done
+Context: queue.md H-11. Branch h-11/photo-reconcile. H-04 left handwriting reading untested, deferred to synthetic photos.
+Evidence:
+- Live read check: stdlib-only script rendered a synthetic printed ledger page (1500x570 PNG, kept in /tmp, outside the repo). First probe clipped the canvas and the model read WANJIKU 500 as 5; after widening the canvas the model read all 3 rows exactly (WANJIKU 500, OTIS 500, AMARA 300) in 5.3s, HTTP 200, seed 7, reasoning low. Verdict: printed text reads exactly; handwriting still untested.
+- Photo reader src/adapters/vision.ts posts image_url plus a JSON-only prompt and parses rows strictly (member, positive integer amount, YYYY-MM period). Strict parse means misreads fail loudly, never silently.
+- Route POST /groups/:id/intake/page reads rows, resolves member text with first-name tolerance, compares with the untouched H-08 matcher, creates entry proposals for mismatches, files questions for unknown names, and saves findings. Matched rows create nothing. GET /groups/:id/findings lists findings with a status filter. Model-off photo intake answers 503 model_off.
+- Tests: 5 vision plus 4 page route tests pass. Full local suite: 63 pass, 12 pg skip for CI.
+Result: a page becomes proposed rows and listed findings.
+Next: H-12 H1 run on the frozen test split plus fallback mode. Open: proposal edit and question answer routes still not built; handwriting reading still untested.
