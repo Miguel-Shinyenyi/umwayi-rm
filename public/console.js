@@ -95,10 +95,14 @@ async function refreshProposals() {
           ${proposalBody(p)}
           ${(p.quotes || []).map((q) => `<blockquote>${escapeHtml(q)}</blockquote>`).join("")}
           ${verificationHtml(p)}
+          ${editsHtml(p)}
           <div class="trace" hidden></div>
+          <div class="editor" hidden></div>
           <div class="actions">
             <button type="button" class="primary" data-act="approve">Approve</button>
             <button type="button" data-act="reject">Reject</button>
+            ${p.type === "entry" ? `<button type="button" data-edit="${escapeHtml(p.id)}">Edit</button>` : ""}
+            ${p.type === "question" ? `<button type="button" data-answer="${escapeHtml(p.id)}">Answer</button>` : ""}
             ${p.runId ? `<button type="button" data-run="${escapeHtml(p.runId)}">Trace</button>` : ""}
           </div>
         </article>`,
@@ -109,6 +113,13 @@ async function refreshProposals() {
     });
     box.querySelectorAll("button[data-run]").forEach((btn) => {
       btn.addEventListener("click", () => showTrace(btn.closest(".proposal"), btn.dataset.run, btn));
+    });
+    const byId = new Map(data.proposals.map((p) => [p.id, p]));
+    box.querySelectorAll("button[data-edit]").forEach((btn) => {
+      btn.addEventListener("click", () => showEditor(btn.closest(".proposal"), byId.get(btn.dataset.edit)));
+    });
+    box.querySelectorAll("button[data-answer]").forEach((btn) => {
+      btn.addEventListener("click", () => showAnswerBox(btn.closest(".proposal"), byId.get(btn.dataset.answer)));
     });
   } catch (err) {
     box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
@@ -139,6 +150,80 @@ async function showTrace(article, runId, btn) {
     box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
     box.hidden = false;
   }
+}
+
+function editsHtml(p) {
+  if (!p.edits || p.edits.length === 0) {
+    return "";
+  }
+  const items = p.edits
+    .map((e) => `<li>was ${escapeHtml(e.payload.kind)} ${escapeHtml(e.payload.amount)} ${escapeHtml(e.payload.period)}</li>`)
+    .join("");
+  return `<div class="muted">Edited, original kept:<ul>${items}</ul></div>`;
+}
+
+function showEditor(article, proposal) {
+  const box = article.querySelector(".editor");
+  const q = proposal.payload;
+  box.innerHTML = `<label>Amount (KES)<input type="text" data-field="amount" value="${escapeHtml(q.amount)}"></label>
+    <label>Period (YYYY-MM)<input type="text" data-field="period" value="${escapeHtml(q.period)}"></label>
+    <div class="row" style="margin-top: 8px;"><button type="button" class="primary">Save edit</button></div>
+    <p class="muted" role="status"></p>`;
+  box.hidden = false;
+  box.querySelector("button").addEventListener("click", async () => {
+    const status = box.querySelector("p");
+    const amount = Number(box.querySelector('[data-field="amount"]').value);
+    const period = box.querySelector('[data-field="period"]').value.trim();
+    if (!Number.isInteger(amount) || amount <= 0) {
+      status.textContent = "Amount must be a positive whole number.";
+      status.className = "error";
+      return;
+    }
+    status.textContent = "Saving…";
+    status.className = "muted";
+    try {
+      await api(`/proposals/${encodeURIComponent(proposal.id)}/edit`, {
+        method: "POST",
+        body: JSON.stringify({ payload: { ...q, amount, period } }),
+      });
+      await refreshProposals();
+    } catch (err) {
+      status.textContent = err.message;
+      status.className = "error";
+    }
+  });
+}
+
+function showAnswerBox(article, proposal) {
+  const box = article.querySelector(".editor");
+  box.innerHTML = `<label>Your answer<textarea data-field="answer" placeholder="Brian Otieno."></textarea></label>
+    <div class="row" style="margin-top: 8px;"><button type="button" class="primary">Send answer</button></div>
+    <p class="muted" role="status"></p>`;
+  box.hidden = false;
+  box.querySelector("button").addEventListener("click", async () => {
+    const status = box.querySelector("p");
+    const text = box.querySelector('[data-field="answer"]').value.trim();
+    if (!text) {
+      status.textContent = "Write an answer first.";
+      status.className = "error";
+      return;
+    }
+    status.textContent = "Running…";
+    status.className = "muted";
+    try {
+      const { groupId } = creds();
+      const data = await api(`/groups/${encodeURIComponent(groupId)}/questions/${encodeURIComponent(proposal.id)}/answer`, {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+      status.textContent = `Answered: ${data.outcome.kind}, ${data.proposals.length} new proposal(s).`;
+      await refreshProposals();
+      await refreshToday();
+    } catch (err) {
+      status.textContent = err.message;
+      status.className = "error";
+    }
+  });
 }
 
 async function decideProposal(id, act, btn) {
