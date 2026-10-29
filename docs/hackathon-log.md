@@ -296,3 +296,28 @@ Evidence:
 - Full local suite: 80 pass, 13 pg skip for CI. No chromium on this machine, so browser rendering is unverified; HTTP reachability is the check.
 Result: a fresh clone runs from the README through compose, reset, console, and Lab.
 Next: H1 seeds 2 and 3, H-03 Discord, H-14 interviews. D-11 and D-12 still need Miguel.
+
+### 2026-10-29: H1 seeds 8 and 9, final verdict
+Type: experiment
+Status: done
+Context: H-12 followup. Same harness, conditions, and retries as seed 7. Test split run once per condition per seed.
+Evidence:
+- Seed 8: C0 20/40 (wrong 3/16, clear 7/24), C1 34/40 (wrong 0/16, clear 18/24), C2 23/40 (wrong 0/16, clear 8/24), C3 36/40 (wrong 0/16, clear 22/24).
+- Seed 9: C0 23/40 (wrong 1/16, clear 8/24), C1 33/40 (wrong 0/16, clear 17/24), C2 24/40 (wrong 0/16, clear 8/24), C3 36/40 (wrong 0/16, clear 22/24).
+- Primary metric pooled over 3 seeds: C3 0/48 versus C2 0/48 wrong proposals, a 0-point gap against the 15-point rule with a zero-width interval. H1 is not supported.
+- Replicated secondaries: C3 tops every seed, C1 stays close, C2 passes exactly 8/24 clear on all three seeds. The generic prompt over-asks constantly; the pack's value is precision about when to ask.
+Result: H1 complete with a clean null across all protocol seeds.
+Next: H-15 H2 run, then H-16 freeze and video.
+
+### 2026-10-29: H-15 H2 archive run
+Type: experiment
+Status: done
+Context: queue.md H-15, stretch, unlocked by green H-13. Branch h-15/h2-archive. Four gated stages.
+Evidence:
+- Stage 1: 28-item corpus (12 meetings, 12 ledger months with chained balances, constitution, 3 amendments); every archive-backed expected answer verified present. archive_items table with save, get-by-pointer, and gist-only list on both stores. recall MCP tool with graceful refusal.
+- Stage 2: core file plus run-h2.ts with T (constitution plus 4 recent), R (word-overlap top 4), A (gist index plus recall loop), F (all 28 verbatim). Token-tolerant scorer with unit tests. Answered-outcome loop extension. Dev: T 5/10, R 9/10, A 9/10, F 9/10.
+- Stage 3: freeze hash matched, test split ran once per condition at seed 7. Raw T 13/20, R 19/20, A 17/20, F 19/20. Two scorer bugs fixed (comma numbers, negation forms) with tests; frozen answers rescored into docs/evals/h2-seed7-analysis.json, raw files untouched. Rescored: T 13/20, R 20/20, A 19/20, F 20/20. A beats T but trails R, so H2 is not supported on seed 7. A spent 94.8k prompt tokens against R at 15.4k.
+- One transient crash killed the first T run before saving; the rerun is the single counted run and nothing was tuned between. The harness now captures per-question errors.
+- Full local suite: 91 pass, 14 pg skip for CI.
+Result: H2 complete with a null on seed 7; plain retrieval matches full context at the lowest cost.
+Next: H-16 freeze, video, and submission text. H-03, H-14, D-11, D-12 still need Miguel.

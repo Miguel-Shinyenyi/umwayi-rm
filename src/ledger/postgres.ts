@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type { Pool, PoolClient } from "pg";
 import type {
   ApproveResult,
@@ -13,6 +13,9 @@ import {
   accessDenied,
   conflict,
   invalidInput,
+  type ArchiveGist,
+  type ArchiveItem,
+  type ArchiveKind,
   type Commitment,
   type Entry,
   type Finding,
@@ -540,8 +543,69 @@ export class PostgresLedgerStore implements LedgerStore {
 
   async resetDemo(): Promise<void> {
     await this.pool.query(
-      "TRUNCATE groups, members, commitments, entries, proposals, treasurer_tokens, findings RESTART IDENTITY CASCADE",
+      "TRUNCATE groups, members, commitments, entries, proposals, treasurer_tokens, findings, archive_items RESTART IDENTITY CASCADE",
     );
+  }
+
+  async saveArchiveItem(
+    token: string,
+    input: { groupId: string; kind: ArchiveKind; verbatim: string; gist: string },
+  ): Promise<ArchiveItem> {
+    await this.mustOwn(this.pool, token, input.groupId);
+    if (!input.verbatim || !input.gist) {
+      throw invalidInput("verbatim and gist are required");
+    }
+    const sha256 = createHash("sha256").update(input.verbatim, "utf8").digest("hex");
+    try {
+      const { rows } = await this.pool.query(
+        `INSERT INTO archive_items (id, group_id, kind, verbatim, sha256, gist)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         RETURNING id, group_id, kind, verbatim, sha256, gist, created_at`,
+        [randomUUID(), input.groupId, input.kind, input.verbatim, sha256, input.gist],
+      );
+      return this.toArchiveItem(rows[0] as Record<string, unknown>);
+    } catch (err) {
+      throw invalidInput(`cannot save archive item: ${(err as Error).message}`);
+    }
+  }
+
+  async getArchiveItem(token: string, groupId: string, id: string): Promise<ArchiveItem> {
+    await this.mustOwn(this.pool, token, groupId);
+    const { rows } = await this.pool.query(
+      "SELECT id, group_id, kind, verbatim, sha256, gist, created_at FROM archive_items WHERE id = $1 AND group_id = $2",
+      [id, groupId],
+    );
+    const row = rows[0] as Record<string, unknown> | undefined;
+    if (!row) {
+      throw invalidInput(`unknown archive item: ${id}`);
+    }
+    return this.toArchiveItem(row);
+  }
+
+  async listArchiveItems(token: string, groupId: string): Promise<ArchiveGist[]> {
+    await this.mustOwn(this.pool, token, groupId);
+    const { rows } = await this.pool.query(
+      "SELECT id, kind, gist, sha256 FROM archive_items WHERE group_id = $1 ORDER BY id ASC",
+      [groupId],
+    );
+    return (rows as { id: string; kind: ArchiveKind; gist: string; sha256: string }[]).map((row) => ({
+      id: row.id,
+      kind: row.kind,
+      gist: row.gist,
+      sha256: row.sha256,
+    }));
+  }
+
+  private toArchiveItem(row: Record<string, unknown>): ArchiveItem {
+    return {
+      id: row.id as string,
+      groupId: row.group_id as string,
+      kind: row.kind as ArchiveKind,
+      verbatim: row.verbatim as string,
+      sha256: row.sha256 as string,
+      gist: row.gist as string,
+      createdAt: iso(row.created_at),
+    };
   }
 
   private toFinding(row: Record<string, unknown>): Finding {

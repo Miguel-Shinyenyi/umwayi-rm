@@ -51,7 +51,7 @@ function trimResult(name: string, result: unknown): unknown {
   return result;
 }
 
-class CountingAdapter implements ModelAdapter {
+export class CountingAdapter implements ModelAdapter {
   promptTokens = 0;
   completionTokens = 0;
 
@@ -280,4 +280,7 @@ async function main(): Promise<void> {
   console.log(`saved ${outPath}: ${passed}/${results.length} passed`);
 }
 
-await main();
+const isMain = process.argv[1]?.endsWith("run-h1.ts") || process.argv[1]?.endsWith("run-h1.js");
+if (isMain) {
+  await main();
+}

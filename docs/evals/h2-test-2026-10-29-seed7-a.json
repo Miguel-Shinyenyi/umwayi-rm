@@ -1,0 +1,490 @@
+{
+  "modelId": "meta-models/muse-spark-open-1026",
+  "date": "2026-10-29T16:40:14.013Z",
+  "promptVersion": "h2-core-v0",
+  "condition": "a",
+  "seed": 7,
+  "split": "test",
+  "retries": 2,
+  "passed": 17,
+  "total": 20,
+  "byKind": {
+    "needle": {
+      "pass": 6,
+      "total": 7
+    },
+    "stale": {
+      "pass": 7,
+      "total": 7
+    },
+    "identity": {
+      "pass": 4,
+      "total": 6
+    }
+  },
+  "tokens": {
+    "prompt": 94764,
+    "completion": 7522
+  },
+  "recalls": 23,
+  "options": {
+    "maxTokens": 600,
+    "temperature": 0
+  },
+  "questions": [
+    {
+      "id": "h2-004",
+      "kind": "needle",
+      "expected": "Kamau Njoroge",
+      "answer": "Kamau Njoroge read the treasurer report aloud in December 2025.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "5371d245-4515-4094-97ab-59a7d563fa5f",
+          "sha256": "6083489329fa62eca33bdbe5d4c3c4cab3a9990c04eb71bc040cb2ab8c5bd3e8",
+          "gist": "December 2025 meeting; Kamau Njoroge read the treasurer report aloud."
+        }
+      ],
+      "tokens": {
+        "prompt": 4797,
+        "completion": 239
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-005",
+      "kind": "needle",
+      "expected": "50 shillings",
+      "answer": "In February 2026 the group agreed a fine of 50 shillings for late arrival.",
+      "answeredVia": "tool",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "98c962a7-82a7-4ce8-890c-8dc37f982802",
+          "sha256": "bc23c24f05f109d1c010525caa82cd0670f43ec3b338a3f6d906728b79831703",
+          "gist": "February 2026 meeting; late arrival fine of 50 shillings; contribution raised to 500."
+        }
+      ],
+      "tokens": {
+        "prompt": 4830,
+        "completion": 373
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-006",
+      "kind": "needle",
+      "expected": "April 2026",
+      "answer": "Chebet Lagat missed April 2026.",
+      "answeredVia": "tool",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "8104e16a-f9bf-49af-a141-1174042a2c8a",
+          "sha256": "8ee9e7935e8d5afe1eaf8cf7fe7bbeda6804f119b5779757e5fb982423e7aa7f",
+          "gist": "April 2026 ledger; Chebet missed April; ten paid 500; closing balance 40850 shillings."
+        }
+      ],
+      "tokens": {
+        "prompt": 4814,
+        "completion": 413
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-007",
+      "kind": "needle",
+      "expected": "Mwangi Kariuki",
+      "answer": "Mwangi Kariuki proposed the loan cap discussed in August 2026.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "000d9eeb-b00c-4ae0-b8d3-718543389e90",
+          "sha256": "fa34d6b81ee048d204b8e25f639d7c629d8c471b7469c4d64dd8215e4a47a8f1",
+          "gist": "August 2026 meeting; Mwangi Kariuki proposed a loan cap; ledger photos due by day 7."
+        }
+      ],
+      "tokens": {
+        "prompt": 4853,
+        "completion": 259
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-008",
+      "kind": "needle",
+      "expected": "18400 shillings",
+      "answer": "The closing balance for June 2026 was 18,400 shillings.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "42ae297c-0a75-47b5-8765-514325013ec4",
+          "sha256": "ed970c4a5686a79483f53442354ed2bc6e644d6e9f7c96950423af4ab316f4f3",
+          "gist": "June 2026 ledger; mid-year share-out; closing balance 18400 shillings."
+        }
+      ],
+      "tokens": {
+        "prompt": 4779,
+        "completion": 263
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-009",
+      "kind": "needle",
+      "expected": "Brian Otieno and Njeri Wambui",
+      "answer": "Brian Otieno and Njeri Wambui audited the July 2026 books.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "48974a90-e42c-4283-8bdf-dcc92abdc873",
+          "sha256": "de03998696df51723e76ee77aa2c0067da047869b253fffbdbaa2a58b6425bbc",
+          "gist": "July 2026 meeting on the first Sunday; Brian Otieno and Njeri Wambui audited the books."
+        }
+      ],
+      "tokens": {
+        "prompt": 4809,
+        "completion": 223
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-010",
+      "kind": "needle",
+      "expected": "Umoja church hall",
+      "answer": "The November 2025 meeting was held at Umoja church hall.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "f2576348-69e9-4e1e-9162-cec84e907f8a",
+          "sha256": "ca53edab1ed3ed4916d70d0545159077e9bcbd92bfea2ff7dc02c530123a8436",
+          "gist": "November 2025 meeting at Umoja church hall; October contributions reviewed."
+        }
+      ],
+      "tokens": {
+        "prompt": 4795,
+        "completion": 247
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-014",
+      "kind": "stale",
+      "expected": "By day 7 (rule set Aug 2026)",
+      "answer": "Ledger photos are due by day 7 of each month.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "3952b7b8-a805-4109-9319-fe9eaa8564c2",
+          "sha256": "fa34d6b81ee048d204b8e25f639d7c629d8c471b7469c4d64dd8215e4a47a8f1",
+          "gist": "August 2026 meeting; Mwangi Kariuki proposed a loan cap; ledger photos due by day 7."
+        }
+      ],
+      "tokens": {
+        "prompt": 4801,
+        "completion": 268
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-015",
+      "kind": "stale",
+      "expected": "The treasurer approves everything (rule restated Oct 2026)",
+      "answer": "The treasurer approves everything — no ledger entry lands without the treasurer's approval.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "716b693d-169e-41e8-9aa6-02037f4e1a3c",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4886,
+        "completion": 323
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-016",
+      "kind": "stale",
+      "expected": "The entries behind it (rule set Apr 2026)",
+      "answer": "Reminders must cite the entries behind them, naming the payment each reminder refers to.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "77ff86c3-529b-4afc-ab02-99f74f11734c",
+          "sha256": "ebfbdab3ab284de3687838565236ffec3ea36c75602c695672f5a335b5160abe",
+          "gist": "April 2026 meeting; reminders must cite the entries behind them."
+        }
+      ],
+      "tokens": {
+        "prompt": 4767,
+        "completion": 317
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-017",
+      "kind": "stale",
+      "expected": "400 shillings",
+      "answer": "The monthly contribution before February 2026 was 400 shillings, raised to 500 shillings starting with the February 2026 collection.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "9ecc29a1-0dcb-4ce9-a7c1-37272db98de2",
+          "sha256": "f2dd8faf14c659a1b2aebabb22197e2a39cc0dfc902fb6d59559b65e43c55457",
+          "gist": "February 2026 amendment; contribution raised from 400 to 500 shillings."
+        }
+      ],
+      "tokens": {
+        "prompt": 4776,
+        "completion": 290
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-018",
+      "kind": "stale",
+      "expected": "Saturday",
+      "answer": "Before June 2026 the group met on Saturdays, moving to Sundays starting in July 2026.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "9a9161df-25be-4032-8f9b-9fb553bae56f",
+          "sha256": "739821423f4e63d1546e72b947b7a9c2872a9746f5f3440b95abf7dd2556617a",
+          "gist": "June 2026 amendment; meeting day moved from Saturday to Sunday."
+        },
+        {
+          "pointer": "c6c826c7-035e-4f6a-bf3e-c82459eff2a6",
+          "sha256": "da3acb711d7abccecee46b66f71afa2d5f73eb1cbb44a08c9f24654f2d13e85c",
+          "gist": "June 2026 meeting; meeting day moved from Saturday to Sunday."
+        }
+      ],
+      "tokens": {
+        "prompt": 4971,
+        "completion": 366
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-019",
+      "kind": "stale",
+      "expected": "No",
+      "answer": "No — before September 2026 members could not borrow at all; loans of up to three times savings were only allowed starting with the September 2026 amendment.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "b6f03710-88a0-4f71-ae19-d3dcb2708c4f",
+          "sha256": "bd807358e932e28ce5ef9cfa3dd3f88c35fe8ccef9cc4c236207dd58edcf7347",
+          "gist": "September 2026 amendment; loans allowed up to three times savings."
+        },
+        {
+          "pointer": "0a0a01a1-82c1-4ce4-ab03-6fedb66e1590",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        },
+        {
+          "pointer": "d0d34c4b-9fae-4a26-b593-a56d42839777",
+          "sha256": "88321f60e13de492f6cd34647835cfff8cf846b66c551a506ff8ac1bd7386255",
+          "gist": "September 2026 meeting; loans allowed up to three times savings."
+        },
+        {
+          "pointer": "d51c8d36-19b3-45b5-9151-4581017b75b6",
+          "sha256": "fa34d6b81ee048d204b8e25f639d7c629d8c471b7469c4d64dd8215e4a47a8f1",
+          "gist": "August 2026 meeting; Mwangi Kariuki proposed a loan cap; ledger photos due by day 7."
+        }
+      ],
+      "tokens": {
+        "prompt": 5599,
+        "completion": 591
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-020",
+      "kind": "stale",
+      "expected": "Reminders must cite the entries behind them",
+      "answer": "<atem:function_calls>\n<atem:invoke name=\"answer_question\">\n<atem:parameter name=\"answer\">The April 2026 meeting agreed that reminders must cite the entries behind them, so every reminder names the payment it refers to.</atem:parameter>\n</atem:invoke>\n</atem:function_calls>",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "2e6b4b2f-f360-49b9-a400-67d85886b4bd",
+          "sha256": "ebfbdab3ab284de3687838565236ffec3ea36c75602c695672f5a335b5160abe",
+          "gist": "April 2026 meeting; reminders must cite the entries behind them."
+        }
+      ],
+      "tokens": {
+        "prompt": 4775,
+        "completion": 311
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-025",
+      "kind": "identity",
+      "expected": "No.",
+      "answer": "No — the system does not move money; it only drafts and the treasurer sends, with no lending advice or transfers.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "87498e6a-ad3a-4912-8c4c-42b3eb83b8ae",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4804,
+        "completion": 469
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-026",
+      "kind": "identity",
+      "expected": "No.",
+      "answer": "The system does not advise on lending, move money, or score members — it only drafts for the treasurer to approve and send.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "7b1b8871-61f4-43fe-8f22-971ffa5a992f",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4847,
+        "completion": 532
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-027",
+      "kind": "identity",
+      "expected": "By day 5 of the month.",
+      "answer": "Each member's contribution of 500 shillings is due by day 5 of the month.",
+      "answeredVia": "tool",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "adf7e235-c57c-4427-b592-6cc6dc8f34ea",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4852,
+        "completion": 430
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-028",
+      "kind": "identity",
+      "expected": "No. It asks.",
+      "answer": "No — when two members share a name like the two Brians, the agent must ask which one is meant instead of guessing.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "2bdd4b81-0e1f-41db-8f0e-3585b5376bb9",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4851,
+        "completion": 645
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-029",
+      "kind": "identity",
+      "expected": "Today and balances still work.",
+      "answer": "The assistant cannot provide that information.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 2291,
+        "completion": 252
+      },
+      "note": "answered in content after unfinished"
+    },
+    {
+      "id": "h2-030",
+      "kind": "identity",
+      "expected": "No. Corrections are new entries.",
+      "answer": "No, entries are never edited or deleted; corrections are made as new entries.",
+      "answeredVia": "tool",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "recalls": [
+        {
+          "pointer": "3ffd6b00-214f-4eb4-8e39-eee667af9868",
+          "sha256": "85ce3f56bfe87af15befd2b06b8d8e7b7a367ba18eb1f61c481dc021971c8a1a",
+          "gist": "Current group rules: 500 by day 5, Sundays, loans to three times savings, treasurer approves."
+        }
+      ],
+      "tokens": {
+        "prompt": 4867,
+        "completion": 711
+      },
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "modelId": "meta-models/muse-spark-open-1026",
+  "date": "2026-10-29T16:41:42.401Z",
+  "promptVersion": "h2-core-v0",
+  "condition": "t",
+  "seed": 7,
+  "split": "test",
+  "retries": 2,
+  "passed": 13,
+  "total": 20,
+  "byKind": {
+    "needle": {
+      "pass": 3,
+      "total": 7
+    },
+    "stale": {
+      "pass": 4,
+      "total": 7
+    },
+    "identity": {
+      "pass": 6,
+      "total": 6
+    }
+  },
+  "tokens": {
+    "prompt": 17727,
+    "completion": 5230
+  },
+  "recalls": 0,
+  "options": {
+    "maxTokens": 600,
+    "temperature": 0
+  },
+  "questions": [
+    {
+      "id": "h2-004",
+      "kind": "needle",
+      "expected": "Kamau Njoroge",
+      "answer": " I don't have that information in the records provided — the available meeting notes cover July through October 2026 and don't mention December 2025.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 890,
+        "completion": 382
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-005",
+      "kind": "needle",
+      "expected": "50 shillings",
+      "answer": " I don't have meeting notes for February 2026 in the provided context, so I can't confirm what was agreed then — the current constitution (October 2026) lists the late arrival fine as 50 shillings.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 890,
+        "completion": 339
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-006",
+      "kind": "needle",
+      "expected": "April 2026",
+      "answer": "The provided core and meeting notes do not contain any information about Chebet's contributions or a missed month in 2026 before July.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 890,
+        "completion": 141
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-007",
+      "kind": "needle",
+      "expected": "Mwangi Kariuki",
+      "answer": "Mwangi Kariuki proposed the loan cap of three times a member's savings at the August 2026 meeting.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 889,
+        "completion": 216
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-008",
+      "kind": "needle",
+      "expected": "18400 shillings",
+      "answer": "I don't have the June 2026 closing balance in the entries available to me — the July 2026 meeting notes only confirm that June contributions were all present, without stating a balance.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 888,
+        "completion": 242
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-009",
+      "kind": "needle",
+      "expected": "Brian Otieno and Njeri Wambui",
+      "answer": "Brian Otieno and Njeri Wambui audited the July 2026 books.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 889,
+        "completion": 141
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-010",
+      "kind": "needle",
+      "expected": "Umoja church hall",
+      "answer": " I don't have any record of a November 2025 meeting or its venue in the information provided — the available meeting notes only cover July through October 2026.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 887,
+        "completion": 189
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-014",
+      "kind": "stale",
+      "expected": "By day 7 (rule set Aug 2026)",
+      "answer": "Members photograph their ledger pages by day 7 of each month.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 883,
+        "completion": 153
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-015",
+      "kind": "stale",
+      "expected": "The treasurer approves everything (rule restated Oct 2026)",
+      "answer": "The treasurer approves everything — no entry lands in the ledger without the treasurer's approval.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 883,
+        "completion": 485
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-016",
+      "kind": "stale",
+      "expected": "The entries behind it (rule set Apr 2026)",
+      "answer": "A reminder must cite the entries behind it.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 883,
+        "completion": 112
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-017",
+      "kind": "stale",
+      "expected": "400 shillings",
+      "answer": " The provided records do not include the contribution amount before February 2026 — the current constitution from October 2026 lists it as 500 shillings due by day 5.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 887,
+        "completion": 192
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-018",
+      "kind": "stale",
+      "expected": "Saturday",
+      "answer": " The provided records don't state which day the group met before June 2026 — they only note that the 12 July 2026 meeting was the first Sunday meeting and that the change to Sundays was judged a success.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 889,
+        "completion": 559
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-019",
+      "kind": "stale",
+      "expected": "No",
+      "answer": "No — before September 2026 members could not borrow at all; the rule allowing loans of up to three times savings was agreed at the 13 September 2026 meeting.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 886,
+        "completion": 424
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-020",
+      "kind": "stale",
+      "expected": "Reminders must cite the entries behind them",
+      "answer": " I don't have any information about an April 2026 rule change in the provided core or meeting notes.",
+      "answeredVia": "content",
+      "pass": false,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 889,
+        "completion": 142
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-025",
+      "kind": "identity",
+      "expected": "No.",
+      "answer": "No — the system moves no money and gives no lending advice; it only drafts entries for the treasurer to approve.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 883,
+        "completion": 369
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-026",
+      "kind": "identity",
+      "expected": "No.",
+      "answer": "No, the system does not advise on lending — it moves no money and gives no lending advice.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 884,
+        "completion": 289
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-027",
+      "kind": "identity",
+      "expected": "By day 5 of the month.",
+      "answer": "Each member contributes 500 shillings per month, due by day 5 of the month.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 883,
+        "completion": 293
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-028",
+      "kind": "identity",
+      "expected": "No. It asks.",
+      "answer": "No — when two members share a name, such as the two Brians, it asks which one is meant instead of guessing.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 885,
+        "completion": 280
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-029",
+      "kind": "identity",
+      "expected": "Today and balances still work.",
+      "answer": "When the model is off, Today and balances still work.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 885,
+        "completion": 157
+      },
+      "note": ""
+    },
+    {
+      "id": "h2-030",
+      "kind": "identity",
+      "expected": "No. Corrections are new entries.",
+      "answer": "No — entries are never edited or deleted; corrections are made as new entries.",
+      "answeredVia": "content",
+      "pass": true,
+      "turns": 1,
+      "attempts": 1,
+      "recalls": [],
+      "tokens": {
+        "prompt": 884,
+        "completion": 125
+      },
+      "note": ""
+    }
+  ]
+}

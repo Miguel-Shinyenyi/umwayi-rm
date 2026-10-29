@@ -177,6 +177,7 @@ describe("mcp tools", () => {
         "propose_draft_reminder",
         "propose_entry",
         "propose_question",
+        "recall",
       ]);
       const result = await client.callTool({
         name: "propose_question",
