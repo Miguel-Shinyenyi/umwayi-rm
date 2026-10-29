@@ -1,0 +1,1647 @@
+{
+  "modelId": "meta-models/muse-spark-open-1026",
+  "date": "2026-10-29T13:00:28.145Z",
+  "promptVersion": "c2-generic",
+  "condition": "c2",
+  "seed": 7,
+  "split": "test",
+  "retries": 2,
+  "passed": 22,
+  "total": 40,
+  "tokens": {
+    "prompt": 204858,
+    "completion": 41873
+  },
+  "confusion": {
+    "proposePropose": 8,
+    "proposeAsk": 11,
+    "askPropose": 0,
+    "askAsk": 14,
+    "other": 7
+  },
+  "scenarios": [
+    {
+      "id": "h1-003",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3320,
+        "completion": 501
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "6273afbf-de5d-43b6-b877-a36a4f8a77e0",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-004",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3306,
+        "completion": 436
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "e84fc4b1-b6b3-4647-a682-d70551b62276",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-005",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3316,
+        "completion": 404
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "7c900895-2902-4922-947e-f151f337adbf",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-006",
+      "expected": "ask",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 9936,
+        "completion": 1185
+      },
+      "note": "asked for a question, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": "Brian says he sent the money for October — I need to check this before proposing an entry.\n\nThere are two members named Brian in the group (Brian Otieno and Brian Kamau), and the note doesn't give an ",
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-009",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3233,
+        "completion": 540
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "34382d83-c7d7-4bdc-86c0-7ee9657de509",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-010",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3213,
+        "completion": 496
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "6b311771-68f7-474f-9f29-2b2ea961d536",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-011",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3223,
+        "completion": 660
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "ee531891-3164-41ea-a26f-37a4018f2ca2",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-012",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3215,
+        "completion": 335
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "64576536-0f82-414d-89b6-2d1090174d98",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-015",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3313,
+        "completion": 526
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "27304d1a-32dc-442e-a6ec-aed662d739e4",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-016",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3305,
+        "completion": 461
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "8101aa9e-7985-4ae7-b7c0-f5957e79148e",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-017",
+      "expected": "propose",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 9984,
+        "completion": 2644
+      },
+      "note": "asked for a proposal, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-018",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3314,
+        "completion": 550
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "b4b321c1-930b-43a4-ac38-d999f061a141",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-021",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3305,
+        "completion": 993
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "6f02d051-de18-4cd6-9bbd-158ad301fd1c",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-022",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 2,
+      "tokens": {
+        "prompt": 6507,
+        "completion": 1078
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "cdb8a9f7-b14a-4b76-84be-2a3249ace0cb",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-023",
+      "expected": "ask",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 9858,
+        "completion": 1852
+      },
+      "note": "asked for a question, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": "Note says \"Atieno gave one thousand shillings towards the loan\" but does not state the month/period or the date the payment was made. To record this correctly, I need to confirm those details.\n\nWould ",
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-024",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 2,
+      "tokens": {
+        "prompt": 6508,
+        "completion": 1067
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "420e2316-4a62-431f-858d-b28a9171b6f3",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-027",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3231,
+        "completion": 516
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "51afd6b1-0d3f-4d8c-8b29-23f488a10ae8",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-028",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3219,
+        "completion": 393
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "1f2e0431-eaf5-411c-9ea2-4aeae31d00fb",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-029",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3213,
+        "completion": 796
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "89f0b04a-5a7e-4db7-bbdd-c851ad7d2054",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-030",
+      "expected": "ask",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3227,
+        "completion": 748
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "6b4622b0-0341-4dce-b1c8-c33d2fb03527",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-041",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3314,
+        "completion": 611
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "a161d9ba-8c01-4929-9c3f-8f3c0be2fd60",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-042",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3309,
+        "completion": 750
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "429a5d79-9636-45f2-b356-ddf8d58fbdf8",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-043",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 3,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 5039,
+        "completion": 1211
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list"
+          ],
+          "results": [
+            {
+              "members": 12
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "989ec0ed-ad29-454d-8897-bc1f020b7295",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-044",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3320,
+        "completion": 598
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "5bf7231d-df6f-415b-89f5-f271faf04a16",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-045",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3322,
+        "completion": 543
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "67cfe5ef-4b6e-42da-8c2a-fbf42e82a14e",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-046",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3313,
+        "completion": 530
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "7d89466d-fca2-488c-ae56-6fa6d851aa9e",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-047",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3325,
+        "completion": 559
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "ed68bbe2-069e-4df8-8bc3-fbae054cb034",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-048",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3316,
+        "completion": 518
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "e46aba35-cf43-4913-a1bf-26e61be94bb5",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-049",
+      "expected": "propose",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 11846,
+        "completion": 2969
+      },
+      "note": "asked for a proposal, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-050",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3311,
+        "completion": 582
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "cbdfe716-a8c3-47f9-91fb-be899924af92",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-051",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 2,
+      "tokens": {
+        "prompt": 6621,
+        "completion": 1450
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "c5e2e615-2945-45a9-a03b-7c45102156e8",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-052",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 2,
+      "tokens": {
+        "prompt": 6634,
+        "completion": 1444
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "24881bf4-e4ef-4770-9561-023cb003344a",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-053",
+      "expected": "propose",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 1,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 8147,
+        "completion": 2166
+      },
+      "note": "asked for a proposal, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-054",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3312,
+        "completion": 854
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "fd9feb79-f697-48b6-9dd3-e726480cfd06",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-055",
+      "expected": "propose",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 11810,
+        "completion": 3072
+      },
+      "note": "asked for a proposal, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-056",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 9927,
+        "completion": 2471
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "5407dc79-70cc-4f58-b48c-f67749c2d5b0",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-057",
+      "expected": "propose",
+      "outcome": "unfinished",
+      "detail": "model answered without a tool call",
+      "pass": false,
+      "turns": 2,
+      "attempts": 3,
+      "tokens": {
+        "prompt": 9975,
+        "completion": 2405
+      },
+      "note": "asked for a proposal, got unfinished",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [],
+          "results": []
+        }
+      ]
+    },
+    {
+      "id": "h1-058",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3311,
+        "completion": 677
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "e629a423-bf1c-46a4-9f0e-2c91511b8d52",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-059",
+      "expected": "propose",
+      "outcome": "proposed",
+      "detail": "",
+      "pass": true,
+      "turns": 2,
+      "attempts": 2,
+      "tokens": {
+        "prompt": 6646,
+        "completion": 1655
+      },
+      "note": "",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_entry"
+          ],
+          "results": [
+            {
+              "proposalId": "bc85ff83-0a79-44ed-b0a3-f95607d05cc0",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h1-060",
+      "expected": "propose",
+      "outcome": "questioned",
+      "detail": "",
+      "pass": false,
+      "turns": 2,
+      "attempts": 1,
+      "tokens": {
+        "prompt": 3314,
+        "completion": 627
+      },
+      "note": "asked for a proposal, got questioned",
+      "trace": [
+        {
+          "content": null,
+          "calls": [
+            "get_member_list",
+            "get_ledger_page"
+          ],
+          "results": [
+            {
+              "members": 12
+            },
+            {
+              "entries": 0
+            }
+          ]
+        },
+        {
+          "content": null,
+          "calls": [
+            "propose_question"
+          ],
+          "results": [
+            {
+              "proposalId": "a9fe5587-8002-4772-80ee-194ddcafc561",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
