@@ -5,4 +5,7 @@ dist
 coverage
 npm-debug.log
 evals
-docs
+docs/*
+!docs/evals/
+docs/evals/*
+!docs/evals/*.json

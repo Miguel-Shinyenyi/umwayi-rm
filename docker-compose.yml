@@ -7,6 +7,9 @@ services:
       PORT: 3000
       DATABASE_URL: postgres://umwayi:umwayi@db:5432/umwayi
       MODEL_ID: meta-models/muse-spark-open-1026
+      DEMO_MODE: "true"
+      BASENTEN_API_KEY: ${BASENTEN_API_KEY:-}
+      META_API_KEY: ${META_API_KEY:-}
     depends_on:
       db:
         condition: service_healthy

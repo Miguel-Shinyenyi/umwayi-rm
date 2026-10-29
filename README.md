@@ -4,11 +4,11 @@ An open-source secretary for savings groups. It turns voice notes and photos of 
 
 Built for the Meta Global AI Developer Hackathon (Indie Developer track, Build for Your World). Solo entry by Miguel Shinyenyi, Nairobi. Built on Muse Spark Open.
 
-Status on 2026-10-27: planning only. No code exists yet. The first code commit will be dated Oct 27 or later.
+Status on 2026-10-29: the demo path runs from a fresh clone. First code commit Oct 27. H1 counted run seed 1 of 3 saved; the result is null on seed 1.
 
-## What it will do
+## What it does
 
-A treasurer speaks a note or photographs a ledger page. An agent reads it into proposals, each quoting the words behind it, and asks a question when a note is ambiguous (for example, two members with the same name). Code keeps the ledger, computes balances and overdue contributions, and compares a paper page with stored entries. The treasurer approves, edits or rejects. Nothing is sent and no money moves.
+A treasurer speaks a note or photographs a ledger page. An agent reads it into proposals, each quoting the words behind it, and asks a question when a note is ambiguous (for example, two members with the same name). Code keeps the ledger, computes balances and overdue contributions, and compares a paper page with stored entries. The treasurer approves or rejects. Nothing is sent and no money moves.
 
 ## What it will not do
 
@@ -22,15 +22,16 @@ Whether a short curated set of rules (an identity, rules written from past mista
 
 | Feature | Status |
 |---|---|
-| Ledger core: groups, members, commitments, append-only entries | not built |
-| Deterministic "Today" list | not built |
-| MCP server and agent runs | not built |
-| Proposals inbox and approval | not built |
-| Voice note intake | not built |
-| Photo reading and reconciliation | not built |
-| Reminder drafts (copy only) | not built |
-| Eval suite, run traces, Lab | not built |
-| Synthetic seed and reset | not built |
+| Ledger core: groups, members, commitments, append-only entries | tested |
+| Deterministic "Today" list | tested |
+| MCP server and agent runs | tested |
+| Proposals inbox and approval | tested |
+| Voice note intake | tested |
+| Photo reading and reconciliation | tested |
+| Reminder drafts (copy only) | tested, tool only |
+| Eval suite and run traces | tested |
+| Lab page | built |
+| Synthetic seed and reset | tested |
 
 Words used here: built, tested, manual-verified, not verified. Nothing is "verified" without a check recorded in `docs/hackathon-log.md`.
 
@@ -50,7 +51,24 @@ Planning documents dated Oct 24 to 27 are in this repository. Earlier plans are 
 
 ## Quick start
 
-Not available yet. This section is filled in on Day 7 and tested on a fresh clone.
+Needs Docker. Model keys are optional; without them the agent leaves runs unfinished, manual entry still works, and photo intake answers model_off.
+
+```
+git clone https://github.com/Miguel-Shinyenyi/umwayi-rm.git
+cd umwayi-rm
+docker compose up -d --wait
+curl -X POST http://localhost:3000/demo/reset
+```
+
+The reset call returns a group id and a treasurer token. Open http://localhost:3000/console.html in a browser, paste both into the Connection card, and press Connect. The Lab page at http://localhost:3000/lab.html charts the saved eval runs.
+
+With keys, pass them through the environment first:
+
+```
+BASENTEN_API_KEY=... META_API_KEY=... docker compose up -d --wait
+```
+
+Stop with `docker compose down -v`. If port 3000 is taken, start with `API_PORT=3100 docker compose up -d --wait` and use port 3100 in the URLs above.
 
 ## Documents
 

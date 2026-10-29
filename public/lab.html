@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tumaini lab</title>
+  <link rel="stylesheet" href="/console.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Tumaini lab</h1>
+    <nav aria-label="Console sections">
+      <a href="/console.html">Console</a>
+      <a href="/lab.html" aria-current="page">Lab</a>
+    </nav>
+    <span class="demo-pill">Demo data</span>
+  </header>
+  <main>
+    <section class="card" aria-labelledby="chart-h">
+      <h2 id="chart-h">H1 restraint runs</h2>
+      <p class="muted">Pass rate per condition on the frozen test split, read from saved run files. One seed so far.</p>
+      <div id="chart"><p class="empty">Loading runs…</p></div>
+    </section>
+    <section class="card" aria-labelledby="runs-h">
+      <h2 id="runs-h">Saved runs</h2>
+      <div id="runs-list"><p class="empty">Loading runs…</p></div>
+    </section>
+  </main>
+  <footer>
+    <span>Synthetic data, one model, small n. Null results reported.</span>
+    <span>Built with Muse Spark Open</span>
+  </footer>
+  <script src="/lab.js"></script>
+</body>
+</html>
