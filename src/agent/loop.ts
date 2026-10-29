@@ -33,6 +33,7 @@ export interface LoopTurn {
 export type LoopOutcome =
   | { kind: "proposed"; proposalId: string }
   | { kind: "questioned"; proposalId: string }
+  | { kind: "answered"; text: string }
   | { kind: "other"; detail: string }
   | { kind: "unfinished"; detail: string }
   | { kind: "error"; detail: string };
@@ -127,9 +128,12 @@ function outcomeFrom(toolName: string, result: unknown): LoopOutcome | null {
   if (typeof result !== "object" || result === null) {
     return null;
   }
-  const record = result as { refused?: boolean; proposalId?: unknown; mustAsk?: boolean };
+  const record = result as { refused?: boolean; proposalId?: unknown; mustAsk?: boolean; answer?: unknown };
   if (record.refused === true) {
     return null;
+  }
+  if (toolName === "answer_question") {
+    return typeof record.answer === "string" ? { kind: "answered", text: record.answer } : null;
   }
   if (typeof record.proposalId !== "string") {
     return null;

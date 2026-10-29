@@ -140,4 +140,40 @@ describe("agent loop", () => {
       await close();
     }
   });
+
+  it("ends answered when the model calls answer_question", async () => {
+    const { client, close } = await setup();
+    try {
+      const { McpServer } = await import("@modelcontextprotocol/sdk/server/mcp.js");
+      const { z } = await import("zod");
+      const { InMemoryTransport: Pair } = await import("@modelcontextprotocol/sdk/inMemory.js");
+      const answerServer = new McpServer({ name: "answer-test", version: "0.1.0" });
+      answerServer.registerTool(
+        "answer_question",
+        { description: "Answer.", inputSchema: { answer: z.string() } },
+        async (args) => ({
+          content: [{ type: "text" as const, text: JSON.stringify({ answer: args.answer }) }],
+        }),
+      );
+      const [ct, st] = Pair.createLinkedPair();
+      const answerClient = new Client({ name: "answer-test", version: "0.1.0" });
+      await Promise.all([answerClient.connect(ct), answerServer.connect(st)]);
+      try {
+        const adapter = new StubAdapter([
+          {
+            content: null,
+            modelId: "stub/scripted",
+            toolCalls: [{ id: "call-1", name: "answer_question", arguments: { answer: "Atieno Auma." } }],
+          },
+        ]);
+        const trace = await runLoop(adapter, answerClient, SYSTEM, "Who kept the minutes?", DEFAULT_MODEL_OPTIONS);
+        expect(trace.outcome).toEqual({ kind: "answered", text: "Atieno Auma." });
+      } finally {
+        await answerClient.close();
+        await answerServer.close();
+      }
+    } finally {
+      await close();
+    }
+  });
 });
