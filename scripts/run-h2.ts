@@ -142,7 +142,7 @@ function createAnswerServer(
   groupId: string,
 ): McpServer {
   const server = new McpServer({ name: "h2-runner", version: "0.1.0" });
-  const deps = { store, token, groupId, run: { intakeText: "", refusals: 0 } };
+  const deps = { store, token, groupId, runId: null, run: { intakeText: "", refusals: 0 } };
   server.registerTool(
     "recall",
     {

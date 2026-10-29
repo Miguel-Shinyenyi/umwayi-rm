@@ -103,6 +103,7 @@ async function runAttempt(input: AttemptInput): Promise<{
     store,
     token: seeded.token,
     groupId: seeded.group.id,
+    runId: null,
     run: { intakeText: input.scenario.text, refusals: 0 },
   });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
