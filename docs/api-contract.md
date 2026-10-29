@@ -1,6 +1,6 @@
 # docs/api-contract.md: HTTP and MCP contract (plan v3, draft)
 
-Draft. Changes need a line in `docs/design-decisions.md`. All records are synthetic and labelled demo. Changelog 2026-10-28: entries gain proposal_id (unique, null for direct entries) so idempotent approval finds the entry it created. Logged under H-07; design-decisions.md is stale v2 and untouched pending its rewrite task.
+Draft. Changes need a line in `docs/design-decisions.md`. All records are synthetic and labelled demo. Changelog 2026-10-28: entries gain proposal_id (unique, null for direct entries) so idempotent approval finds the entry it created. Logged under H-07; design-decisions.md is stale v2 and untouched pending its rewrite task. Changelog 2026-10-29: proposals gain verification trails and an edits audit list; status gains `answered` and drops the never-built `expired`; answer route path corrected to the built `POST /groups/{id}/questions/{qid}/answer`. Logged under H-19.
 
 Conventions: JSON, UTC timestamps, ids are opaque strings, money is integer KES (no decimals in the demo), errors are `{ "error": { "code", "message" } }`. Writes that matter take an `Idempotency-Key` header.
 
@@ -13,7 +13,7 @@ Conventions: JSON, UTC timestamps, ids are opaque strings, money is integer KES 
 | commitment | id, group_id, member_id, kind (`contribution` or `loan_repayment`), amount, due_rule (monthly day or one date) |
 | entry | id, group_id, member_id, kind, amount, period (`YYYY-MM`), occurred_on, evidence_tier, source_ref, proposal_id, approved_by, created_at. Append only. Corrections are new entries that reference the old one |
 | evidence_tier | `statement_confirmed`, `treasurer_confirmed`, `agent_proposed_approved`, `self_reported` |
-| proposal | id, group_id, run_id, type (`entry`, `question`, `draft_reminder`), payload, quotes[], status (`pending`, `approved`, `rejected`, `expired`), decided_by, decided_at |
+| proposal | id, group_id, run_id, type (`entry`, `question`, `draft_reminder`), payload, quotes[], status (`pending`, `approved`, `rejected`, `answered`), verification, edits[], decided_by, decided_at |
 | run | id, group_id, intake_ref, model_id, prompt_version, steps[], started_at, ended_at, status |
 | finding | id, group_id, kind (`only_on_paper`, `only_in_ledger`, `amount_differs`), refs[], status (`open`, `resolved`) |
 | archive_item | id, group_id, kind (`meeting`, `ledger_month`, `constitution`), verbatim, sha256, gist, created_at |
@@ -33,7 +33,7 @@ Conventions: JSON, UTC timestamps, ids are opaque strings, money is integer KES 
 | `POST /proposals/{id}/approve` | Applies the entry. Idempotent. Returns the entry |
 | `POST /proposals/{id}/reject` | Rejects |
 | `POST /proposals/{id}/edit` | Edit payload before approval; keeps the original in the audit log |
-| `POST /questions/{id}/answer` | Treasurer answers a question proposal; the agent continues the run |
+| `POST /groups/{id}/questions/{qid}/answer` | Treasurer answers a question proposal; the agent continues in a new run and the question flips to `answered` |
 | `GET /groups/{id}/findings` | Reconciliation findings |
 | `GET /lab/runs` | Saved eval runs and traces (read only) |
 | `POST /demo/reset` | Reseeds the synthetic group. Disabled outside demo mode |

@@ -344,3 +344,15 @@ Evidence:
 - Not adopted with reasons recorded: ground-truth scoring, cross-turn resume, a separate attorney role, read-everything checks.
 Result: every adopted workshop mechanic is implemented with tests; the inbox now shows check trails and traces.
 Next: H-16 video and H-17 submit need Miguel. H-03, H-14, D-11, D-12 still open.
+
+### 2026-10-29: H-19 proposal edit and question answer
+Type: build
+Status: done
+Context: queue.md H-19. Branch h-19/edit-answer. Four gated stages. Closes the two open API gaps from H-10.
+Evidence:
+- Stage 1: POST /proposals/:id/edit replaces the payload of pending entry proposals on both backends with shared approval-grade validation. Previous payloads append to an edits audit list (migration 005); the verification trail clears since it judged the old payload. Decided, question, and bad-payload edits fail with 409, 422, 422.
+- Stage 2: POST /groups/:id/questions/:qid/answer runs the agent over the original note plus the treasurer answer in a new saved run, links new proposals to it, and flips the question to a new answered status (migration 006) with the answer in its trail.
+- Stage 3: console inline editor for amount and period, answer box with outcome reporting, audit history display. Contract proposal record, answer path, changelog, and DD-069 updated; the never-built expired status removed.
+- Full local suite: 110 pass, 18 pg skip for CI. Console script parses.
+Result: the contract has no unbuilt routes left; every endpoint is implemented and tested.
+Next: H-16 video and H-17 submit need Miguel. H-03, H-14, D-11, D-12 still open.

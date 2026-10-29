@@ -72,6 +72,8 @@ export interface LedgerStore {
   createEntry(token: string, input: CreateEntryInput): Promise<Entry>;
   createProposal(token: string, input: CreateProposalInput): Promise<Proposal>;
   getProposal(token: string, proposalId: string): Promise<Proposal>;
+  editProposal(token: string, proposalId: string, payload: Record<string, unknown>): Promise<Proposal>;
+  markQuestionAnswered(token: string, questionId: string, answer: string): Promise<Proposal>;
   recordVerification(token: string, proposalId: string, verification: ProposalVerification): Promise<Proposal>;
   approveProposal(token: string, proposalId: string): Promise<ApproveResult>;
   rejectProposal(token: string, proposalId: string): Promise<Proposal>;

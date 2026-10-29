@@ -33,6 +33,15 @@ describe("console page", () => {
     expect(js).toContain("Coverage");
   });
 
+  it("edits entries and answers questions inline", () => {
+    expect(js).toContain("showEditor");
+    expect(js).toContain("showAnswerBox");
+    expect(js).toContain("editsHtml");
+    expect(js).toContain("/edit");
+    expect(js).toContain("/questions/");
+    expect(js).toContain("/answer");
+  });
+
   it("uses the token palette with no alarm red", () => {
     for (const token of ["--canvas", "--surface", "--ink", "--muted", "--accent", "--success", "--private"]) {
       expect(css).toContain(token);

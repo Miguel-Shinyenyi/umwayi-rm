@@ -5,6 +5,7 @@ import { MemoryLedgerStore } from "../src/ledger/memory.js";
 import { handleProposeDraftReminder } from "../src/mcp/tools.js";
 import { createIntakeHandler } from "../src/routes/intake.js";
 import { createProposalHandlers } from "../src/routes/proposals.js";
+import { createQuestionHandlers } from "../src/routes/questions.js";
 import { createRunHandler, lineCoverage } from "../src/routes/runs.js";
 import { StubAdapter } from "./stub-adapter.js";
 
@@ -102,6 +103,125 @@ describe("approve with claim check", () => {
     expect(seen.code).toBe(200);
     const decided = await store.getProposal(token, proposal.id);
     expect(decided.verification?.checks.map((c) => c.name)).not.toContain("claim_supported");
+  });
+});
+
+describe("edit route", () => {
+  it("edits then approves the corrected payload", async () => {
+    const { store, token, proposal } = await seedEntry();
+    const handlers = createProposalHandlers({ store });
+    const edited = mockResponse();
+    await handlers.editProposal(
+      mockRequest({
+        params: { id: proposal.id },
+        body: {
+          payload: {
+            ...(proposal.payload as Record<string, unknown>),
+            amount: 550,
+          },
+        },
+        token,
+      }),
+      edited.res,
+    );
+    expect(edited.seen.code).toBe(200);
+    expect((edited.seen.payload as { proposal: { edits: unknown[] } }).proposal.edits).toHaveLength(1);
+    const approved = mockResponse();
+    await handlers.approveProposal(mockRequest({ params: { id: proposal.id }, token }), approved.res);
+    expect(approved.seen.code).toBe(200);
+    expect((approved.seen.payload as { entry: { amount: number } }).entry.amount).toBe(550);
+  });
+
+  it("rejects a missing payload", async () => {
+    const { store, token, proposal } = await seedEntry();
+    const handlers = createProposalHandlers({ store });
+    const { res, seen } = mockResponse();
+    await handlers.editProposal(mockRequest({ params: { id: proposal.id }, body: {}, token }), res);
+    expect(seen.code).toBe(422);
+  });
+});
+
+describe("answer route", () => {
+  it("answers a question and runs the agent on the combined text", async () => {
+    const store = new MemoryLedgerStore();
+    const { group, token } = await store.createGroup("Answer group");
+    const member = await store.createMember(token, { groupId: group.id, displayName: "Brian Otieno" });
+    await store.createCommitment(token, { groupId: group.id, memberId: member.id, kind: "contribution", amount: 500, dueRule: "monthly:5" });
+    const question = await store.createProposal(token, {
+      groupId: group.id,
+      type: "question",
+      payload: { text: "Which Brian paid?" },
+    });
+    const handlers = createQuestionHandlers({
+      store,
+      model: new StubAdapter([
+        {
+          content: null,
+          modelId: "stub",
+          toolCalls: [
+            {
+              id: "c1",
+              name: "propose_entry",
+              arguments: {
+                memberText: "Brian Otieno",
+                kind: "contribution",
+                amount: 500,
+                period: "2026-10",
+                occurredOn: "2026-10-05",
+                quotes: ["Brian Otieno"],
+              },
+            },
+          ],
+        },
+      ]),
+      loadPack: async () => ({ playbook: "p", rules: "r" }),
+    });
+    const { res, seen } = mockResponse();
+    await handlers.answerQuestion(
+      mockRequest({ params: { id: group.id, qid: question.id }, body: { text: "Brian Otieno." }, token }),
+      res,
+    );
+    expect(seen.code).toBe(200);
+    const payload = seen.payload as {
+      question: { status: string };
+      runId: string;
+      outcome: { kind: string };
+      proposals: { runId: string }[];
+    };
+    expect(payload.question.status).toBe("answered");
+    expect(payload.outcome.kind).toBe("proposed");
+    expect(payload.proposals).toHaveLength(1);
+    expect(payload.proposals[0]?.runId).toBe(payload.runId);
+    const run = await store.getRun(token, payload.runId);
+    expect(run.intakeRef).toContain("Brian Otieno.");
+  });
+
+  it("rejects empty answers and answered questions", async () => {
+    const store = new MemoryLedgerStore();
+    const { group, token } = await store.createGroup("Answer group");
+    const question = await store.createProposal(token, {
+      groupId: group.id,
+      type: "question",
+      payload: { text: "Which Brian?" },
+    });
+    const handlers = createQuestionHandlers({
+      store,
+      model: new StubAdapter([]),
+      loadPack: async () => ({ playbook: "p", rules: "r" }),
+    });
+    const empty = mockResponse();
+    await handlers.answerQuestion(
+      mockRequest({ params: { id: group.id, qid: question.id }, body: {}, token }),
+      empty.res,
+    );
+    expect(empty.seen.code).toBe(422);
+    await store.markQuestionAnswered(token, question.id, "Done.");
+    const again = mockResponse();
+    await handlers.answerQuestion(
+      mockRequest({ params: { id: group.id, qid: question.id }, body: { text: "Again." }, token }),
+      again.res,
+    );
+    expect(again.seen.code).toBe(422);
   });
 });
 

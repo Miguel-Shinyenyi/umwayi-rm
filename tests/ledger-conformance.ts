@@ -407,6 +407,70 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
       }
     });
 
+    it("edits pending entries and keeps the original in audit", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const member = await store.createMember(token, { groupId: group.id, displayName: "Omondi Juma" });
+        const base = { memberId: member.id, kind: "contribution", period: "2026-10", occurredOn: "2026-10-05" };
+        const proposal = await store.createProposal(token, {
+          groupId: group.id,
+          type: "entry",
+          payload: { ...base, amount: 500 },
+          quotes: ["Omondi paid 500"],
+        });
+        const edited = await store.editProposal(token, proposal.id, { ...base, amount: 550 });
+        expect(edited.payload.amount).toBe(550);
+        expect(edited.edits).toHaveLength(1);
+        expect(edited.edits[0]?.payload).toMatchObject({ amount: 500 });
+        expect(edited.verification).toBeNull();
+        await store.approveProposal(token, proposal.id);
+        const entries = await store.listEntries(token, { groupId: group.id });
+        expect(entries[0]?.amount).toBe(550);
+        await expectLedgerError(store.editProposal(token, proposal.id, { ...base, amount: 600 }), 409);
+        const question = await store.createProposal(token, {
+          groupId: group.id,
+          type: "question",
+          payload: { text: "Which month?" },
+        });
+        await expectLedgerError(store.editProposal(token, question.id, { text: "x" }), 422);
+        const other = await store.createProposal(token, {
+          groupId: group.id,
+          type: "entry",
+          payload: { ...base, amount: 500 },
+        });
+        await expectLedgerError(store.editProposal(token, other.id, { ...base, amount: -5 }), 422);
+      } finally {
+        await close();
+      }
+    });
+
+    it("marks questions answered with the answer in the trail", async () => {
+      const { store, close } = await makeStore();
+      try {
+        const { group, token } = await store.createGroup("Tumaini");
+        const question = await store.createProposal(token, {
+          groupId: group.id,
+          type: "question",
+          payload: { text: "Which Brian?" },
+        });
+        const answered = await store.markQuestionAnswered(token, question.id, "Brian Otieno.");
+        expect(answered.status).toBe("answered");
+        expect(answered.decidedBy).not.toBeNull();
+        expect(answered.verification?.checks).toMatchObject([{ name: "answered", passed: true }]);
+        await expectLedgerError(store.markQuestionAnswered(token, question.id, "Again."), 409);
+        const member = await store.createMember(token, { groupId: group.id, displayName: "Omondi Juma" });
+        const entry = await store.createProposal(token, {
+          groupId: group.id,
+          type: "entry",
+          payload: { memberId: member.id, kind: "contribution", amount: 500, period: "2026-10", occurredOn: "2026-10-05" },
+        });
+        await expectLedgerError(store.markQuestionAnswered(token, entry.id, "No."), 422);
+      } finally {
+        await close();
+      }
+    });
+
     it("saves and reads runs", async () => {
       const { store, close } = await makeStore();
       try {

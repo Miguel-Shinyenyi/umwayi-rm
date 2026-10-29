@@ -35,3 +35,4 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-16 | Freeze, record the video, write submission text | now (Miguel: record video; text ready) | Video link public; repo public; text matches saved results | log |
 | H-17 | Submit | later | Portal receipt saved before Nov 4, 16:00 EAT | log |
 | H-18 | Workshop alignment and verification hardening | done 2026-10-29 | Workshop run outcomes recorded; verification gaps closed with tests | log |
+| H-19 | Proposal edit and question answer | done 2026-10-29 | Edit keeps the original in audit; answer continues the run | log |

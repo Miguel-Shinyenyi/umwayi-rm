@@ -120,6 +120,27 @@ export class MemoryLedgerStore implements LedgerStore {
     return group;
   }
 
+  private checkEntryPayload(groupId: string, raw: Record<string, unknown>): Member {
+    const payload = raw as {
+      memberId?: unknown;
+      kind?: unknown;
+      amount?: unknown;
+      period?: unknown;
+      occurredOn?: unknown;
+    };
+    if (typeof payload.memberId !== "string") {
+      throw invalidInput("entry proposal payload needs memberId");
+    }
+    const member = this.mustMember(groupId, payload.memberId);
+    checkKind(payload.kind);
+    checkAmount(payload.amount);
+    checkPeriod(payload.period);
+    if (typeof payload.occurredOn !== "string") {
+      throw invalidInput("entry proposal payload needs occurredOn");
+    }
+    return member;
+  }
+
   private mustOwn(token: string, groupId: string): string {
     const record = this.tokens.get(token);
     if (!record || record.groupId !== groupId) {
@@ -232,11 +253,27 @@ export class MemoryLedgerStore implements LedgerStore {
       quotes: input.quotes ?? [],
       status: "pending",
       verification: null,
+      edits: [],
       decidedBy: null,
       decidedAt: null,
       createdAt: now(),
     };
     this.proposals.set(proposal.id, proposal);
+    return proposal;
+  }
+
+  async editProposal(token: string, proposalId: string, payload: Record<string, unknown>): Promise<Proposal> {
+    const proposal = await this.getProposal(token, proposalId);
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    if (proposal.type !== "entry") {
+      throw invalidInput(`only entry proposals can be edited, got: ${proposal.type}`);
+    }
+    this.checkEntryPayload(proposal.groupId, payload);
+    proposal.edits.push({ payload: proposal.payload, at: now() });
+    proposal.payload = payload;
+    proposal.verification = null;
     return proposal;
   }
 
@@ -246,6 +283,25 @@ export class MemoryLedgerStore implements LedgerStore {
       throw invalidInput(`unknown proposal: ${proposalId}`);
     }
     this.mustOwn(token, proposal.groupId);
+    return proposal;
+  }
+
+  async markQuestionAnswered(token: string, questionId: string, answer: string): Promise<Proposal> {
+    const proposal = await this.getProposal(token, questionId);
+    if (proposal.type !== "question") {
+      throw invalidInput(`only questions can be answered, got: ${proposal.type}`);
+    }
+    if (proposal.status !== "pending") {
+      throw conflict(`proposal already decided: ${proposal.id}`);
+    }
+    const approverId = this.mustOwn(token, proposal.groupId);
+    proposal.status = "answered";
+    proposal.decidedBy = approverId;
+    proposal.decidedAt = now();
+    proposal.verification = {
+      checks: [...(proposal.verification?.checks ?? []), { name: "answered", passed: true, detail: answer }],
+      at: now(),
+    };
     return proposal;
   }
 
@@ -284,24 +340,15 @@ export class MemoryLedgerStore implements LedgerStore {
     if (proposal.status === "rejected") {
       throw conflict(`proposal already rejected: ${proposal.id}`);
     }
+    const member = this.checkEntryPayload(proposal.groupId, proposal.payload);
     const payload = proposal.payload as {
-      memberId?: unknown;
-      kind?: unknown;
-      amount?: unknown;
-      period?: unknown;
-      occurredOn?: unknown;
+      memberId: string;
+      kind: Commitment["kind"];
+      amount: number;
+      period: string;
+      occurredOn: string;
       sourceRef?: unknown;
     };
-    if (typeof payload.memberId !== "string") {
-      throw invalidInput("entry proposal payload needs memberId");
-    }
-    const member = this.mustMember(proposal.groupId, payload.memberId);
-    checkKind(payload.kind);
-    checkAmount(payload.amount);
-    checkPeriod(payload.period);
-    if (typeof payload.occurredOn !== "string") {
-      throw invalidInput("entry proposal payload needs occurredOn");
-    }
     const checks: ProposalCheck[] = [{ name: "schema_valid", passed: true }];
     const groupMembers = [...this.members.values()].filter((m) => m.groupId === proposal.groupId);
     const matches = resolveMembers(groupMembers, member.displayName);

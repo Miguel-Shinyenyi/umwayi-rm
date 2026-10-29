@@ -10,7 +10,7 @@ export interface ProposalDeps {
   claimCheck?: (input: ClaimInput) => Promise<ClaimVerdict>;
 }
 
-const STATUSES: ProposalStatus[] = ["pending", "approved", "rejected"];
+const STATUSES: ProposalStatus[] = ["pending", "approved", "rejected", "answered"];
 
 export function createProposalHandlers(deps: ProposalDeps) {
   async function listProposals(req: Request, res: Response): Promise<void> {
@@ -75,6 +75,27 @@ export function createProposalHandlers(deps: ProposalDeps) {
     }
   }
 
+  async function editProposal(req: Request, res: Response): Promise<void> {
+    const token = requireToken(req, res);
+    if (!token) {
+      return;
+    }
+    try {
+      const body = (req.body ?? {}) as Record<string, unknown>;
+      if (typeof body.payload !== "object" || body.payload === null || Array.isArray(body.payload)) {
+        throw invalidInput("body needs a payload object");
+      }
+      const proposal = await deps.store.editProposal(
+        token,
+        req.params.id as string,
+        body.payload as Record<string, unknown>,
+      );
+      res.status(200).json({ proposal });
+    } catch (err) {
+      sendError(res, err);
+    }
+  }
+
   async function rejectProposal(req: Request, res: Response): Promise<void> {
     const token = requireToken(req, res);
     if (!token) {
@@ -88,5 +109,5 @@ export function createProposalHandlers(deps: ProposalDeps) {
     }
   }
 
-  return { listProposals, approveProposal, rejectProposal };
+  return { listProposals, approveProposal, editProposal, rejectProposal };
 }
