@@ -23,6 +23,7 @@ function statusCode(status: number): string {
   if (status === 404) return "not_found";
   if (status === 409) return "conflict";
   if (status === 422) return "invalid";
+  if (status === 503) return "model_off";
   return "internal";
 }
 
