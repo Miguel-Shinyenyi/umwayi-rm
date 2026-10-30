@@ -43,6 +43,34 @@ function setStatus(id, text, isError = false) {
   el.className = isError ? "error" : "muted";
 }
 
+async function withButton(id, fn) {
+  const btn = document.getElementById(id);
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Working…";
+  try {
+    await fn();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label;
+  }
+}
+
+function findingRefsText(refs) {
+  const parts = [];
+  const row = refs && refs.row;
+  if (row && typeof row === "object") {
+    parts.push(`page row: ${row.memberText || "?"}, ${row.amount} KES, ${row.period || ""}`);
+  }
+  if (refs && refs.entryId) {
+    parts.push(`ledger entry ${refs.entryId}`);
+  }
+  if (refs && refs.ledgerAmount !== undefined) {
+    parts.push(`ledger amount ${refs.ledgerAmount} KES`);
+  }
+  return parts.join("; ") || "see findings";
+}
+
 async function refreshToday() {
   const { groupId } = creds();
   const box = document.getElementById("today-list");
@@ -58,7 +86,7 @@ async function refreshToday() {
           return `<div class="queue-item"><span class="badge due">Overdue</span><span class="title">${escapeHtml(item.displayName)}</span><div class="muted">${escapeHtml(item.kind)} ${escapeHtml(item.amount)} KES, due ${escapeHtml(item.dueDate)}, period ${escapeHtml(item.period)}</div></div>`;
         }
         if (item.category === "finding") {
-          return `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(item.kind)}</span><div class="muted">${escapeHtml(JSON.stringify(item.refs))}</div></div>`;
+          return `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(item.kind)}</span><div class="muted">${escapeHtml(findingRefsText(item.refs))}</div></div>`;
         }
         return `<div class="queue-item"><span class="badge">Question</span><span class="title">${escapeHtml(item.text)}</span></div>`;
       })
@@ -133,7 +161,8 @@ function verificationHtml(p) {
   const items = p.verification.checks
     .map((c) => `<li>${c.passed ? "pass" : "FAIL"} ${escapeHtml(c.name)}${c.detail ? ` (${escapeHtml(c.detail)})` : ""}</li>`)
     .join("");
-  return `<div class="muted">Checks:<ul>${items}</ul></div>`;
+  const verdict = p.verification.checks.every((c) => c.passed) ? "Checks pass:" : "Checks FAIL:";
+  return `<div class="muted">${verdict}<ul>${items}</ul></div>`;
 }
 
 async function showTrace(article, runId, btn) {
@@ -187,6 +216,7 @@ function showEditor(article, proposal) {
         body: JSON.stringify({ payload: { ...q, amount, period } }),
       });
       await refreshProposals();
+      setStatus("connection-status", "Saved edit.");
     } catch (err) {
       status.textContent = err.message;
       status.className = "error";
@@ -233,6 +263,7 @@ async function decideProposal(id, act, btn) {
     await refreshProposals();
     await refreshToday();
     await refreshEntries();
+    setStatus("connection-status", act === "approve" ? "Proposal approved." : "Proposal rejected.");
   } catch (err) {
     setStatus("connection-status", err.message, true);
     btn.disabled = false;
@@ -248,11 +279,11 @@ async function refreshEntries() {
       box.innerHTML = '<p class="empty">No entries yet.</p>';
       return;
     }
-    box.innerHTML = `<table class="entries"><thead><tr><th>Member</th><th>Kind</th><th>Amount</th><th>Period</th><th>Tier</th></tr></thead><tbody>${data.entries
+    box.innerHTML = `<div class="table-scroll"><table class="entries"><caption>Ledger entries</caption><thead><tr><th scope="col">Member id</th><th scope="col">Kind</th><th scope="col">Amount</th><th scope="col">Period</th><th scope="col">Tier</th></tr></thead><tbody>${data.entries
       .map(
         (e) => `<tr><td>${escapeHtml(e.memberId)}</td><td>${escapeHtml(e.kind)}</td><td>${escapeHtml(e.amount)}</td><td>${escapeHtml(e.period)}</td><td>${escapeHtml(e.evidenceTier)}</td></tr>`,
       )
-      .join("")}</tbody></table>`;
+      .join("")}</tbody></table></div>`;
   } catch (err) {
     box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
   }
@@ -282,15 +313,25 @@ function readFileAsBase64(file) {
   });
 }
 
+function clearPanels() {
+  for (const id of ["today-list", "proposals-list", "entries-list", "findings-list"]) {
+    document.getElementById(id).innerHTML = '<p class="muted">Not connected.</p>';
+  }
+}
+
 async function connect() {
   const { groupId, token } = creds();
   if (!groupId || !token) {
     setStatus("connection-status", "Enter the group id and token first.", true);
+    clearPanels();
     return;
   }
-  store.save(groupId, token);
-  setStatus("connection-status", "Connected.");
-  await Promise.all([refreshToday(), refreshProposals(), refreshEntries(), refreshFindings()]);
+  await withButton("connect-btn", async () => {
+    store.save(groupId, token);
+    setStatus("connection-status", "Connecting…");
+    await Promise.all([refreshToday(), refreshProposals(), refreshEntries(), refreshFindings()]);
+    setStatus("connection-status", "Connected.");
+  });
 }
 
 async function resetDemo() {
@@ -315,20 +356,22 @@ async function sendNote() {
     setStatus("intake-status", "Write a note first.", true);
     return;
   }
-  setStatus("intake-status", "Sending…");
-  try {
-    const { groupId } = creds();
-    const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/note`, {
-      method: "POST",
-      body: JSON.stringify({ text }),
-    });
-    setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
-    document.getElementById("note-text").value = "";
-    await refreshProposals();
-    await refreshToday();
-  } catch (err) {
-    setStatus("intake-status", err.message, true);
-  }
+  await withButton("send-note-btn", async () => {
+    setStatus("intake-status", "Sending…");
+    try {
+      const { groupId } = creds();
+      const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/note`, {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+      setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
+      document.getElementById("note-text").value = "";
+      await refreshProposals();
+      await refreshToday();
+    } catch (err) {
+      setStatus("intake-status", err.message, true);
+    }
+  });
 }
 
 async function sendAudio() {
@@ -337,20 +380,22 @@ async function sendAudio() {
     setStatus("intake-status", "Choose a WAV file first.", true);
     return;
   }
-  setStatus("intake-status", "Transcribing and reading…");
-  try {
-    const { groupId } = creds();
-    const audio = await readFileAsBase64(file);
-    const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/note`, {
-      method: "POST",
-      body: JSON.stringify({ audio }),
-    });
-    setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
-    await refreshProposals();
-    await refreshToday();
-  } catch (err) {
-    setStatus("intake-status", err.message, true);
-  }
+  await withButton("send-audio-btn", async () => {
+    setStatus("intake-status", "Transcribing and reading…");
+    try {
+      const { groupId } = creds();
+      const audio = await readFileAsBase64(file);
+      const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/note`, {
+        method: "POST",
+        body: JSON.stringify({ audio }),
+      });
+      setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
+      await refreshProposals();
+      await refreshToday();
+    } catch (err) {
+      setStatus("intake-status", err.message, true);
+    }
+  });
 }
 
 async function sendPage() {
@@ -359,20 +404,26 @@ async function sendPage() {
     setStatus("page-status", "Choose a photo first.", true);
     return;
   }
-  setStatus("page-status", "Reading page…");
-  try {
-    const { groupId } = creds();
-    const image = await readFileAsBase64(file);
-    const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/page`, {
-      method: "POST",
-      body: JSON.stringify({ image, mime: file.type }),
-    });
-    setStatus("page-status", `Read ${data.rows.length} row(s): ${data.proposals.length} proposal(s), ${data.findings.length} finding(s).`);
-    await refreshProposals();
-    await refreshFindings();
-  } catch (err) {
-    setStatus("page-status", err.message, true);
+  if (file.type && file.type !== "image/png" && file.type !== "image/jpeg") {
+    setStatus("page-status", "Use a PNG or JPEG photo.", true);
+    return;
   }
+  await withButton("send-page-btn", async () => {
+    setStatus("page-status", "Reading page…");
+    try {
+      const { groupId } = creds();
+      const image = await readFileAsBase64(file);
+      const data = await api(`/groups/${encodeURIComponent(groupId)}/intake/page`, {
+        method: "POST",
+        body: JSON.stringify({ image, mime: file.type }),
+      });
+      setStatus("page-status", `Read ${data.rows.length} row(s): ${data.proposals.length} proposal(s), ${data.findings.length} finding(s).`);
+      await refreshProposals();
+      await refreshFindings();
+    } catch (err) {
+      setStatus("page-status", err.message, true);
+    }
+  });
 }
 
 document.getElementById("connect-btn").addEventListener("click", connect);
