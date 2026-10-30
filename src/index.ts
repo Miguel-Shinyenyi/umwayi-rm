@@ -2,7 +2,7 @@ import { BasetenAdapter } from "./adapters/baseten.js";
 import { verifyClaim } from "./adapters/claims.js";
 import { FakeModelAdapter } from "./adapters/fake.js";
 import type { ModelAdapter } from "./adapters/model.js";
-import { MetaTranscribe } from "./adapters/transcribe.js";
+import { createTranscriber } from "./adapters/transcribe.js";
 import { BasetenPhotoReader, type PhotoReader } from "./adapters/vision.js";
 import { createApp } from "./app.js";
 import { migrate } from "./db/migrate.js";
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
     }
   }
   const model: ModelAdapter = process.env.BASENTEN_API_KEY ? new BasetenAdapter() : new FakeModelAdapter();
-  const transcribe = new MetaTranscribe({ apiKey: process.env.META_API_KEY || "unset" });
+  const transcribe = createTranscriber(process.env.META_API_KEY);
   const reader: PhotoReader = process.env.BASENTEN_API_KEY
     ? new BasetenPhotoReader()
     : {

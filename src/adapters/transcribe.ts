@@ -1,3 +1,5 @@
+import { LedgerError } from "../ledger/types.js";
+
 export interface TranscribeResult {
   transcript: string;
   audioDurationMs: number;
@@ -10,6 +12,19 @@ interface TranscribeResponse {
 }
 
 type FetchImpl = typeof fetch;
+
+export function createTranscriber(apiKey?: string): {
+  transcribe(wav: Buffer): Promise<TranscribeResult>;
+} {
+  if (apiKey) {
+    return new MetaTranscribe({ apiKey });
+  }
+  return {
+    transcribe: async () => {
+      throw new LedgerError("model is off", 503);
+    },
+  };
+}
 
 export class MetaTranscribe {
   readonly modelId: string;
