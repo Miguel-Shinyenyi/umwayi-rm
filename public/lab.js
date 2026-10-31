@@ -43,11 +43,11 @@ async function load() {
     if (data.runs.length === 0) {
       list.innerHTML = '<p class="empty">No runs saved yet.</p>';
     } else {
-      list.innerHTML = `<table class="entries"><thead><tr><th>File</th><th>Model</th><th>Prompt</th><th>Seed</th><th>Score</th></tr></thead><tbody>${data.runs
+      list.innerHTML = `<div class="table-scroll"><table class="entries"><caption>Saved eval runs</caption><thead><tr><th scope="col">File</th><th scope="col">Model</th><th scope="col">Prompt</th><th scope="col">Seed</th><th scope="col">Score</th></tr></thead><tbody>${data.runs
         .map(
           (r) => `<tr><td>${escapeHtml(r.file)}</td><td>${escapeHtml(r.modelId)}</td><td>${escapeHtml(r.promptVersion)}</td><td>${escapeHtml(r.seed)}</td><td>${escapeHtml(r.passed)}/${escapeHtml(r.total)}</td></tr>`,
         )
-        .join("")}</tbody></table>`;
+        .join("")}</tbody></table></div>`;
     }
   } catch (err) {
     chart.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;

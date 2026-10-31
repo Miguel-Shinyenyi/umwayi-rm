@@ -30,6 +30,7 @@ body {
 .topbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 12px 20px;
   background: var(--surface);
@@ -217,6 +218,7 @@ button:disabled {
 
 .proposal .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
 }
@@ -250,6 +252,17 @@ table.entries th {
   color: var(--muted);
   font-weight: 600;
   font-size: 13px;
+}
+
+table.entries caption {
+  text-align: left;
+  font-size: 13px;
+  color: var(--muted);
+  padding-bottom: 6px;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }
 
 footer {

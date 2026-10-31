@@ -137,6 +137,23 @@ describe("intake route", () => {
     expect(second.seen.code).toBe(422);
   });
 
+  it("returns only this run's proposals, not earlier ones", async () => {
+    const { store, group, token } = await seedStore();
+    await store.createProposal(token, { groupId: group.id, type: "question", payload: { text: "stale" } });
+    const handler = createIntakeHandler({
+      store,
+      model: new StubAdapter(proposeScript()),
+      transcribe: { transcribe: async () => ({ transcript: "", audioDurationMs: 0 }) },
+      loadPack: LOAD_PACK,
+    });
+    const { res, seen } = mockResponse();
+    await handler(mockRequest({ params: { id: group.id }, body: { text: TEXT }, token }), res);
+    expect(seen.code).toBe(200);
+    const payload = seen.payload as { runId: string; proposals: { runId: string }[] };
+    expect(payload.proposals).toHaveLength(1);
+    expect(payload.proposals[0]?.runId).toBe(payload.runId);
+  });
+
   it("denies a token from another group", async () => {
     const { store, group } = await seedStore();
     const other = await store.createGroup("Other group");

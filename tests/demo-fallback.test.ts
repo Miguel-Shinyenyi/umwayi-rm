@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { describe, expect, it } from "vitest";
 import { FakeModelAdapter } from "../src/adapters/fake.js";
+import { createTranscriber } from "../src/adapters/transcribe.js";
 import { MemoryLedgerStore } from "../src/ledger/memory.js";
 import { LedgerError } from "../src/ledger/types.js";
 import { createEntryHandler } from "../src/routes/entries.js";
@@ -80,6 +81,21 @@ describe("model-off demo path", () => {
 
     const entries = await store.listEntries(token, { groupId: group.id });
     expect(entries).toHaveLength(2);
+  });
+
+  it("voice intake answers model_off with no key", async () => {
+    const store = new MemoryLedgerStore();
+    const { group, token } = await store.createGroup("Fallback group");
+    const intake = createIntakeHandler({
+      store,
+      model: new FakeModelAdapter(),
+      transcribe: createTranscriber(undefined),
+      loadPack: async () => ({ playbook: "p", rules: "r" }),
+    });
+    const { res, seen } = mockResponse();
+    await intake(authed(token, { id: group.id }, { audio: Buffer.from("RIFF").toString("base64") }), res);
+    expect(seen.code).toBe(503);
+    expect((seen.payload as { error: { code: string } }).error.code).toBe("model_off");
   });
 
   it("photo intake answers model_off with no model", async () => {

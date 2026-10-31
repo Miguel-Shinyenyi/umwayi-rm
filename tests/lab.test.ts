@@ -13,6 +13,12 @@ describe("lab page", () => {
     expect(html).toContain("Built with Muse Spark Open");
   });
 
+  it("keeps the runs table readable on narrow screens", () => {
+    expect(js).toContain("table-scroll");
+    expect(js).toContain("<caption>");
+    expect(js).toContain('scope="col"');
+  });
+
   it("reads the chart from saved run files", () => {
     expect(js).toContain("/lab/runs");
     expect(js).toContain("c3");

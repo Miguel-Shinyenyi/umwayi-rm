@@ -71,7 +71,7 @@ export function createIntakeHandler(deps: IntakeDeps) {
       try {
         await Promise.all([client.connect(clientTransport), server.connect(serverTransport)]);
         const trace = await runLoop(deps.model, client, systemPrompt, text, DEFAULT_MODEL_OPTIONS);
-        const proposals = await deps.store.listProposals(token, groupId);
+        const proposals = (await deps.store.listProposals(token, groupId)).filter((p) => p.runId === runId);
         await deps.store.saveRun(token, {
           id: runId,
           groupId,

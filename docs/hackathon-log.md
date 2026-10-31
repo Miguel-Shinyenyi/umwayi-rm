@@ -356,3 +356,45 @@ Evidence:
 - Full local suite: 110 pass, 18 pg skip for CI. Console script parses.
 Result: the contract has no unbuilt routes left; every endpoint is implemented and tested.
 Next: H-16 video and H-17 submit need Miguel. H-03, H-14, D-11, D-12 still open.
+
+### 2026-10-29: H-20 prize council fix batch, part 1 (README and pitch accuracy)
+Type: fix
+Status: done
+Context: queue.md H-20. Branch fix/prize-council-batch. Council synthesis items 3 and 6 (docs half). Parts gated: docs, voice 503, intake filter plus photo guard, UI fragility, Postgres parity plus mobile/a11y.
+Evidence:
+- Recounted H1 from scenario rows (intention to treat): wrong 0/48 vs 0/48, clear 67/72 vs 24/72, matching the pitch exactly. Unfinished split: generic 3 ask plus 13 clear, curated 5 ask plus 4 clear.
+- Confirmed H2 rescore from the analysis file: 19/20 vs 20/20 vs 13/20 vs 20/20, archive 6.2x retrieval prompt tokens.
+- README status line now states the final H1 and H2 nulls with the run-file pointer; pitch line 25 marks H2 figures rescored and cites the analysis file with raw 17/20.
+Result: part 1 done; the README an AI screen reads first is no longer stale.
+Next: part 2 voice-without-keys 503 with a fallback test.
+Evidence (part 2):
+- New createTranscriber factory in src/adapters/transcribe.ts: with a key it builds MetaTranscribe, without one it returns a stub that throws LedgerError 503. src/index.ts uses it; the "unset" key is gone.
+- New focused test posts base64 audio through the keyless transcriber and expects 503 model_off. It failed before the fix (no fallback existed) and passes after.
+- README quick start now says photo and voice intake answer model_off without keys.
+- Gate: typecheck clean; full suite 111 pass, 18 pg skip for CI (was 110).
+Result: part 2 done; keyless voice answers model_off instead of a bare 500.
+Next: part 3 intake run filter plus photo MIME guard.
+Evidence (part 3):
+- src/routes/intake.ts filters the response proposals to runId, mirroring questions.ts. New test seeds a stale proposal and expects only the new run's proposal; it failed before (2 returned) and passes after.
+- public/console.js sendPage warns "Use a PNG or JPEG photo." and returns before upload when file.type is set and outside png/jpeg. New console marker test plus node --check.
+- Gate: typecheck clean; full suite 113 pass, 18 pg skip for CI (was 111).
+Result: part 3 done; intake counts no longer inflate and phone photos get a friendly guard.
+Next: part 4 UI fragility batch.
+Evidence (part 4):
+- New withButton helper disables the button, shows Working, and re-enables with the label restored in finally. sendNote, sendAudio, sendPage, and connect use it; decideProposal already disabled.
+- connect clears all four panels to Not connected on empty creds, shows Connecting while refreshing, and sets Connected only after Promise.all settles.
+- findingRefsText renders page rows, entry ids, and ledger amounts as words in the Today list; exercised in node against all refs shapes including null.
+- Entries table header renamed to Member id; verification blocks prefixed with Checks pass or Checks FAIL.
+- 5 new console marker tests failed before and pass after; node --check clean. Gate: typecheck clean; full suite 118 pass, 18 pg skip (was 113).
+- Left alone per the critic: approve/reject restyle, lab progressbar swap, showTrace re-enable.
+Result: part 4 done; the console survives double clicks, failed connects, and raw-id leaks.
+Next: part 5 Postgres parity run plus mobile/a11y batch.
+Evidence (part 5):
+- Postgres parity: standalone postgres:16 on host port 5439 (5433 was taken by another stack, left alone); DATABASE_URL run of tests/ledger.pg.test.ts gives 18 pass, 0 skip locally. Migrations, TRUNCATE reset, approve idempotency, and edits jsonb all hold on the real backend. Container removed after.
+- console.css: flex-wrap on .topbar and .proposal .actions; new .table-scroll overflow rule plus caption styling.
+- console.js entries table and lab.js runs table wrapped in .table-scroll with caption and scope=col headers.
+- decideProposal announces Proposal approved/rejected and the editor announces Saved edit through the connection-status live region.
+- 4 new marker tests failed before and pass after; one part-4 marker updated because th now carries scope (expectation was stale, behavior intended). node --check clean on both scripts.
+- Gate: typecheck clean; full suite 122 pass, 18 pg skip without DATABASE_URL (pg proven 18/18 separately).
+Result: H-20 done; all council fixes 3,4,5,7,8,9,10 are landed with tests.
+Next: Miguel records the video (H-16), interviews (H-14), Discord question (H-03); then H-17 submit by Nov 4 16:00 EAT.

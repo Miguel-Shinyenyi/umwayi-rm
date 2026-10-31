@@ -22,7 +22,7 @@ How it uses Meta models: Muse Spark Open on Baseten for the agent loop, tool cal
 
 Technical depth: code owns the ledger, balances and reconciliation; the agent only writes proposals; idempotent approval; citation and schema checks; an MCP server with risk-rated tools; an eval suite with a frozen test split.
 
-Measured: H1 restraint, 3 seeds on the frozen split (16 ambiguous, 24 clear each): curated vs generic wrong-proposal rate 0/48 vs 0/48, so the claim is not supported (floor effect, zero-width interval). Clear-scenario control: curated 67/72, generic 24/72. H2 archive, seed 7 (20 questions): core-plus-archive 19/20 vs plain retrieval 20/20 vs truncation 13/20 vs full context 20/20; the claim is not supported. All runs saved under docs/evals/ with model id, prompt version, and seed.
+Measured: H1 restraint, 3 seeds on the frozen split (16 ambiguous, 24 clear each): curated vs generic wrong-proposal rate 0/48 vs 0/48, so the claim is not supported (floor effect, zero-width interval). Clear-scenario control: curated 67/72, generic 24/72. H2 archive, seed 7 (20 questions), rescored per `docs/evals/h2-seed7-analysis.json` (raw archive 17/20): core-plus-archive 19/20 vs plain retrieval 20/20 vs truncation 13/20 vs full context 20/20; the claim is not supported. All runs saved under docs/evals/ with model id, prompt version, and seed.
 
 Not proven: that treasurers prefer it to notebooks or to existing apps such as Chamasoft; that it reduces errors in real groups; security and Data Protection Act compliance; that the rules help beyond this synthetic set and model.
 

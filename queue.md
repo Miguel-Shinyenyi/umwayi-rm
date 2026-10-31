@@ -36,3 +36,4 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-17 | Submit | later | Portal receipt saved before Nov 4, 16:00 EAT | log |
 | H-18 | Workshop alignment and verification hardening | done 2026-10-29 | Workshop run outcomes recorded; verification gaps closed with tests | log |
 | H-19 | Proposal edit and question answer | done 2026-10-29 | Edit keeps the original in audit; answer continues the run | log |
+| H-20 | Prize council fix batch: README/pitch accuracy, demo bugs, UI fragility | done 2026-10-29 | Council fixes 3,4,5,7,8,9,10 landed with tests; README numbers match run files | log |

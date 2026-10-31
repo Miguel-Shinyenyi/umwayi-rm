@@ -4,7 +4,7 @@ An open-source secretary for savings groups. It turns voice notes and photos of 
 
 Built for the Meta Global AI Developer Hackathon (Indie Developer track, Build for Your World). Solo entry by Miguel Shinyenyi, Nairobi. Built on Muse Spark Open.
 
-Status on 2026-10-29: the demo path runs from a fresh clone. First code commit Oct 27. H1 counted run seed 1 of 3 saved; the result is null on seed 1.
+Status on 2026-10-29: the demo path runs from a fresh clone. First code commit Oct 27. H1 restraint, 3 seeds on the frozen split: curated vs generic wrong-proposal rate 0/48 vs 0/48, claim not supported (floor effect); clear-scenario control 67/72 vs 24/72. H2 archive, seed 7 rescored: core-plus-archive 19/20 vs plain retrieval 20/20, claim not supported. Runs in `docs/evals/` with model id, prompt version, and seed.
 
 ## What it does
 
@@ -51,7 +51,7 @@ Planning documents dated Oct 24 to 27 are in this repository. Earlier plans are 
 
 ## Quick start
 
-Needs Docker. Model keys are optional; without them the agent leaves runs unfinished, manual entry still works, and photo intake answers model_off.
+Needs Docker. Model keys are optional; without them the agent leaves runs unfinished, manual entry still works, and photo and voice intake answer model_off.
 
 ```
 git clone https://github.com/Miguel-Shinyenyi/umwayi-rm.git
