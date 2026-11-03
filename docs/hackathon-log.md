@@ -398,3 +398,14 @@ Evidence (part 5):
 - Gate: typecheck clean; full suite 122 pass, 18 pg skip without DATABASE_URL (pg proven 18/18 separately).
 Result: H-20 done; all council fixes 3,4,5,7,8,9,10 are landed with tests.
 Next: Miguel records the video (H-16), interviews (H-14), Discord question (H-03); then H-17 submit by Nov 4 16:00 EAT.
+
+### 2026-11-03: D-11, D-12 answered; H-14 closed
+Type: decision
+Status: done
+Context: queue.md D-11, D-12, H-14. Branch docs/faq-and-packets.
+Evidence:
+- D-11 answered: no interviews will be done; the problem stays a hypothesis. interviews.md holds an empty table, which is its "says none" state; H-14 closed as done with none.
+- D-12 answered: 3 to 4 hours per day.
+- Pitch problem line updated: 0 interviews, H-14 closed, hypothesis stated. The faq draft already says 0 and needed no change.
+Result: Impact evidence stays at zero by decision, not by delay; every doc says so openly.
+Next: video (H-16), H-03 Discord question, H-01 confirmations, H-17 submit by Nov 4 16:00 EAT.
