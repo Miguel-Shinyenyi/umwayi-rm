@@ -7,7 +7,7 @@ Track: Indie Developer. Problem statement: Build for Your World.
 
 One line: An open-source secretary for savings groups that turns voice notes and paper ledger photos into proposed entries, asks when it is unsure, and leaves every decision to the treasurer.
 
-Problem: Small savings groups often keep records on paper and in chat messages, where names collide, months are missing and totals disagree. We believe this is common; we have 0 interviews so far (H-14 open, update before submitting).
+Problem: Small savings groups often keep records on paper and in chat messages, where names collide, months are missing and totals disagree. We believe this is common; we have 0 interviews (H-14 closed with none per D-11; the problem is a hypothesis).
 
 What it does:
 - Reads a voice note or typed note into proposed ledger entries, each quoting the words behind it.
