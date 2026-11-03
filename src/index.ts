@@ -1,4 +1,5 @@
 import { BasetenAdapter } from "./adapters/baseten.js";
+import { basetenApiKey } from "./adapters/keys.js";
 import { verifyClaim } from "./adapters/claims.js";
 import { FakeModelAdapter } from "./adapters/fake.js";
 import type { ModelAdapter } from "./adapters/model.js";
@@ -24,9 +25,9 @@ async function main(): Promise<void> {
       console.log(`migrations applied: ${applied.join(", ")}`);
     }
   }
-  const model: ModelAdapter = process.env.BASENTEN_API_KEY ? new BasetenAdapter() : new FakeModelAdapter();
+  const model: ModelAdapter = basetenApiKey() ? new BasetenAdapter() : new FakeModelAdapter();
   const transcribe = createTranscriber(process.env.META_API_KEY);
-  const reader: PhotoReader = process.env.BASENTEN_API_KEY
+  const reader: PhotoReader = basetenApiKey()
     ? new BasetenPhotoReader()
     : {
         readPage: async () => {
@@ -40,7 +41,7 @@ async function main(): Promise<void> {
     transcribe,
     reader,
     demoMode: process.env.DEMO_MODE === "true",
-    ...(process.env.BASENTEN_API_KEY
+    ...(basetenApiKey()
       ? { claimCheck: (input: Parameters<typeof verifyClaim>[1]) => verifyClaim(model, input) }
       : {}),
   });
