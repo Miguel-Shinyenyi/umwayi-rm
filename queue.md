@@ -38,4 +38,4 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-19 | Proposal edit and question answer | done 2026-10-29 | Edit keeps the original in audit; answer continues the run | log |
 | H-20 | Prize council fix batch: README/pitch accuracy, demo bugs, UI fragility | done 2026-10-29 | Council fixes 3,4,5,7,8,9,10 landed with tests; README numbers match run files | log |
 | H-21 | Accept both spellings of the Baseten key | done 2026-11-03 | Either spelling builds the live adapters; correct one wins; suite green | log |
-| H-22 | Bind the demo port to loopback | dropped 2026-11-03: breaks judges on remote Docker hosts | Risk outweighs a local-demo gain this late | — |
+| H-22 | Bind the demo port to loopback | dropped 2026-11-03: breaks judges on remote Docker hosts | Risk outweighs a local-demo gain this late | none |
