@@ -96,6 +96,7 @@ export function createApp(deps?: AppDeps): express.Express {
       res.status(err.status ?? 400).json({ error: { code: "invalid", message: "request body is not valid JSON or too large" } });
       return;
     }
+    console.error("internal error:", err instanceof Error ? err.stack ?? err.message : err);
     res.status(500).json({ error: { code: "internal", message: "internal error" } });
   });
 

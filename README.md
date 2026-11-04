@@ -6,6 +6,8 @@ Built for the Meta Global AI Developer Hackathon (Indie Developer track, Build f
 
 Status on 2026-10-29: the demo path runs from a fresh clone. First code commit Oct 27. H1 restraint, 3 seeds on the frozen split: curated vs generic wrong-proposal rate 0/48 vs 0/48, claim not supported (floor effect); clear-scenario control 67/72 vs 24/72. H2 archive, seed 7 rescored: core-plus-archive 19/20 vs plain retrieval 20/20, claim not supported. Runs in `docs/evals/` with model id, prompt version, and seed.
 
+Live demo: https://umwayi-rm.vercel.app (synthetic data only; reset creates a private demo group). Demo deck: [PDF](docs/umwayi-rm-demo-v2.pdf) and [PowerPoint](docs/umwayi-rm-demo-v2.pptx).
+
 ## What it does
 
 A treasurer speaks a note or photographs a ledger page. An agent reads it into proposals, each quoting the words behind it, and asks a question when a note is ambiguous (for example, two members with the same name). Code keeps the ledger, computes balances and overdue contributions, and compares a paper page with stored entries. The treasurer approves or rejects. Nothing is sent and no money moves.

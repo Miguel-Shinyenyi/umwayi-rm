@@ -440,13 +440,48 @@ Next: gate, push, PR 21 merge when CI is green.
 
 ### 2026-11-04: finding labels, empty-reply warn, tunable max tokens
 Type: fix
-Status: done, uncommitted on fix/finding-labels
+Status: done, merged in PR 22
 Context: Miguel's diff from live testing plus the Baseten empty-reply diagnosis.
 Evidence:
 - Console: FINDING_LABELS names all three FindingKind values (verified in src/ledger/types.ts); entryLabels maps entry ids to member, amount, period with id fallback; Today loads labels only when findings exist; findings card now shows refs too.
 - Baseten adapter warns with finish reason, completion tokens, and max tokens on empty replies; no behavior change.
 - DEFAULT_MODEL_OPTIONS maxTokens reads MODEL_MAX_TOKENS (default 600). New env var, not yet in .env.example or deploy docs.
 - Contract check: findings route returns full records with refs; entries carry ids; fake model id still "fake/offline" so runSummary is untouched.
-- 1 new console marker test. node --check clean; typecheck clean; full suite 136 pass, 19 pg skip locally; guards 5/5 pass with loopback TCP (same sandbox EPERM without it; CI proved them on PR 21).
+- 1 new console marker test. node --check clean; typecheck clean; full suite 136 pass, 19 pg skip locally; guards 5/5 pass with loopback TCP.
 Result: findings read as words, empty model replies leave a trace, token cap is tunable.
-Next: document MODEL_MAX_TOKENS in .env.example; commit, push, PR, merge on Miguel's words.
+Next: document MODEL_MAX_TOKENS in .env.example.
+
+### 2026-11-04: default token cap 600 to 2000
+Type: fix
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: review feedback that fresh deploys and local runs hit empty replies at the 600 cap.
+Evidence:
+- src/adapters/model.ts default is now Number(process.env.MODEL_MAX_TOKENS ?? 2000). No test asserted 600.
+- .env.example carries MODEL_MAX_TOKENS=2000 with a one-line comment; deploy.md lists it with the default.
+- Gate: typecheck clean; full suite 135 pass, 19 pg skip.
+Result: the default matches the documented value; the cap stays tunable.
+Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: live URL and demo deck in README
+Type: docs
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: umwayi-rm-demo-v2.pdf and .pptx from Downloads; production URL verified, not guessed.
+Evidence:
+- https://umwayi-rm.vercel.app/health answers 200 {"status":"ok"}; / answers 200.
+- Deck files copied byte-identical into docs/ (259 KB pdf, 209 KB pptx).
+- README gains one live-demo plus deck line after the status paragraph.
+Result: judges reach the site and the slides from the README.
+Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: error logging and purge-safe entries trigger
+Type: fix
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: review follow-up batch on top of the 2000 cap.
+Evidence:
+- src/app.ts error middleware logs the stack server-side; the client body is unchanged.
+- 007 replaces entries_no_change to allow DELETE only when the parent group is already gone; the 001 trigger picks it up with no rewire. Migration discovery is dynamic (readdir) and npm run build copies 007 to dist (proved).
+- Conformance purge test now covers entries; memory side passes. PG side needs a database: Docker is down locally, so CI must prove the trigger and the pg purge case.
+- .env.example and deploy.md carry his comment wording and position.
+- Gate: typecheck clean; full suite 135 pass, 19 pg skip locally; guards pass with network.
+Result: 500s leave a server trace; demo purges no longer fight the append-only trigger.
+Next: commit, push, open the review PR on Miguel's words.
