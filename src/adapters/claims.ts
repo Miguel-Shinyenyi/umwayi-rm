@@ -15,8 +15,10 @@ export interface ClaimVerdict {
 }
 
 const PROMPT = `You check one proposed ledger entry against the exact words quoted for it.
-Decide whether the quotes support the entry as written: the right member, the right amount, the right month.
-An entry that goes beyond what its quotes say is unsupported.
+Decide whether the quotes support the entry as written: the right person, the right amount, the right month.
+The entry gives the member's full name from the group roster. A quote that uses a first name or a short name for that person supports the member.
+A quote that names a month such as October supports the entry's period for that month, in the entry's year.
+Answer false only when the person, the amount or the month differs from the quote, or the quote does not describe a payment.
 Answer only with JSON: {"supported": true or false, "reason": "one sentence"}`;
 
 export async function verifyClaim(model: ModelAdapter, input: ClaimInput): Promise<ClaimVerdict> {
