@@ -459,3 +459,16 @@ Evidence:
 - README gains one live-demo plus deck line after the status paragraph.
 Result: judges reach the site and the slides from the README.
 Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: error logging and purge-safe entries trigger
+Type: fix
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: review follow-up batch on top of the 2000 cap.
+Evidence:
+- src/app.ts error middleware logs the stack server-side; the client body is unchanged.
+- 007 replaces entries_no_change to allow DELETE only when the parent group is already gone; the 001 trigger picks it up with no rewire. Migration discovery is dynamic (readdir) and npm run build copies 007 to dist (proved).
+- Conformance purge test now covers entries; memory side passes. PG side needs a database: Docker is down locally, so CI must prove the trigger and the pg purge case.
+- .env.example and deploy.md carry his comment wording and position.
+- Gate: typecheck clean; full suite 135 pass, 19 pg skip locally; guards pass with network.
+Result: 500s leave a server trace; demo purges no longer fight the append-only trigger.
+Next: commit, push, open the review PR on Miguel's words.
