@@ -408,19 +408,32 @@ Evidence:
 - D-12 answered: 3 to 4 hours per day.
 - Pitch problem line updated: 0 interviews, H-14 closed, hypothesis stated. The faq draft already says 0 and needed no change.
 Result: Impact evidence stays at zero by decision, not by delay; every doc says so openly.
-Next: video (H-16), H-03 Discord question, H-01 confirmations, H-17 submit by Nov 4 16:00 EAT.
+Next: H-21 key spelling fix.
+
+### 2026-11-03: H-21 both Baseten key spellings
+Type: fix
+Status: done, merged in PR 20
+Context: queue.md H-21 from docs/final-48h-packets.md. Branch h-21/baseten-key off main.
+Evidence:
+- src/adapters/keys.ts helper: BASETEN_API_KEY first, BASENTEN_API_KEY fallback. All five direct reads (index.ts 3, baseten.ts, vision.ts) use it; constructor error now names the correct spelling.
+- 6 new tests in tests/keys.test.ts failed before (no helper) and pass after: each spelling alone builds both live adapters, both set prefers the correct one, neither reports no key and both constructors throw.
+- Fake path with neither set is existing behavior covered by demo-fallback tests (unfinished runs, model_off voice and photo).
+- docker-compose.yml passes both variables; README quick start uses the correct spelling and notes the old one still works. Placeholders only; no key material in the tree.
+- Gate: typecheck clean; full suite 128 pass, 18 pg skip without DATABASE_URL (was 122).
+Result: a judge with the correct spelling gets the live model instead of a silent fake.
+Next: deploy batch, then video and H-17. H-22 dropped: loopback bind would break remote-Docker judges.
 
 ### 2026-11-04: deploy batch (Vercel, guards, roster names)
 Type: build
-Status: done, uncommitted on deploy/vercel
-Context: Miguel's full diff, applied with two reconciliations. It supersedes fix/live-console-bugs and h-21/baseten-key (same fixes inside; those branches stay open but redundant).
+Status: done, resolving against PR 20 on deploy/vercel
+Context: Miguel's full diff, applied with two reconciliations, then merged with main after PR 20. The deploy key.ts wins; keys.ts and keys.test.ts from PR 20 are deleted as superseded (their adapter coverage lives on in key.test.ts).
 Evidence:
 - api/index.js, vercel.json (60 s, rewrites), docs/deploy.md, src/build.ts (wiring moved out of index.ts; DEMO_MODE on enables per-IP limits), PG_POOL_MAX, build copies migrations, express-rate-limit 7.5.1 with lockfile synced via npm install.
 - Guards: CSP/nosniff/no-referrer headers, x-powered-by off, JSON errors for bad bodies, 4000-char note cap, per-visitor reset isolation via purgeDemoOlderThan (2 h), rate limits on model and reset routes.
 - Purge verified at the contract level: PG cascades exist in 001, memory createGroup sets demo:true, tokens carry groupId, getGroup returns members for the roster.
 - Roster names in proposals and entries with id fallback; header back to Member; model-off status line via runSummary on the fake model id (confirmed "fake/offline").
 - Console/lab screen fixes from the earlier report included unchanged.
-- Reconciliations: docker-compose keeps one BASETEN plus legacy (the paste duplicated BASETEN); added adapter-construction tests with only BASETEN set (the pasted key.test.ts covered the helper only).
-- Gate: typecheck clean; node --check on all three scripts; full suite 135 pass, 19 skipped (all pg, need DATABASE_URL; the new purge conformance case runs in CI). guards.test.ts 5/5 pass but needs loopback TCP, so it fails in a locked-down sandbox and passes with network (proved both ways). Em-dash sweep clean.
-Result: the batch is applied and proven except the PG-backed purge case, which CI must prove.
-Next: commit, push, PR, review, merge on Miguel's words.
+- Reconciliations: docker-compose keeps one BASETEN plus legacy (the paste duplicated BASETEN); key.test.ts covers the helper plus adapter construction with only BASETEN set.
+- Gate after merge: typecheck clean; full suite to be re-run below.
+Result: the batch is reconciled with main; one key helper remains.
+Next: gate, push, PR 21 merge when CI is green.

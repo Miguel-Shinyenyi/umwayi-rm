@@ -68,6 +68,8 @@ With keys, pass them through the environment first:
 BASETEN_API_KEY=... META_API_KEY=... docker compose up -d --wait
 ```
 
+The old `BASENTEN_API_KEY` spelling still works and loses to the correct one when both are set.
+
 Stop with `docker compose down -v`. If port 3000 is taken, start with `API_PORT=3100 docker compose up -d --wait` and use port 3100 in the URLs above.
 
 ## Documents
