@@ -485,3 +485,15 @@ Evidence:
 - Gate: typecheck clean; full suite 135 pass, 19 pg skip locally; guards pass with network.
 Result: 500s leave a server trace; demo purges no longer fight the append-only trigger.
 Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: claim check follows the default cap and tolerates fences
+Type: fix
+Status: done, uncommitted on fix/claim-json
+Context: Miguel's diff; the 200-token override starved reasoning and the parser rejected fenced JSON.
+Evidence:
+- claims.ts drops maxTokens: 200 for the shared default (2000, tunable via MODEL_MAX_TOKENS).
+- Parser takes the first {...} span, so code fences and lead-in sentences parse; garbage, cut-off, and non-boolean replies still fail closed inside the existing try/catch (traced: slice(-1,0) and slice(0,0) both throw on bad input).
+- 1 new test (fence passes, cut-off fails closed); old garbage test untouched and passing.
+- Gate: verify file 14/14, typecheck clean, full suite 137 pass, 19 pg skip locally; guards pass with network.
+Result: fewer inconclusive verdicts from formatting alone; real ambiguity still fails closed.
+Next: commit, push, open the review PR on Miguel's words.

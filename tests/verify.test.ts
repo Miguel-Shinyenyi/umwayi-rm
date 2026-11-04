@@ -56,6 +56,13 @@ describe("verifyClaim", () => {
     expect(await verifyClaim(no, input)).toEqual({ passed: false, reason: "wrong month" });
   });
 
+  it("reads JSON wrapped in a code fence and still fails closed on a cut-off reply", async () => {
+    const fenced = new StubAdapter([{ content: '```json\n{"supported": true, "reason": "ok"}\n```', modelId: "s" }]);
+    expect(await verifyClaim(fenced, input)).toEqual({ passed: true, reason: "ok" });
+    const cut = new StubAdapter([{ content: '{"supported": tr', modelId: "s" }]);
+    expect(await verifyClaim(cut, input)).toEqual({ passed: false, reason: "claim check inconclusive" });
+  });
+
   it("fails closed on garbage and on missing quotes", async () => {
     const garbage = new StubAdapter([{ content: "not json", modelId: "s" }]);
     expect(await verifyClaim(garbage, input)).toEqual({ passed: false, reason: "claim check inconclusive" });
