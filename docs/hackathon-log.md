@@ -399,9 +399,20 @@ Evidence (part 5):
 Result: H-20 done; all council fixes 3,4,5,7,8,9,10 are landed with tests.
 Next: Miguel records the video (H-16), interviews (H-14), Discord question (H-03); then H-17 submit by Nov 4 16:00 EAT.
 
+### 2026-11-03: D-11, D-12 answered; H-14 closed
+Type: decision
+Status: done
+Context: queue.md D-11, D-12, H-14. Branch docs/faq-and-packets.
+Evidence:
+- D-11 answered: no interviews will be done; the problem stays a hypothesis. interviews.md holds an empty table, which is its "says none" state; H-14 closed as done with none.
+- D-12 answered: 3 to 4 hours per day.
+- Pitch problem line updated: 0 interviews, H-14 closed, hypothesis stated. The faq draft already says 0 and needed no change.
+Result: Impact evidence stays at zero by decision, not by delay; every doc says so openly.
+Next: H-21 key spelling fix.
+
 ### 2026-11-03: H-21 both Baseten key spellings
 Type: fix
-Status: done, unpushed (auth blocked, see below)
+Status: done
 Context: queue.md H-21 from docs/final-48h-packets.md. Branch h-21/baseten-key off main.
 Evidence:
 - New src/adapters/keys.ts helper: BASETEN_API_KEY first, BASENTEN_API_KEY fallback. All five direct reads (index.ts 3, baseten.ts, vision.ts) use it; constructor error now names the correct spelling.
@@ -410,4 +421,4 @@ Evidence:
 - docker-compose.yml passes both variables; README quick start uses the correct spelling and notes the old one still works. Placeholders only; no key material in the tree.
 - Gate: typecheck clean; full suite 128 pass, 18 pg skip without DATABASE_URL (was 122).
 Result: a judge with the correct spelling gets the live model instead of a silent fake.
-Next: push both branches and open two review PRs once GitHub auth is fixed. H-22 dropped: loopback bind would break remote-Docker judges.
+Next: push and merge PR 20. H-22 dropped: loopback bind would break remote-Docker judges.

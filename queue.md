@@ -8,8 +8,8 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 |---|---|---|---|
 | D-9 | Stack: TypeScript service, or Java and Spring Boot with a separate MCP process | answered 2026-10-28: TypeScript service | none |
 | D-10 | Licence | answered 2026-10-28: MIT | none |
-| D-11 | Is the problem first-hand? Which treasurer or group member can you interview this week? | waiting | Two interviews by Nov 1 |
-| D-12 | Daily hours you can give Nov 1 to Nov 4 | waiting | State a number so the plan can move days |
+| D-11 | Is the problem first-hand? Which treasurer or group member can you interview this week? | answered 2026-11-03: no interviews; the problem stays a hypothesis | Video states the hypothesis; faq and pitch already say 0 |
+| D-12 | Daily hours you can give Nov 1 to Nov 4 | answered 2026-11-03: 3 to 4 hours per day | Spend them on video, submission text, and H-17 |
 | D-13 | Photo of a paper ledger as a second intake | answered by D-14: included | Voice first; photo after the ledger and approval work |
 | D-14 | Direction | answered 2026-10-27: savings-group agent, with the restraint and archive ideas as measured engineering inside it | none |
 
@@ -30,7 +30,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-11 | Photo reading and reconciliation findings | done 2026-10-28 | Page becomes proposed rows; findings listed | log |
 | H-12 | H1 run on the frozen test split; fallback mode | done 2026-10-29 | Run saved with date, model id, prompt version, seed; model-off passes the demo path | `docs/evals/` |
 | H-13 | Console, Lab, seed and reset | done 2026-10-29 | Fresh clone runs from the README | log |
-| H-14 | Interviews with two treasurers or members | next | `docs/research/interviews.md` has real rows, or says none | interviews |
+| H-14 | Interviews with two treasurers or members | done 2026-11-03: closed with none per D-11 | `docs/research/interviews.md` has real rows, or says none | interviews |
 | H-15 | H2 run (stretch) | done 2026-10-29 | Only after H-13 is green | `docs/evals/` |
 | H-16 | Freeze, record the video, write submission text | now (Miguel: record video; text ready) | Video link public; repo public; text matches saved results | log |
 | H-17 | Submit | later | Portal receipt saved before Nov 4, 16:00 EAT | log |
