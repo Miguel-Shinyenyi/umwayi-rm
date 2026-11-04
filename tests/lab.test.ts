@@ -19,6 +19,13 @@ describe("lab page", () => {
     expect(js).toContain('scope="col"');
   });
 
+  it("splits H1 and H2 charts with named conditions", () => {
+    expect(html).toContain('id="chart-h2"');
+    expect(js).toContain("chart-h2");
+    expect(js).toContain("A core plus archive");
+    expect(js).not.toContain("CONDITION_NAMES[condition] || condition");
+  });
+
   it("reads the chart from saved run files", () => {
     expect(js).toContain("/lab/runs");
     expect(js).toContain("c3");

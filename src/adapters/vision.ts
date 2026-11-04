@@ -1,4 +1,4 @@
-import { basetenApiKey } from "./keys.js";
+import { basetenKey } from "./key.js";
 
 export interface PageRow {
   memberText: string;
@@ -66,7 +66,7 @@ export class BasetenPhotoReader implements PhotoReader {
     timeoutMs?: number;
     fetchImpl?: FetchImpl;
   }) {
-    const apiKey = options?.apiKey ?? basetenApiKey();
+    const apiKey = options?.apiKey ?? basetenKey();
     if (!apiKey) {
       throw new Error("BASETEN_API_KEY is not set");
     }

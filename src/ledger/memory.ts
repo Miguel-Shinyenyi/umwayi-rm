@@ -94,6 +94,26 @@ export class MemoryLedgerStore implements LedgerStore {
     this.tokens.clear();
   }
 
+  async purgeDemoOlderThan(maxAgeMs: number): Promise<number> {
+    const cutoff = Date.now() - maxAgeMs;
+    const old = [...this.groups.values()].filter((g) => g.demo && Date.parse(g.createdAt) < cutoff).map((g) => g.id);
+    const drop = new Set(old);
+    for (const map of [this.groups, this.members, this.commitments, this.entries, this.entriesByProposal, this.proposals, this.findings, this.archive, this.runs] as Map<string, { id?: string; groupId?: string }>[]) {
+      for (const [key, value] of map) {
+        const gid = "groupId" in value ? value.groupId : value.id;
+        if (gid && drop.has(gid)) {
+          map.delete(key);
+        }
+      }
+    }
+    for (const [token, record] of this.tokens) {
+      if (drop.has(record.groupId)) {
+        this.tokens.delete(token);
+      }
+    }
+    return old.length;
+  }
+
   async createGroup(name: string): Promise<{ group: Group; token: string }> {
     if (!name || name.trim().length === 0) {
       throw invalidInput("group name is required");

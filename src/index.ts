@@ -1,53 +1,8 @@
-import { BasetenAdapter } from "./adapters/baseten.js";
-import { basetenApiKey } from "./adapters/keys.js";
-import { verifyClaim } from "./adapters/claims.js";
-import { FakeModelAdapter } from "./adapters/fake.js";
-import type { ModelAdapter } from "./adapters/model.js";
-import { createTranscriber } from "./adapters/transcribe.js";
-import { BasetenPhotoReader, type PhotoReader } from "./adapters/vision.js";
-import { createApp } from "./app.js";
-import { migrate } from "./db/migrate.js";
-import { getPool } from "./db/pool.js";
-import { MemoryLedgerStore } from "./ledger/memory.js";
-import { PostgresLedgerStore } from "./ledger/postgres.js";
-import type { LedgerStore } from "./ledger/store.js";
-import { LedgerError } from "./ledger/types.js";
+import { buildApp } from "./build.js";
 
 const port = Number(process.env.PORT ?? 3000);
 
-async function main(): Promise<void> {
-  const store: LedgerStore = process.env.DATABASE_URL
-    ? new PostgresLedgerStore(getPool())
-    : new MemoryLedgerStore();
-  if (process.env.DATABASE_URL) {
-    const applied = await migrate(getPool());
-    if (applied.length > 0) {
-      console.log(`migrations applied: ${applied.join(", ")}`);
-    }
-  }
-  const model: ModelAdapter = basetenApiKey() ? new BasetenAdapter() : new FakeModelAdapter();
-  const transcribe = createTranscriber(process.env.META_API_KEY);
-  const reader: PhotoReader = basetenApiKey()
-    ? new BasetenPhotoReader()
-    : {
-        readPage: async () => {
-          throw new LedgerError("model is off", 503);
-        },
-      };
-
-  const app = createApp({
-    store,
-    model,
-    transcribe,
-    reader,
-    demoMode: process.env.DEMO_MODE === "true",
-    ...(basetenApiKey()
-      ? { claimCheck: (input: Parameters<typeof verifyClaim>[1]) => verifyClaim(model, input) }
-      : {}),
-  });
-  app.listen(port, () => {
-    console.log(`umwayi-rm listening on :${port}`);
-  });
-}
-
-await main();
+const app = await buildApp();
+app.listen(port, () => {
+  console.log(`umwayi-rm listening on :${port}`);
+});

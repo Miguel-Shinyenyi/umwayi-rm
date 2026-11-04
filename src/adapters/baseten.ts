@@ -1,3 +1,4 @@
+import { basetenKey } from "./key.js";
 import type {
   ChatMessage,
   ModelAdapter,
@@ -6,7 +7,6 @@ import type {
   ToolCall,
   ToolSpec,
 } from "./model.js";
-import { basetenApiKey } from "./keys.js";
 
 interface BasetenToolCall {
   id: string;
@@ -34,7 +34,7 @@ export class BasetenAdapter implements ModelAdapter {
   private readonly baseUrl: string;
 
   constructor(options?: { apiKey?: string; baseUrl?: string; modelId?: string }) {
-    const apiKey = options?.apiKey ?? basetenApiKey();
+    const apiKey = options?.apiKey ?? basetenKey();
     if (!apiKey) {
       throw new Error("BASETEN_API_KEY is not set");
     }

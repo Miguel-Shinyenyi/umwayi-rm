@@ -71,6 +71,13 @@ function findingRefsText(refs) {
   return parts.join("; ") || "see findings";
 }
 
+function runSummary(data) {
+  if (data.modelId === "fake/offline") {
+    return "Model is off on this server, so nothing was proposed. Today, approvals and the ledger still work.";
+  }
+  return `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`;
+}
+
 async function refreshToday() {
   const { groupId } = creds();
   const box = document.getElementById("today-list");
@@ -83,7 +90,7 @@ async function refreshToday() {
     box.innerHTML = data.items
       .map((item) => {
         if (item.category === "overdue") {
-          return `<div class="queue-item"><span class="badge due">Overdue</span><span class="title">${escapeHtml(item.displayName)}</span><div class="muted">${escapeHtml(item.kind)} ${escapeHtml(item.amount)} KES, due ${escapeHtml(item.dueDate)}, period ${escapeHtml(item.period)}</div></div>`;
+          return `<div class="queue-item"><span class="badge due">Overdue</span><span class="title">${escapeHtml(item.displayName)}</span><div class="muted">${escapeHtml(item.kind)} ${escapeHtml(item.outstanding)} KES outstanding, due ${escapeHtml(item.dueDate)}, period ${escapeHtml(item.period)}</div></div>`;
         }
         if (item.category === "finding") {
           return `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(item.kind)}</span><div class="muted">${escapeHtml(findingRefsText(item.refs))}</div></div>`;
@@ -96,10 +103,26 @@ async function refreshToday() {
   }
 }
 
+let rosterNames = new Map();
+
+async function loadRoster() {
+  const { groupId } = creds();
+  try {
+    const roster = await api(`/groups/${encodeURIComponent(groupId)}`);
+    rosterNames = new Map(roster.members.map((m) => [m.id, m.displayName]));
+  } catch {
+    rosterNames = new Map();
+  }
+}
+
+function memberName(id) {
+  return rosterNames.get(id) ?? id;
+}
+
 function proposalBody(p) {
   if (p.type === "entry") {
     const q = p.payload;
-    return `<div>Propose entry: member ${escapeHtml(q.memberId)}, ${escapeHtml(q.kind)}, ${escapeHtml(q.amount)} KES, ${escapeHtml(q.period)}.</div>`;
+    return `<div>Propose entry: member ${escapeHtml(memberName(q.memberId))}, ${escapeHtml(q.kind)}, ${escapeHtml(q.amount)} KES, ${escapeHtml(q.period)}.</div>`;
   }
   if (p.type === "question") {
     return `<div>Question: ${escapeHtml(p.payload.text || "")}</div>`;
@@ -112,6 +135,7 @@ async function refreshProposals() {
   const box = document.getElementById("proposals-list");
   try {
     const data = await api(`/groups/${encodeURIComponent(groupId)}/proposals?status=pending`);
+    await loadRoster();
     if (data.proposals.length === 0) {
       box.innerHTML = '<p class="empty">No pending proposals.</p>';
       return;
@@ -275,13 +299,14 @@ async function refreshEntries() {
   const box = document.getElementById("entries-list");
   try {
     const data = await api(`/groups/${encodeURIComponent(groupId)}/entries`);
+    await loadRoster();
     if (data.entries.length === 0) {
       box.innerHTML = '<p class="empty">No entries yet.</p>';
       return;
     }
-    box.innerHTML = `<div class="table-scroll"><table class="entries"><caption>Ledger entries</caption><thead><tr><th scope="col">Member id</th><th scope="col">Kind</th><th scope="col">Amount</th><th scope="col">Period</th><th scope="col">Tier</th></tr></thead><tbody>${data.entries
+    box.innerHTML = `<div class="table-scroll"><table class="entries"><caption>Ledger entries</caption><thead><tr><th scope="col">Member</th><th scope="col">Kind</th><th scope="col">Amount</th><th scope="col">Period</th><th scope="col">Tier</th></tr></thead><tbody>${data.entries
       .map(
-        (e) => `<tr><td>${escapeHtml(e.memberId)}</td><td>${escapeHtml(e.kind)}</td><td>${escapeHtml(e.amount)}</td><td>${escapeHtml(e.period)}</td><td>${escapeHtml(e.evidenceTier)}</td></tr>`,
+        (e) => `<tr><td>${escapeHtml(memberName(e.memberId))}</td><td>${escapeHtml(e.kind)}</td><td>${escapeHtml(e.amount)}</td><td>${escapeHtml(e.period)}</td><td>${escapeHtml(e.evidenceTier)}</td></tr>`,
       )
       .join("")}</tbody></table></div>`;
   } catch (err) {
@@ -364,7 +389,7 @@ async function sendNote() {
         method: "POST",
         body: JSON.stringify({ text }),
       });
-      setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
+      setStatus("intake-status", runSummary(data));
       document.getElementById("note-text").value = "";
       await refreshProposals();
       await refreshToday();
@@ -389,7 +414,7 @@ async function sendAudio() {
         method: "POST",
         body: JSON.stringify({ audio }),
       });
-      setStatus("intake-status", `Run finished: ${data.outcome.kind}, ${data.proposals.length} proposal(s).`);
+      setStatus("intake-status", runSummary(data));
       await refreshProposals();
       await refreshToday();
     } catch (err) {
