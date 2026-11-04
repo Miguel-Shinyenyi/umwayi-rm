@@ -34,10 +34,14 @@ export async function verifyClaim(model: ModelAdapter, input: ClaimInput): Promi
         }),
       },
     ],
-    { ...DEFAULT_MODEL_OPTIONS, maxTokens: 200 },
+    // Same cap as every other call: reasoning tokens count, and 200 left empty replies.
+    { ...DEFAULT_MODEL_OPTIONS },
   );
   try {
-    const parsed = JSON.parse(result.content ?? "") as { supported?: unknown; reason?: unknown };
+    const text = result.content ?? "";
+    // Accept JSON wrapped in a code fence or a sentence: take the first object.
+    const body = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
+    const parsed = JSON.parse(body) as { supported?: unknown; reason?: unknown };
     if (typeof parsed.supported !== "boolean") {
       return { passed: false, reason: "claim check inconclusive" };
     }
