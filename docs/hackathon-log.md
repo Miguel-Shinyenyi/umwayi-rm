@@ -408,4 +408,17 @@ Evidence:
 - D-12 answered: 3 to 4 hours per day.
 - Pitch problem line updated: 0 interviews, H-14 closed, hypothesis stated. The faq draft already says 0 and needed no change.
 Result: Impact evidence stays at zero by decision, not by delay; every doc says so openly.
-Next: video (H-16), H-03 Discord question, H-01 confirmations, H-17 submit by Nov 4 16:00 EAT.
+Next: H-21 key spelling fix.
+
+### 2026-11-03: H-21 both Baseten key spellings
+Type: fix
+Status: done
+Context: queue.md H-21 from docs/final-48h-packets.md. Branch h-21/baseten-key off main.
+Evidence:
+- New src/adapters/keys.ts helper: BASETEN_API_KEY first, BASENTEN_API_KEY fallback. All five direct reads (index.ts 3, baseten.ts, vision.ts) use it; constructor error now names the correct spelling.
+- 6 new tests in tests/keys.test.ts failed before (no helper) and pass after: each spelling alone builds both live adapters, both set prefers the correct one, neither reports no key and both constructors throw.
+- Fake path with neither set is existing behavior covered by demo-fallback tests (unfinished runs, model_off voice and photo).
+- docker-compose.yml passes both variables; README quick start uses the correct spelling and notes the old one still works. Placeholders only; no key material in the tree.
+- Gate: typecheck clean; full suite 128 pass, 18 pg skip without DATABASE_URL (was 122).
+Result: a judge with the correct spelling gets the live model instead of a silent fake.
+Next: push and merge PR 20. H-22 dropped: loopback bind would break remote-Docker judges.
