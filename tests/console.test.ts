@@ -56,6 +56,12 @@ describe("console page", () => {
     expect(js).toContain("memberName(q.memberId)");
   });
 
+  it("labels findings in words and names the ledger entry", () => {
+    expect(js).toContain("On the page, not in the ledger");
+    expect(js).toContain("findingLabel(f.kind)");
+    expect(js).toContain("entryLabels.get(refs.entryId)");
+  });
+
   it("says plainly when the model is off", () => {
     expect(js).toContain("Model is off on this server");
     expect(js).toContain("runSummary(data)");

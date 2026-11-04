@@ -84,6 +84,11 @@ export class BasetenAdapter implements ModelAdapter {
         throw new Error(`baseten error: ${data.error.message}`);
       }
       const message = data.choices[0]?.message;
+      if (!message?.content && !message?.tool_calls?.length) {
+        console.warn(
+          `baseten empty reply: finish_reason=${data.choices[0]?.finish_reason ?? "none"} completion_tokens=${data.usage?.completion_tokens ?? "?"} max_tokens=${options.maxTokens}`,
+        );
+      }
       const toolCalls: ToolCall[] | undefined = message?.tool_calls?.map((call) => ({
         id: call.id,
         name: call.function.name,

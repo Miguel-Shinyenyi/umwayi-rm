@@ -56,6 +56,31 @@ async function withButton(id, fn) {
   }
 }
 
+const FINDING_LABELS = {
+  only_on_paper: "On the page, not in the ledger",
+  amount_differs: "Page and ledger show different amounts",
+  only_in_ledger: "In the ledger, not on the page",
+};
+
+function findingLabel(kind) {
+  return FINDING_LABELS[kind] ?? kind;
+}
+
+let entryLabels = new Map();
+
+async function loadEntryLabels() {
+  const { groupId } = creds();
+  try {
+    await loadRoster();
+    const data = await api(`/groups/${encodeURIComponent(groupId)}/entries`);
+    entryLabels = new Map(
+      data.entries.map((e) => [e.id, `${memberName(e.memberId)}, ${e.amount} KES, ${e.period}`]),
+    );
+  } catch {
+    entryLabels = new Map();
+  }
+}
+
 function findingRefsText(refs) {
   const parts = [];
   const row = refs && refs.row;
@@ -63,7 +88,7 @@ function findingRefsText(refs) {
     parts.push(`page row: ${row.memberText || "?"}, ${row.amount} KES, ${row.period || ""}`);
   }
   if (refs && refs.entryId) {
-    parts.push(`ledger entry ${refs.entryId}`);
+    parts.push(`ledger entry ${entryLabels.get(refs.entryId) ?? refs.entryId}`);
   }
   if (refs && refs.ledgerAmount !== undefined) {
     parts.push(`ledger amount ${refs.ledgerAmount} KES`);
@@ -83,6 +108,9 @@ async function refreshToday() {
   const box = document.getElementById("today-list");
   try {
     const data = await api(`/groups/${encodeURIComponent(groupId)}/today`);
+    if (data.items.some((item) => item.category === "finding")) {
+      await loadEntryLabels();
+    }
     if (data.items.length === 0) {
       box.innerHTML = '<p class="empty">Nothing due. The list is clear.</p>';
       return;
@@ -93,7 +121,7 @@ async function refreshToday() {
           return `<div class="queue-item"><span class="badge due">Overdue</span><span class="title">${escapeHtml(item.displayName)}</span><div class="muted">${escapeHtml(item.kind)} ${escapeHtml(item.outstanding)} KES outstanding, due ${escapeHtml(item.dueDate)}, period ${escapeHtml(item.period)}</div></div>`;
         }
         if (item.category === "finding") {
-          return `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(item.kind)}</span><div class="muted">${escapeHtml(findingRefsText(item.refs))}</div></div>`;
+          return `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(findingLabel(item.kind))}</span><div class="muted">${escapeHtml(findingRefsText(item.refs))}</div></div>`;
         }
         return `<div class="queue-item"><span class="badge">Question</span><span class="title">${escapeHtml(item.text)}</span></div>`;
       })
@@ -319,11 +347,12 @@ async function refreshFindings() {
   const box = document.getElementById("findings-list");
   try {
     const data = await api(`/groups/${encodeURIComponent(groupId)}/findings?status=open`);
+    await loadEntryLabels();
     box.innerHTML =
       data.findings.length === 0
         ? ""
         : `<h3 class="muted">Open findings</h3>` +
-          data.findings.map((f) => `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(f.kind)}</span></div>`).join("");
+          data.findings.map((f) => `<div class="queue-item"><span class="badge">Finding</span><span class="title">${escapeHtml(findingLabel(f.kind))}</span><div class="muted">${escapeHtml(findingRefsText(f.refs))}</div></div>`).join("");
   } catch (err) {
     box.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
   }
