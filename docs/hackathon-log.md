@@ -437,3 +437,25 @@ Evidence:
 - Gate after merge: typecheck clean; full suite to be re-run below.
 Result: the batch is reconciled with main; one key helper remains.
 Next: gate, push, PR 21 merge when CI is green.
+
+### 2026-11-04: default token cap 600 to 2000
+Type: fix
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: review feedback that fresh deploys and local runs hit empty replies at the 600 cap.
+Evidence:
+- src/adapters/model.ts default is now Number(process.env.MODEL_MAX_TOKENS ?? 2000). No test asserted 600.
+- .env.example carries MODEL_MAX_TOKENS=2000 with a one-line comment; deploy.md lists it with the default.
+- Gate: typecheck clean; full suite 135 pass, 19 pg skip (guards pass with network, EPERM without).
+Result: the default matches the documented value; the cap stays tunable.
+Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: live URL and demo deck in README
+Type: docs
+Status: done, uncommitted on fix/model-maxtokens-2000
+Context: umwayi-rm-demo-v2.pdf and .pptx from Downloads; production URL verified, not guessed.
+Evidence:
+- https://umwayi-rm.vercel.app/health answers 200 {"status":"ok"}; / answers 200.
+- Deck files copied byte-identical into docs/ (259 KB pdf, 209 KB pptx).
+- README gains one live-demo plus deck line after the status paragraph.
+Result: judges reach the site and the slides from the README.
+Next: commit, push, open the review PR on Miguel's words.
