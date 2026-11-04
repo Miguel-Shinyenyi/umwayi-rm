@@ -99,6 +99,8 @@ export interface LedgerStore {
   listFindings(token: string, groupId: string, status?: FindingStatus): Promise<Finding[]>;
   resolveFinding(token: string, findingId: string): Promise<Finding>;
   resetDemo(): Promise<void>;
+  /** Delete demo groups created more than maxAgeMs ago, with everything under them. Returns how many. */
+  purgeDemoOlderThan(maxAgeMs: number): Promise<number>;
   saveArchiveItem(
     token: string,
     input: { groupId: string; kind: ArchiveKind; verbatim: string; gist: string },

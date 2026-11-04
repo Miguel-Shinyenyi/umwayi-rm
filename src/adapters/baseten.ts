@@ -1,3 +1,4 @@
+import { basetenKey } from "./key.js";
 import type {
   ChatMessage,
   ModelAdapter,
@@ -33,9 +34,9 @@ export class BasetenAdapter implements ModelAdapter {
   private readonly baseUrl: string;
 
   constructor(options?: { apiKey?: string; baseUrl?: string; modelId?: string }) {
-    const apiKey = options?.apiKey ?? process.env.BASENTEN_API_KEY;
+    const apiKey = options?.apiKey ?? basetenKey();
     if (!apiKey) {
-      throw new Error("BASENTEN_API_KEY is not set");
+      throw new Error("BASETEN_API_KEY is not set");
     }
     this.apiKey = apiKey;
     this.baseUrl = options?.baseUrl ?? "https://inference.baseten.co/v1";

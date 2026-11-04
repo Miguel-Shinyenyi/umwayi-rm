@@ -65,7 +65,7 @@ The reset call returns a group id and a treasurer token. Open http://localhost:3
 With keys, pass them through the environment first:
 
 ```
-BASENTEN_API_KEY=... META_API_KEY=... docker compose up -d --wait
+BASETEN_API_KEY=... META_API_KEY=... docker compose up -d --wait
 ```
 
 Stop with `docker compose down -v`. If port 3000 is taken, start with `API_PORT=3100 docker compose up -d --wait` and use port 3100 in the URLs above.

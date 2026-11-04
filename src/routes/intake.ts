@@ -22,6 +22,7 @@ export interface IntakeDeps {
 }
 
 const DEFAULT_PROMPT_VERSION = "pack-v0";
+const MAX_NOTE_CHARS = 4000;
 
 type IntakeBody = { text?: unknown; audio?: unknown };
 
@@ -49,6 +50,10 @@ export function createIntakeHandler(deps: IntakeDeps) {
         text = result.transcript;
       } else {
         res.status(422).json({ error: { code: "invalid", message: "body needs text or base64 audio" } });
+        return;
+      }
+      if (text.length > MAX_NOTE_CHARS) {
+        res.status(422).json({ error: { code: "invalid", message: `note is longer than ${MAX_NOTE_CHARS} characters` } });
         return;
       }
       if (text.trim() === "") {

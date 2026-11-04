@@ -1,0 +1,19 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60,
+      "includeFiles": "{agent/pack/**,docs/evals/**,dist/db/migrations/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/", "destination": "/console.html" },
+    { "source": "/health", "destination": "/api" },
+    { "source": "/demo/reset", "destination": "/api" },
+    { "source": "/lab/runs", "destination": "/api" },
+    { "source": "/groups/:path*", "destination": "/api" },
+    { "source": "/proposals/:path*", "destination": "/api" },
+    { "source": "/runs/:path*", "destination": "/api" }
+  ]
+}

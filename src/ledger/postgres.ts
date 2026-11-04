@@ -738,6 +738,14 @@ export class PostgresLedgerStore implements LedgerStore {
     );
   }
 
+  async purgeDemoOlderThan(maxAgeMs: number): Promise<number> {
+    const result = await this.pool.query(
+      "DELETE FROM groups WHERE demo = true AND created_at < now() - ($1::bigint * interval '1 millisecond')",
+      [Math.floor(maxAgeMs)],
+    );
+    return result.rowCount ?? 0;
+  }
+
   async saveArchiveItem(
     token: string,
     input: { groupId: string; kind: ArchiveKind; verbatim: string; gist: string },

@@ -49,9 +49,16 @@ describe("console page", () => {
     expect(js).not.toContain("JSON.stringify(item.refs)");
   });
 
-  it("labels the entries member column as ids", () => {
-    expect(js).toContain(">Member id</th>");
-    expect(js).not.toContain(">Member</th>");
+  it("shows member names in entries and proposals, falling back to the id", () => {
+    expect(js).toContain(">Member</th>");
+    expect(js).not.toContain(">Member id</th>");
+    expect(js).toContain("memberName(e.memberId)");
+    expect(js).toContain("memberName(q.memberId)");
+  });
+
+  it("says plainly when the model is off", () => {
+    expect(js).toContain("Model is off on this server");
+    expect(js).toContain("runSummary(data)");
   });
 
   it("prefixes verification checks with an overall verdict", () => {

@@ -1,3 +1,5 @@
+import { basetenKey } from "./key.js";
+
 export interface PageRow {
   memberText: string;
   amount: number;
@@ -64,9 +66,9 @@ export class BasetenPhotoReader implements PhotoReader {
     timeoutMs?: number;
     fetchImpl?: FetchImpl;
   }) {
-    const apiKey = options?.apiKey ?? process.env.BASENTEN_API_KEY;
+    const apiKey = options?.apiKey ?? basetenKey();
     if (!apiKey) {
-      throw new Error("BASENTEN_API_KEY is not set");
+      throw new Error("BASETEN_API_KEY is not set");
     }
     this.apiKey = apiKey;
     this.baseUrl = options?.baseUrl ?? "https://inference.baseten.co/v1";

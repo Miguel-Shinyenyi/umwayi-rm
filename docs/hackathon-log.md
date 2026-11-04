@@ -409,3 +409,18 @@ Evidence:
 - Pitch problem line updated: 0 interviews, H-14 closed, hypothesis stated. The faq draft already says 0 and needed no change.
 Result: Impact evidence stays at zero by decision, not by delay; every doc says so openly.
 Next: video (H-16), H-03 Discord question, H-01 confirmations, H-17 submit by Nov 4 16:00 EAT.
+
+### 2026-11-04: deploy batch (Vercel, guards, roster names)
+Type: build
+Status: done, uncommitted on deploy/vercel
+Context: Miguel's full diff, applied with two reconciliations. It supersedes fix/live-console-bugs and h-21/baseten-key (same fixes inside; those branches stay open but redundant).
+Evidence:
+- api/index.js, vercel.json (60 s, rewrites), docs/deploy.md, src/build.ts (wiring moved out of index.ts; DEMO_MODE on enables per-IP limits), PG_POOL_MAX, build copies migrations, express-rate-limit 7.5.1 with lockfile synced via npm install.
+- Guards: CSP/nosniff/no-referrer headers, x-powered-by off, JSON errors for bad bodies, 4000-char note cap, per-visitor reset isolation via purgeDemoOlderThan (2 h), rate limits on model and reset routes.
+- Purge verified at the contract level: PG cascades exist in 001, memory createGroup sets demo:true, tokens carry groupId, getGroup returns members for the roster.
+- Roster names in proposals and entries with id fallback; header back to Member; model-off status line via runSummary on the fake model id (confirmed "fake/offline").
+- Console/lab screen fixes from the earlier report included unchanged.
+- Reconciliations: docker-compose keeps one BASETEN plus legacy (the paste duplicated BASETEN); added adapter-construction tests with only BASETEN set (the pasted key.test.ts covered the helper only).
+- Gate: typecheck clean; node --check on all three scripts; full suite 135 pass, 19 skipped (all pg, need DATABASE_URL; the new purge conformance case runs in CI). guards.test.ts 5/5 pass but needs loopback TCP, so it fails in a locked-down sandbox and passes with network (proved both ways). Em-dash sweep clean.
+Result: the batch is applied and proven except the PG-backed purge case, which CI must prove.
+Next: commit, push, PR, review, merge on Miguel's words.
