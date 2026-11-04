@@ -513,7 +513,16 @@ export function ledgerConformance(name: string, makeStore: () => Promise<StoreHa
       const { store, close } = await makeStore();
       try {
         const a = await store.createGroup("Tumaini");
-        await store.createMember(a.token, { groupId: a.group.id, displayName: "Omondi Juma" });
+        const m = await store.createMember(a.token, { groupId: a.group.id, displayName: "Omondi Juma" });
+        await store.createEntry(a.token, {
+          groupId: a.group.id,
+          memberId: m.id,
+          kind: "contribution",
+          amount: 500,
+          period: "2026-10",
+          occurredOn: "2026-10-05",
+          evidenceTier: "treasurer_confirmed",
+        });
         await store.purgeDemoOlderThan(60 * 60 * 1000);
         expect(await store.listMembers(a.token, a.group.id)).toHaveLength(1);
         expect(await store.purgeDemoOlderThan(-1000)).toBeGreaterThanOrEqual(1);

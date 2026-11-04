@@ -22,8 +22,8 @@ Goal: a public URL where a judge can open the console, press "Reset demo data", 
 3. Add environment variables (Production):
    - `DEMO_MODE` = `true`
    - `PG_POOL_MAX` = `1`
+   - `MODEL_MAX_TOKENS` = `2000` (the default; set it only to change the reply cap)
    - `MODEL_CALLS_PER_HOUR` = `30`
-   - `MODEL_MAX_TOKENS` = `2000` (cap per model call; raise only if replies get cut off)
    - `RESETS_PER_HOUR` = `20`
    - `BASETEN_API_KEY` = your Baseten key (you type it in; do not paste it anywhere else)
    - `META_API_KEY` = your Meta Model API key
