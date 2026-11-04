@@ -438,6 +438,19 @@ Evidence:
 Result: the batch is reconciled with main; one key helper remains.
 Next: gate, push, PR 21 merge when CI is green.
 
+### 2026-11-04: finding labels, empty-reply warn, tunable max tokens
+Type: fix
+Status: done, merged in PR 22
+Context: Miguel's diff from live testing plus the Baseten empty-reply diagnosis.
+Evidence:
+- Console: FINDING_LABELS names all three FindingKind values (verified in src/ledger/types.ts); entryLabels maps entry ids to member, amount, period with id fallback; Today loads labels only when findings exist; findings card now shows refs too.
+- Baseten adapter warns with finish reason, completion tokens, and max tokens on empty replies; no behavior change.
+- DEFAULT_MODEL_OPTIONS maxTokens reads MODEL_MAX_TOKENS (default 600). New env var, not yet in .env.example or deploy docs.
+- Contract check: findings route returns full records with refs; entries carry ids; fake model id still "fake/offline" so runSummary is untouched.
+- 1 new console marker test. node --check clean; typecheck clean; full suite 136 pass, 19 pg skip locally; guards 5/5 pass with loopback TCP.
+Result: findings read as words, empty model replies leave a trace, token cap is tunable.
+Next: document MODEL_MAX_TOKENS in .env.example.
+
 ### 2026-11-04: default token cap 600 to 2000
 Type: fix
 Status: done, uncommitted on fix/model-maxtokens-2000
@@ -445,7 +458,7 @@ Context: review feedback that fresh deploys and local runs hit empty replies at 
 Evidence:
 - src/adapters/model.ts default is now Number(process.env.MODEL_MAX_TOKENS ?? 2000). No test asserted 600.
 - .env.example carries MODEL_MAX_TOKENS=2000 with a one-line comment; deploy.md lists it with the default.
-- Gate: typecheck clean; full suite 135 pass, 19 pg skip (guards pass with network, EPERM without).
+- Gate: typecheck clean; full suite 135 pass, 19 pg skip.
 Result: the default matches the documented value; the cap stays tunable.
 Next: commit, push, open the review PR on Miguel's words.
 
