@@ -437,3 +437,16 @@ Evidence:
 - Gate after merge: typecheck clean; full suite to be re-run below.
 Result: the batch is reconciled with main; one key helper remains.
 Next: gate, push, PR 21 merge when CI is green.
+
+### 2026-11-04: finding labels, empty-reply warn, tunable max tokens
+Type: fix
+Status: done, uncommitted on fix/finding-labels
+Context: Miguel's diff from live testing plus the Baseten empty-reply diagnosis.
+Evidence:
+- Console: FINDING_LABELS names all three FindingKind values (verified in src/ledger/types.ts); entryLabels maps entry ids to member, amount, period with id fallback; Today loads labels only when findings exist; findings card now shows refs too.
+- Baseten adapter warns with finish reason, completion tokens, and max tokens on empty replies; no behavior change.
+- DEFAULT_MODEL_OPTIONS maxTokens reads MODEL_MAX_TOKENS (default 600). New env var, not yet in .env.example or deploy docs.
+- Contract check: findings route returns full records with refs; entries carry ids; fake model id still "fake/offline" so runSummary is untouched.
+- 1 new console marker test. node --check clean; typecheck clean; full suite 136 pass, 19 pg skip locally; guards 5/5 pass with loopback TCP (same sandbox EPERM without it; CI proved them on PR 21).
+Result: findings read as words, empty model replies leave a trace, token cap is tunable.
+Next: document MODEL_MAX_TOKENS in .env.example; commit, push, PR, merge on Miguel's words.
