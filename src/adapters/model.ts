@@ -42,7 +42,7 @@ export interface ModelAdapter {
 }
 
 export const DEFAULT_MODEL_OPTIONS: ModelOptions = {
-  maxTokens: 600,
+  maxTokens: Number(process.env.MODEL_MAX_TOKENS ?? 600),
   temperature: 0,
   seed: 7,
   reasoningEffort: "low",
