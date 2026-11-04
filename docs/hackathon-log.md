@@ -497,3 +497,14 @@ Evidence:
 - Gate: verify file 14/14, typecheck clean, full suite 137 pass, 19 pg skip locally; guards pass with network.
 Result: fewer inconclusive verdicts from formatting alone; real ambiguity still fails closed.
 Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: claim prompt names alias and month inference
+Type: fix
+Status: done, uncommitted on fix/claim-prompt
+Context: Miguel's prompt diff; the check rejected first-name quotes and month names the roster already resolves.
+Evidence:
+- PROMPT now blesses first/short-name quotes against roster full names and month names against the entry period, and enumerates the only false conditions. No doc constrains the wording; code-side quote validation is unchanged.
+- Considered and accepted: the two-Brians case is decided at propose time, not here; this check judges entries already proposed with quotes.
+- No test asserts prompt text. Gate: verify file 14/14, typecheck clean, full suite 137 pass, 19 pg skip locally; guards pass with network.
+Result: fewer false-unsupported verdicts on names the group actually uses.
+Next: commit, push, open the review PR on Miguel's words.
