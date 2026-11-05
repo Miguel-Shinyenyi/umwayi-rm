@@ -508,3 +508,13 @@ Evidence:
 - No test asserts prompt text. Gate: verify file 14/14, typecheck clean, full suite 137 pass, 19 pg skip locally; guards pass with network.
 Result: fewer false-unsupported verdicts on names the group actually uses.
 Next: commit, push, open the review PR on Miguel's words.
+
+### 2026-11-04: demo video link in README
+Type: docs
+Status: done, uncommitted on docs/demo-video-link
+Context: Miguel recorded and linked the video; first URL replaced with the corrected one.
+Evidence:
+- README carries the video link next to the live demo and deck links. H-16 marked done with the URL.
+- Not verified: the video itself was not watched (network check declined); link syntax is a standard 11-character watch URL.
+Result: judges reach the demo video from the README.
+Next: commit, push, open the review PR on Miguel's words.
