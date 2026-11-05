@@ -62,6 +62,15 @@ describe("console page", () => {
     expect(js).toContain("entryLabels.get(refs.entryId)");
   });
 
+  it("walks a new visitor through the console once", () => {
+    expect(html).toContain('id="tour"');
+    expect(html).toContain('id="tour-replay"');
+    expect(js).toContain("umwayi.tour");
+    expect(js).toContain("Brian paid 500 for October");
+    expect(js).toContain("tour-target");
+    expect(js).toContain("Take the tour");
+  });
+
   it("says plainly when the model is off", () => {
     expect(js).toContain("Model is off on this server");
     expect(js).toContain("runSummary(data)");

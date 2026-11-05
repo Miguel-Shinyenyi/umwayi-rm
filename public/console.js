@@ -488,8 +488,78 @@ document.getElementById("send-page-btn").addEventListener("click", sendPage);
 document.getElementById("refresh-proposals-btn").addEventListener("click", refreshProposals);
 document.getElementById("refresh-entries-btn").addEventListener("click", refreshEntries);
 
+const TOUR_STEPS = [
+  { target: null, title: "A secretary, not a ledger", body: "Umwayi-RM turns voice notes and paper pages into proposals. It never writes the ledger. The treasurer approves every entry. This demo uses synthetic records only." },
+  { target: "connection-h", title: "Connect with demo data", body: "Press Reset demo data, then Connect. The token stays in this browser only." },
+  { target: "intake-h", title: "Send a note, watch it ask", body: "Try: Brian paid 500 for October. When a note is ambiguous the agent asks instead of guessing." },
+  { target: "page-h", title: "Photograph a paper page", body: "Use a PNG or JPEG under 3 MB. Differences come back as questions, not accusations." },
+  { target: "proposals-h", title: "Approve to apply", body: "Nothing changes until you approve. Approving twice makes one entry." },
+  { target: "today-h", title: "Today lists who still owes", body: "Overdue amounts read like 500 KES outstanding. Reminders show their evidence. Nothing is sent from here." },
+  { target: null, title: "The Lab shows the honest numbers", body: "Saved runs with model id, prompt version, and seed, including the nulls. Open the Lab page from the top bar." },
+];
+
+let tourIndex = 0;
+
+function renderTour() {
+  const step = TOUR_STEPS[tourIndex];
+  document.querySelectorAll(".tour-target").forEach((el) => el.classList.remove("tour-target"));
+  if (step.target) {
+    const heading = document.getElementById(step.target);
+    if (heading) {
+      heading.closest(".card").classList.add("tour-target");
+    }
+  }
+  document.getElementById("tour-h").textContent = `Take the tour: ${step.title}`;
+  document.getElementById("tour-body").textContent = step.body;
+  document.getElementById("tour-count").textContent = `Step ${tourIndex + 1} of ${TOUR_STEPS.length}`;
+  document.getElementById("tour-back").disabled = tourIndex === 0;
+  document.getElementById("tour-next").textContent = tourIndex === TOUR_STEPS.length - 1 ? "Finish" : "Next";
+}
+
+function startTour() {
+  tourIndex = 0;
+  document.getElementById("tour").hidden = false;
+  renderTour();
+}
+
+function finishTour() {
+  document.getElementById("tour").hidden = true;
+  document.querySelectorAll(".tour-target").forEach((el) => el.classList.remove("tour-target"));
+  try {
+    localStorage.setItem("umwayi.tour", "seen");
+  } catch {
+    /* private mode: the tour simply shows again next visit */
+  }
+}
+
+document.getElementById("tour-back").addEventListener("click", () => {
+  if (tourIndex > 0) {
+    tourIndex -= 1;
+    renderTour();
+  }
+});
+document.getElementById("tour-next").addEventListener("click", () => {
+  if (tourIndex < TOUR_STEPS.length - 1) {
+    tourIndex += 1;
+    renderTour();
+  } else {
+    finishTour();
+  }
+});
+document.getElementById("tour-skip").addEventListener("click", finishTour);
+document.getElementById("tour-replay").addEventListener("click", startTour);
+
 (function init() {
   const saved = store.load();
   document.getElementById("group-id").value = saved.groupId;
   document.getElementById("token").value = saved.token;
+  let seen = false;
+  try {
+    seen = localStorage.getItem("umwayi.tour") === "seen";
+  } catch {
+    seen = false;
+  }
+  if (!saved.groupId && !saved.token && !seen) {
+    startTour();
+  }
 })();
