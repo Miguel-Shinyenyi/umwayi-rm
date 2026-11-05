@@ -99,6 +99,11 @@ main {
   font-size: 13px;
 }
 
+.tour-target {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
 .row {
   display: flex;
   gap: 8px;

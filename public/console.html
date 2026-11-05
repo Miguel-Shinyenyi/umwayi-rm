@@ -16,6 +16,17 @@
     <span class="demo-pill">Demo data</span>
   </header>
   <main>
+    <section class="card" id="tour" hidden aria-labelledby="tour-h">
+      <h2 id="tour-h">Take the tour</h2>
+      <div id="tour-body" class="muted"></div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="tour-back" type="button">Back</button>
+        <button id="tour-next" type="button" class="primary">Next</button>
+        <button id="tour-skip" type="button">Skip tour</button>
+        <span id="tour-count" class="muted" role="status"></span>
+      </div>
+    </section>
+
     <section class="card" aria-labelledby="connection-h">
       <h2 id="connection-h">Connection</h2>
       <div class="row">
@@ -86,6 +97,7 @@
   <footer>
     <span>Tumaini Savings Group, synthetic demo records only.</span>
     <span>Built with Muse Spark Open</span>
+    <button id="tour-replay" type="button">Replay the tour</button>
   </footer>
   <script src="/console.js"></script>
 </body>
