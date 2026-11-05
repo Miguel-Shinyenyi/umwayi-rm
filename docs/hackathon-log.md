@@ -509,6 +509,18 @@ Evidence:
 Result: fewer false-unsupported verdicts on names the group actually uses.
 Next: commit, push, open the review PR on Miguel's words.
 
+### 2026-11-05: first-visit walkthrough tour in the console
+Type: build
+Status: done, uncommitted on feat/walkthrough-tour
+Context: Miguel's walkthrough PDF (video shooting guide) translated into an in-app tour: 7 steps over the console cards.
+Evidence:
+- Tour card renders first in main, hidden by default; footer gains Replay the tour. Steps mirror the video beats with the Brian note, 3 MB photo cap, double-approve, 500 KES outstanding, Lab honesty. Accent outline marks the target card.
+- Shows only when no stored creds and umwayi.tour is unseen; Skip/Finish stores seen; localStorage failure degrades to show-again.
+- New console marker test failed before and passes after. Headless harness (/tmp/tour-harness.js) exercised all 11 behaviors: visibility, counts, back/finish labels, flag, highlight cleanup, replay, skip.
+- Gate: node --check clean, typecheck clean, full suite 138 pass, 19 pg skip locally; guards pass with network.
+Result: a new visitor meets the tour on first load; returning visitors never see it unless they replay.
+Next: commit, push, open the review PR on Miguel's words.
+
 ### 2026-11-04: demo video link in README
 Type: docs
 Status: done, uncommitted on docs/demo-video-link
