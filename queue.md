@@ -32,7 +32,7 @@ One list of open work. One task at a time. Status: now, next, later, blocked, do
 | H-13 | Console, Lab, seed and reset | done 2026-10-29 | Fresh clone runs from the README | log |
 | H-14 | Interviews with two treasurers or members | done 2026-11-03: closed with none per D-11 | `docs/research/interviews.md` has real rows, or says none | interviews |
 | H-15 | H2 run (stretch) | done 2026-10-29 | Only after H-13 is green | `docs/evals/` |
-| H-16 | Freeze, record the video, write submission text | now (Miguel: record video; text ready) | Video link public; repo public; text matches saved results | log |
+| H-16 | Freeze, record the video, write submission text | done 2026-11-04: video at https://www.youtube.com/watch?v=XLmpeBoWaes | Video link public; repo public; text matches saved results | log |
 | H-17 | Submit | later | Portal receipt saved before Nov 4, 16:00 EAT | log |
 | H-18 | Workshop alignment and verification hardening | done 2026-10-29 | Workshop run outcomes recorded; verification gaps closed with tests | log |
 | H-19 | Proposal edit and question answer | done 2026-10-29 | Edit keeps the original in audit; answer continues the run | log |
